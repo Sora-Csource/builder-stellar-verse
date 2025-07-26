@@ -1820,7 +1820,45 @@ const EnhancedPOS: React.FC = () => {
             {/* Reports Module */}
             {activeModule === 'reports' && hasModuleAccess('reports') && (
               <div>
-                <h2 className="text-2xl font-semibold mb-4 text-gray-800">Laporan</h2>
+                <h2 className="text-2xl font-semibold mb-6 text-gray-800">Laporan</h2>
+
+                {/* Reports Tabs */}
+                <div className="mb-6">
+                  <div className="border-b border-gray-200">
+                    <nav className="-mb-px flex space-x-8">
+                      <button
+                        onClick={() => setActiveReportsTab('sales')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeReportsTab === 'sales'
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        📊 Laporan Penjualan
+                      </button>
+                      <button
+                        onClick={() => setActiveReportsTab('shifts')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeReportsTab === 'shifts'
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        🕐 Laporan Shift
+                      </button>
+                      <button
+                        onClick={() => setActiveReportsTab('stock')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeReportsTab === 'stock'
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        📦 Laporan Stok
+                      </button>
+                    </nav>
+                  </div>
+                </div>
                 
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg shadow-inner">
                   <h3 className="text-xl font-semibold mb-3 text-gray-800">Filter Laporan Penjualan</h3>
