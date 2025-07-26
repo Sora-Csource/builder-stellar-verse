@@ -3987,6 +3987,229 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                 )}
 
+                {/* Financial Settings Tab */}
+                {activeSettingsTab === "financial" && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-6 text-gray-800">
+                      Pengaturan Keuangan & Pajak
+                    </h3>
+
+                    <form onSubmit={handleSettingsSubmit} className="space-y-6">
+                      {/* Tax Settings */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                          </svg>
+                          Pengaturan Pajak
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Persentase Pajak (%):
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="100"
+                              value={settingsForm.taxRate || 0}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  taxRate: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              placeholder="0.00"
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Masukkan persentase pajak (contoh: 10 untuk 10%)
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Jenis Pajak:
+                            </label>
+                            <select
+                              value={settingsForm.taxType || "inclusive"}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  taxType: e.target.value,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                            >
+                              <option value="inclusive">Inclusive (Sudah termasuk dalam harga)</option>
+                              <option value="exclusive">Exclusive (Ditambahkan ke harga)</option>
+                            </select>
+                            <p className="text-sm text-gray-500 mt-1">
+                              Pilih apakah pajak sudah termasuk atau ditambahkan
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Discount Settings */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                          </svg>
+                          Pengaturan Diskon
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Diskon Maksimal (%):
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="100"
+                              value={settingsForm.maxDiscountPercent || 0}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  maxDiscountPercent: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              placeholder="0.00"
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Batas maksimal diskon yang bisa diberikan
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Diskon Cepat (Rp):
+                            </label>
+                            <input
+                              type="number"
+                              min="0"
+                              value={settingsForm.quickDiscountAmount || 0}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  quickDiscountAmount: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              placeholder="0"
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Jumlah diskon tetap untuk tombol diskon cepat
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Quick Discount Presets */}
+                        <div className="mt-6">
+                          <label className="block text-gray-700 font-bold mb-3">
+                            Preset Diskon Cepat:
+                          </label>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[5, 10, 15, 20, 25, 30, 50, 100].map((percent) => (
+                              <div key={percent} className="flex items-center space-x-2">
+                                <input
+                                  type="checkbox"
+                                  id={`discount-${percent}`}
+                                  checked={settingsForm.quickDiscountPresets?.includes(percent) || false}
+                                  onChange={(e) => {
+                                    const currentPresets = settingsForm.quickDiscountPresets || [];
+                                    if (e.target.checked) {
+                                      setSettingsForm({
+                                        ...settingsForm,
+                                        quickDiscountPresets: [...currentPresets, percent]
+                                      });
+                                    } else {
+                                      setSettingsForm({
+                                        ...settingsForm,
+                                        quickDiscountPresets: currentPresets.filter(p => p !== percent)
+                                      });
+                                    }
+                                  }}
+                                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                />
+                                <label htmlFor={`discount-${percent}`} className="text-sm text-gray-700">
+                                  {percent}%
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-sm text-gray-500 mt-2">
+                            Pilih preset diskon yang akan ditampilkan sebagai tombol cepat
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Service Charge Settings */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          Biaya Layanan
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Biaya Layanan (%):
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              max="100"
+                              value={settingsForm.serviceChargePercent || 0}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  serviceChargePercent: parseFloat(e.target.value) || 0,
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              placeholder="0.00"
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Persentase biaya layanan (opsional)
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id="enableServiceCharge"
+                              checked={settingsForm.enableServiceCharge || false}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  enableServiceCharge: e.target.checked,
+                                })
+                              }
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="enableServiceCharge" className="text-sm font-medium text-gray-700">
+                              Aktifkan Biaya Layanan
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <button
+                          type="submit"
+                          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-md font-semibold hover:from-indigo-700 hover:to-purple-700 transition duration-200"
+                        >
+                          Simpan Pengaturan Keuangan
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
                 {/* Keyboard Shortcuts Tab */}
                 {activeSettingsTab === "shortcuts" && (
                   <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
