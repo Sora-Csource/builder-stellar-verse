@@ -2093,6 +2093,97 @@ const EnhancedPOS: React.FC = () => {
                         Kosongkan Keranjang
                       </button>
 
+                      {/* Discount Section */}
+                      {cart.length > 0 && (
+                        <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg border-2 border-orange-200 mb-4">
+                          <h4 className="text-lg font-semibold text-orange-800 mb-3 flex items-center">
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            </svg>
+                            Diskon
+                          </h4>
+
+                          {/* Discount Type Selector */}
+                          <div className="mb-3">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => setDiscountType("percentage")}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                                  discountType === "percentage"
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-white text-orange-600 border border-orange-600"
+                                }`}
+                              >
+                                Persentase (%)
+                              </button>
+                              <button
+                                onClick={() => setDiscountType("amount")}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                                  discountType === "amount"
+                                    ? "bg-orange-600 text-white"
+                                    : "bg-white text-orange-600 border border-orange-600"
+                                }`}
+                              >
+                                Nominal (Rp)
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Discount Preset Buttons */}
+                          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
+                            {discountType === "percentage" ? (
+                              (settings.quickDiscountPresets || [5, 10, 15, 20]).map((percent) => (
+                                <button
+                                  key={percent}
+                                  onClick={() => setDiscountAmount(percent)}
+                                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                                    discountAmount === percent && discountType === "percentage"
+                                      ? "bg-orange-600 text-white"
+                                      : "bg-white text-orange-600 border border-orange-300 hover:bg-orange-100"
+                                  }`}
+                                >
+                                  {percent}%
+                                </button>
+                              ))
+                            ) : (
+                              [5000, 10000, 15000, 20000, 25000, 50000].map((amount) => (
+                                <button
+                                  key={amount}
+                                  onClick={() => setDiscountAmount(amount)}
+                                  className={`px-2 py-2 rounded-md text-xs font-medium transition-colors ${
+                                    discountAmount === amount && discountType === "amount"
+                                      ? "bg-orange-600 text-white"
+                                      : "bg-white text-orange-600 border border-orange-300 hover:bg-orange-100"
+                                  }`}
+                                >
+                                  {formatCurrency(amount)}
+                                </button>
+                              ))
+                            )}
+                          </div>
+
+                          {/* Custom Discount Input */}
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="number"
+                              min="0"
+                              value={discountAmount}
+                              onChange={(e) => setDiscountAmount(parseFloat(e.target.value) || 0)}
+                              className="flex-1 px-3 py-2 border border-orange-300 rounded-md focus:outline-none focus:border-orange-500 text-sm"
+                              placeholder={discountType === "percentage" ? "0%" : "0"}
+                            />
+                            <button
+                              onClick={() => {
+                                setDiscountAmount(0);
+                              }}
+                              className="px-3 py-2 bg-gray-500 text-white rounded-md text-sm hover:bg-gray-600 transition-colors"
+                            >
+                              Hapus
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Payment Section */}
                       <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
                         {(() => {
