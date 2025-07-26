@@ -831,18 +831,18 @@ const EnhancedPOS: React.FC = () => {
     e.preventDefault();
     
     if (!customerForm.name) {
-      alert('Nama pelanggan tidak boleh kosong.');
+      showAlert('Input Tidak Valid', 'Nama pelanggan tidak boleh kosong.', 'error');
       return;
     }
 
     if (editingCustomer) {
       // Edit existing customer
-      setCustomers(customers.map(c => 
-        c.id === editingCustomer.id 
+      setCustomers(customers.map(c =>
+        c.id === editingCustomer.id
           ? { ...c, ...customerForm }
           : c
       ));
-      alert('Data pelanggan berhasil diperbarui.');
+      showAlert('Berhasil', 'Data pelanggan berhasil diperbarui.', 'success');
     } else {
       // Add new customer
       const newCustomer: Customer = {
@@ -850,7 +850,7 @@ const EnhancedPOS: React.FC = () => {
         ...customerForm
       };
       setCustomers([...customers, newCustomer]);
-      alert('Pelanggan baru berhasil ditambahkan.');
+      showAlert('Berhasil', 'Pelanggan baru berhasil ditambahkan.', 'success');
     }
 
     setShowCustomerModal(false);
