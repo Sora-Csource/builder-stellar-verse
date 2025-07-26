@@ -1853,6 +1853,27 @@ const EnhancedPOS: React.FC = () => {
               </span>
             </div>
 
+            {/* Offline Status Indicator */}
+            {(() => {
+              const status = getOfflineStatus();
+              return (
+                <div className={`mb-4 p-3 rounded-lg border-l-4 ${
+                  status.status === 'online'
+                    ? 'bg-green-50 border-green-400 text-green-700'
+                    : status.status === 'offline'
+                    ? 'bg-yellow-50 border-yellow-400 text-yellow-700'
+                    : 'bg-red-50 border-red-400 text-red-700'
+                }`}>
+                  <div className="flex items-center">
+                    <span className="mr-2">
+                      {status.status === 'online' ? '🟢' : status.status === 'offline' ? '🟡' : '🔴'}
+                    </span>
+                    <span className="text-sm font-medium">{status.message}</span>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Order Entry Module */}
             {activeModule === "order-entry" &&
               hasModuleAccess("order-entry") && (
