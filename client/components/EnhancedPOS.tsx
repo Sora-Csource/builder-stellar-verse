@@ -78,6 +78,11 @@ interface Settings {
   // Backup settings
   autoBackupEnabled?: boolean;
   maxBackupFiles?: number;
+  // Thermal printer settings
+  thermalPrinterEnabled?: boolean;
+  thermalPrinterWidth?: number;
+  thermalPrinterIP?: string;
+  thermalPrinterPort?: number;
   receiptSettings: {
     showStoreName: boolean;
     showDateTime: boolean;
