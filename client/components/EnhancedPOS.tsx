@@ -68,6 +68,13 @@ interface Settings {
   currencySymbol: string;
   logo?: string;
   rolePermissions: Record<string, string[]>;
+  // Financial settings
+  taxType?: "inclusive" | "exclusive";
+  maxDiscountPercent?: number;
+  quickDiscountAmount?: number;
+  quickDiscountPresets?: number[];
+  serviceChargePercent?: number;
+  enableServiceCharge?: boolean;
   receiptSettings: {
     showStoreName: boolean;
     showDateTime: boolean;
