@@ -1056,7 +1056,7 @@ const EnhancedPOS: React.FC = () => {
       }
 
       const discrepancy = finalCash - expectedCash;
-      alert(`Shift berakhir.\nKas Awal: ${formatCurrency(currentShift.startCash)}\nTotal Penjualan: ${formatCurrency(salesTotal)}\nKas Diharapkan: ${formatCurrency(expectedCash)}\nKas Akhir: ${formatCurrency(finalCash)}\nSelisih: ${formatCurrency(discrepancy)}`);
+      showAlert('Shift Berakhir', `Kas Awal: ${formatCurrency(currentShift.startCash)}\nTotal Penjualan: ${formatCurrency(salesTotal)}\nKas Diharapkan: ${formatCurrency(expectedCash)}\nKas Akhir: ${formatCurrency(finalCash)}\nSelisih: ${formatCurrency(discrepancy)}`, 'info');
     }
   };
 
