@@ -868,10 +868,11 @@ const EnhancedPOS: React.FC = () => {
     setShowCustomerModal(true);
   };
 
-  const handleDeleteCustomer = (customerId: string) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')) {
+  const handleDeleteCustomer = async (customerId: string) => {
+    const confirmed = await showConfirm('Konfirmasi Hapus', 'Apakah Anda yakin ingin menghapus pelanggan ini?', 'danger');
+    if (confirmed) {
       setCustomers(customers.filter(c => c.id !== customerId));
-      alert('Pelanggan berhasil dihapus.');
+      showAlert('Berhasil', 'Pelanggan berhasil dihapus.', 'success');
     }
   };
 
