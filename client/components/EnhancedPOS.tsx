@@ -2714,6 +2714,37 @@ const EnhancedPOS: React.FC = () => {
                   <h3 className="text-xl font-semibold mb-3 text-gray-800">
                     Laporan Stok
                   </h3>
+
+                  {/* Stock Export Button */}
+                  <div className="mb-4">
+                    <button
+                      onClick={() => {
+                        const stockData = products.map((product) => ({
+                          nama_produk: product.name,
+                          kategori: product.category,
+                          stok_saat_ini: product.stock,
+                          harga: `Rp ${product.price.toLocaleString('id-ID')}`,
+                          nilai_stok: `Rp ${(product.stock * product.price).toLocaleString('id-ID')}`,
+                          status: product.stock === 0 ? "Habis" : product.stock <= 5 ? "Rendah" : "Normal"
+                        }));
+
+                        if (stockData.length > 0) {
+                          const headers = ['Nama Produk', 'Kategori', 'Stok Saat Ini', 'Harga', 'Nilai Stok', 'Status'];
+                          exportToCSV(stockData, "laporan_stok.csv", headers);
+                        } else {
+                          showAlert(
+                            "Tidak Ada Data",
+                            "Tidak ada data stok untuk diekspor.",
+                            "warning"
+                          );
+                        }
+                      }}
+                      className="bg-orange-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-orange-700 transition duration-200"
+                    >
+                      📦 Ekspor Stok
+                    </button>
+                  </div>
+
                   <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
                     <table className="min-w-full border-collapse">
                       <thead className="bg-gray-50">
