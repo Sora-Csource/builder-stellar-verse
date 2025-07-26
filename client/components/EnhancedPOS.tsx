@@ -940,9 +940,25 @@ const EnhancedPOS: React.FC = () => {
       (sum, item) => sum + item.quantity * item.price,
       0,
     );
-    const taxAmount = subtotal * (settings.taxRate / 100);
-    const finalTotal = subtotal + taxAmount;
-    return { subtotal, taxAmount, finalTotal };
+
+    // Calculate discount
+    let discountValue = 0;
+    if (discountType === "percentage") {
+      discountValue = (subtotal * discountAmount) / 100;
+    } else {
+      discountValue = discountAmount;
+    }
+
+    // Apply discount limits
+    const maxDiscount = (subtotal * (settings.maxDiscountPercent || 50)) / 100;
+    discountValue = Math.min(discountValue, maxDiscount);
+    discountValue = Math.max(0, discountValue);
+
+    const subtotalAfterDiscount = subtotal - discountValue;
+    const taxAmount = subtotalAfterDiscount * (settings.taxRate / 100);
+    const finalTotal = subtotalAfterDiscount + taxAmount;
+
+    return { subtotal, discountValue, subtotalAfterDiscount, taxAmount, finalTotal };
   };
 
   // Process payment
