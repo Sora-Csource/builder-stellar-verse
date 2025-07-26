@@ -2233,6 +2233,9 @@ const EnhancedPOS: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Custom Modals */}
+      <Modals />
     </div>
   );
 };
