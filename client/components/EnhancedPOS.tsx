@@ -147,6 +147,10 @@ const EnhancedPOS: React.FC = () => {
   >("cash");
   const [cashGiven, setCashGiven] = useState<number>(0);
 
+  // Discount state
+  const [discountAmount, setDiscountAmount] = useState<number>(0);
+  const [discountType, setDiscountType] = useState<"percentage" | "amount">("percentage");
+
   // Product form state
   const [productForm, setProductForm] = useState({
     name: "",
