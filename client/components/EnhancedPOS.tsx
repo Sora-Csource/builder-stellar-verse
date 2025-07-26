@@ -207,6 +207,13 @@ const EnhancedPOS: React.FC = () => {
     taxRate: 10,
     currencySymbol: "Rp",
     logo: "",
+    // Financial settings defaults
+    taxType: "exclusive",
+    maxDiscountPercent: 50,
+    quickDiscountAmount: 5000,
+    quickDiscountPresets: [5, 10, 15, 20],
+    serviceChargePercent: 0,
+    enableServiceCharge: false,
     rolePermissions: {
       admin: [
         "order-entry",
@@ -2590,7 +2597,7 @@ const EnhancedPOS: React.FC = () => {
                         }}
                         className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
                       >
-                        📦 Ekspor Produk
+                        ��� Ekspor Produk
                       </button>
                     </div>
                   </div>
