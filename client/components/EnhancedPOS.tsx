@@ -97,6 +97,9 @@ const EnhancedPOS: React.FC = () => {
     Modals,
   } = useModals();
 
+  // Offline functionality
+  const { isOnline, getOfflineStatus, saveOfflineData, addOfflineSale } = useOffline();
+
   // State management
   const [users, setUsers] = useState<User[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
