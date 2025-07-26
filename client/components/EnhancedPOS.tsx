@@ -3260,6 +3260,15 @@ const EnhancedPOS: React.FC = () => {
                             </tr>
                           ) : (
                             shifts
+                              .filter((shift) => {
+                                if (!reportStartDate && !reportEndDate) return true;
+                                const shiftDate = new Date(shift.startTime);
+                                const startDate = reportStartDate ? new Date(reportStartDate) : null;
+                                const endDate = reportEndDate ? new Date(reportEndDate) : null;
+                                if (startDate && shiftDate < startDate) return false;
+                                if (endDate && shiftDate > endDate) return false;
+                                return true;
+                              })
                               .sort(
                                 (a, b) =>
                                   new Date(b.startTime).getTime() -
