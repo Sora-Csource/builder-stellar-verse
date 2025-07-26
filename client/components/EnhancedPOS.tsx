@@ -143,9 +143,9 @@ const EnhancedPOS: React.FC = () => {
 
   // Settings form state
   const [settingsForm, setSettingsForm] = useState({
-    storeName: '',
-    taxRate: 0,
-    currencySymbol: '',
+    storeName: 'Crema POS',
+    taxRate: 10,
+    currencySymbol: 'Rp',
     logo: ''
   });
 
@@ -160,7 +160,7 @@ const EnhancedPOS: React.FC = () => {
     showChange: true,
     showPaymentMethod: true,
     showThankYouMessage: true,
-    customThankYouMessage: 'Terima kasih atas kunjungan Anda!',
+    customThankYouMessage: 'Terima kasih atas pembelian Anda!',
     headerText: '',
     footerText: '',
     showLogo: true
