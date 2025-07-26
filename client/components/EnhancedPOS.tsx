@@ -427,7 +427,7 @@ const EnhancedPOS: React.FC = () => {
         printWindow.close();
       }, 100);
     } else {
-      alert('Tidak dapat membuka jendela cetak. Pastikan pop-up diizinkan.');
+      showAlert('Kesalahan Browser', 'Tidak dapat membuka jendela cetak. Pastikan pop-up diizinkan untuk situs ini.', 'error');
     }
   };
 
