@@ -1705,6 +1705,13 @@ const EnhancedPOS: React.FC = () => {
       {isLoginVisible && (
         <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-50">
           <div className="bg-white p-12 rounded-lg shadow-xl w-full max-w-md">
+            <div className="flex justify-center mb-6">
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=800"
+                alt="Crema POS Logo"
+                className="h-16 w-auto"
+              />
+            </div>
             <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
               Login POS
             </h2>
