@@ -1016,7 +1016,7 @@ const EnhancedPOS: React.FC = () => {
   // End shift
   const endShift = async () => {
     if (!currentShift || currentShift.status !== 'open') {
-      alert('Tidak ada shift yang sedang berjalan untuk diakhiri.');
+      showAlert('Tidak Ada Shift', 'Tidak ada shift yang sedang berjalan untuk diakhiri.', 'warning');
       return;
     }
 
@@ -1026,15 +1026,18 @@ const EnhancedPOS: React.FC = () => {
     }, 0);
 
     const expectedCash = currentShift.startCash + salesTotal;
-    const finalCashStr = prompt('Masukkan Kas Akhir Shift:', expectedCash.toString());
-    const finalCash = parseFloat(finalCashStr || '0');
-    
+    const finalCashStr = await showPrompt('Akhiri Shift', 'Masukkan Kas Akhir Shift:', expectedCash.toString(), 'number');
+    if (finalCashStr === null) return; // User cancelled
+
+    const finalCash = parseFloat(finalCashStr);
+
     if (isNaN(finalCash) || finalCash < 0) {
-      alert('Kas akhir harus berupa angka positif.');
+      showAlert('Input Tidak Valid', 'Kas akhir harus berupa angka positif.', 'error');
       return;
     }
 
-    if (window.confirm('Apakah Anda yakin ingin mengakhiri shift ini?')) {
+    const confirmed = await showConfirm('Konfirmasi Akhiri Shift', 'Apakah Anda yakin ingin mengakhiri shift ini?', 'warning');
+    if (confirmed) {
       const updatedShift = {
         ...currentShift,
         endTime: new Date().toISOString(),
