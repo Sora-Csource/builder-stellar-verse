@@ -451,6 +451,12 @@ const EnhancedPOS: React.FC = () => {
               <p class="bold">${receiptSettings.customThankYouMessage}</p>
             </div>
           ` : ''}
+
+          ${receiptSettings.footerText ? `
+            <div class="footer center">
+              <p>${receiptSettings.footerText}</p>
+            </div>
+          ` : ''}
         </div>
       </body>
       </html>
