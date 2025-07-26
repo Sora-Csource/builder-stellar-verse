@@ -1046,9 +1046,10 @@ const EnhancedPOS: React.FC = () => {
         );
       }
 
-      // Clear cart
+      // Clear cart and discount
       setCart([]);
       setCashGiven(0);
+      setDiscountAmount(0);
 
       // Show success modal with print option
       showSuccess(
