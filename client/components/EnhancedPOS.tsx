@@ -1959,10 +1959,15 @@ const EnhancedPOS: React.FC = () => {
       {showProductModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all border border-gray-100">
-            <h3 className="text-xl font-bold mb-4 text-gray-800">
-              {editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'}
-            </h3>
-            <form onSubmit={handleProductSubmit} className="space-y-4">
+            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-6 rounded-t-xl">
+              <div className="flex items-center space-x-3">
+                <div className="text-2xl">📦</div>
+                <h3 className="text-xl font-bold">
+                  {editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'}
+                </h3>
+              </div>
+            </div>
+            <form onSubmit={handleProductSubmit} className="p-6 space-y-4">
               <div>
                 <label className="block text-gray-700 font-bold mb-2">Nama Produk:</label>
                 <input
