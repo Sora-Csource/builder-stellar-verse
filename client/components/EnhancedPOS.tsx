@@ -944,7 +944,7 @@ const EnhancedPOS: React.FC = () => {
     e.preventDefault();
     
     if (!settingsForm.storeName || settingsForm.taxRate < 0 || !settingsForm.currencySymbol) {
-      alert('Mohon isi semua field dengan benar.');
+      showAlert('Input Tidak Valid', 'Mohon isi semua field dengan benar.', 'error');
       return;
     }
 
@@ -954,8 +954,8 @@ const EnhancedPOS: React.FC = () => {
       taxRate: settingsForm.taxRate,
       currencySymbol: settingsForm.currencySymbol
     });
-    
-    alert('Pengaturan berhasil disimpan.');
+
+    showAlert('Berhasil', 'Pengaturan berhasil disimpan.', 'success');
   };
 
   // Initialize settings form when accessing settings
