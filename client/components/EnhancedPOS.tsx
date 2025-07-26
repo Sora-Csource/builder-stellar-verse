@@ -2365,7 +2365,7 @@ const EnhancedPOS: React.FC = () => {
                   <h3 className="text-xl font-semibold mb-3 text-gray-800">
                     Filter Laporan Penjualan
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                     <div>
                       <label className="block text-gray-700 font-bold mb-2">
                         Tanggal Mulai:
