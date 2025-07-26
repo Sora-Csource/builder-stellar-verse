@@ -742,8 +742,9 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Void sale function
-  const voidSale = (saleId: string) => {
-    if (window.confirm('Apakah Anda yakin ingin membatalkan transaksi ini? Stok produk akan dikembalikan.')) {
+  const voidSale = async (saleId: string) => {
+    const confirmed = await showConfirm('Batalkan Transaksi', 'Apakah Anda yakin ingin membatalkan transaksi ini? Stok produk akan dikembalikan.', 'danger');
+    if (confirmed) {
       const saleIndex = sales.findIndex(s => s.id === saleId);
       if (saleIndex !== -1 && sales[saleIndex].status === 'completed') {
         const voidedSale = sales[saleIndex];
