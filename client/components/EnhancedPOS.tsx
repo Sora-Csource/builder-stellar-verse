@@ -4786,6 +4786,142 @@ const EnhancedPOS: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Printer Settings Tab */}
+                {activeSettingsTab === "printer" && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-6 text-gray-800">
+                      Pengaturan Thermal Printer
+                    </h3>
+
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Enable Thermal Printer */}
+                        <div className="md:col-span-2">
+                          <label className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              checked={settings.thermalPrinterEnabled || false}
+                              onChange={(e) =>
+                                setSettings({
+                                  ...settings,
+                                  thermalPrinterEnabled: e.target.checked,
+                                })
+                              }
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <span className="text-lg font-medium text-gray-700">
+                              Aktifkan Thermal Printer
+                            </span>
+                          </label>
+                          <p className="text-sm text-gray-500 mt-2">
+                            Mengaktifkan pencetakan otomatis ke thermal printer untuk struk
+                          </p>
+                        </div>
+
+                        {/* Printer Width */}
+                        <div>
+                          <label className="block text-gray-700 font-bold mb-2">
+                            Lebar Kertas (mm):
+                          </label>
+                          <select
+                            value={settings.thermalPrinterWidth || 58}
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                thermalPrinterWidth: parseInt(e.target.value),
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                          >
+                            <option value={58}>58mm (Umum)</option>
+                            <option value={80}>80mm (Lebar)</option>
+                          </select>
+                        </div>
+
+                        {/* Printer IP */}
+                        <div>
+                          <label className="block text-gray-700 font-bold mb-2">
+                            IP Address Printer:
+                          </label>
+                          <input
+                            type="text"
+                            value={settings.thermalPrinterIP || ""}
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                thermalPrinterIP: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                            placeholder="192.168.1.100"
+                          />
+                          <p className="text-sm text-gray-500 mt-1">
+                            IP address printer thermal di jaringan (opsional)
+                          </p>
+                        </div>
+
+                        {/* Test Print Button */}
+                        <div className="md:col-span-2">
+                          <h4 className="text-lg font-semibold mb-3 text-gray-700">
+                            Test Printer
+                          </h4>
+                          <button
+                            onClick={() => {
+                              // Create a test sale
+                              const testSale: Sale = {
+                                id: "TEST-" + Date.now(),
+                                date: new Date().toISOString(),
+                                items: [
+                                  {
+                                    productId: "test",
+                                    name: "Test Item",
+                                    price: 10000,
+                                    quantity: 1
+                                  }
+                                ],
+                                totalAmount: 10000,
+                                paymentMethod: "cash",
+                                cashGiven: 15000,
+                                customer: null,
+                                status: "completed",
+                                processedByUserId: currentUser?.id || "test",
+                                shiftId: currentShift?.id || "test"
+                              };
+
+                              // Print test receipt
+                              printReceipt(testSale);
+
+                              addNotification(
+                                "info",
+                                "Test Print",
+                                "Test receipt telah dikirim untuk dicetak"
+                              );
+                            }}
+                            disabled={!settings.thermalPrinterEnabled}
+                            className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+                          >
+                            🖨️ Test Print Struk
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Instructions */}
+                      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 className="text-sm font-semibold text-blue-800 mb-2">
+                          Petunjuk Penggunaan:
+                        </h4>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          <li>• Pastikan thermal printer sudah terhubung via USB atau jaringan</li>
+                          <li>• Untuk printer USB, browser akan meminta izin akses serial port</li>
+                          <li>• Untuk printer jaringan, masukkan IP address yang benar</li>
+                          <li>• Gunakan "Test Print" untuk memastikan printer berfungsi</li>
+                          <li>• Printer thermal mendukung kertas 58mm dan 80mm</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
