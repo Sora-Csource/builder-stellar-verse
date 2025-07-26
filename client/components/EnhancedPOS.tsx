@@ -2118,6 +2118,72 @@ const EnhancedPOS: React.FC = () => {
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                                     placeholder="0"
                                   />
+
+                                  {/* Quick Money Amount Buttons */}
+                                  <div className="mt-3 mb-3">
+                                    <label className="block text-gray-600 font-medium mb-2 text-sm">
+                                      Jumlah Cepat:
+                                    </label>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(finalTotal)}
+                                        className="bg-green-100 hover:bg-green-200 text-green-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        💰 Uang Pas
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(20000)}
+                                        className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        20k
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(50000)}
+                                        className="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        50k
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(100000)}
+                                        className="bg-orange-100 hover:bg-orange-200 text-orange-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        100k
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(200000)}
+                                        className="bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        200k
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(500000)}
+                                        className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        500k
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(finalTotal + 50000)}
+                                        className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        +50k
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setCashGiven(finalTotal + 100000)}
+                                        className="bg-pink-100 hover:bg-pink-200 text-pink-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
+                                      >
+                                        +100k
+                                      </button>
+                                    </div>
+                                  </div>
+
                                   <div className="flex justify-between font-bold text-lg mt-2">
                                     <span>Kembalian:</span>
                                     <span
