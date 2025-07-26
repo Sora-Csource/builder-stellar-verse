@@ -373,6 +373,19 @@ const EnhancedPOS: React.FC = () => {
       </head>
       <body>
         <div class="receipt">
+          ${receiptSettings.headerText ? `
+            <div class="header center">
+              <p>${receiptSettings.headerText}</p>
+            </div>
+            <div class="line"></div>
+          ` : ''}
+
+          ${receiptSettings.showLogo && settings.logo ? `
+            <div class="center" style="margin-bottom: 10px;">
+              <img src="${settings.logo}" alt="Logo" style="max-width: 100px; max-height: 100px; object-fit: contain;">
+            </div>
+          ` : ''}
+
           ${receiptSettings.showStoreName ? `
             <div class="header center">
               <h2 class="bold">${settings.storeName}</h2>
