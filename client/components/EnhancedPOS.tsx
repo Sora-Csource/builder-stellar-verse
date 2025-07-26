@@ -2850,6 +2850,173 @@ const EnhancedPOS: React.FC = () => {
                     </table>
                   </div>
                 </div>
+
+                {/* Shift Reports Content */}
+                {activeReportsTab === "shifts" && (
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-3 text-gray-800">
+                      Laporan Shift
+                    </h3>
+
+                    {/* Shift Export Button */}
+                    <div className="mb-4">
+                      <button
+                        onClick={() => {
+                          const shiftData = shifts.map((shift) => {
+                            const shiftSales = sales.filter(
+                              (s) =>
+                                new Date(s.date).toDateString() ===
+                                new Date(shift.startTime).toDateString() &&
+                                s.status === "completed"
+                            );
+                            const shiftRevenue = shiftSales.reduce(
+                              (sum, sale) => sum + sale.totalAmount,
+                              0
+                            );
+
+                            return {
+                              tanggal: new Date(shift.startTime).toLocaleDateString("id-ID"),
+                              kasir: shift.cashierName,
+                              waktu_mulai: new Date(shift.startTime).toLocaleTimeString("id-ID"),
+                              waktu_selesai: shift.endTime ? new Date(shift.endTime).toLocaleTimeString("id-ID") : "-",
+                              total_transaksi: shiftSales.length,
+                              total_pendapatan: `Rp ${shiftRevenue.toLocaleString('id-ID')}`,
+                              status: shift.status === "open" ? "Aktif" : "Selesai"
+                            };
+                          });
+
+                          if (shiftData.length > 0) {
+                            const headers = ['Tanggal', 'Kasir', 'Waktu Mulai', 'Waktu Selesai', 'Total Transaksi', 'Total Pendapatan', 'Status'];
+                            exportToCSV(shiftData, "laporan_shift.csv", headers);
+                          } else {
+                            showAlert(
+                              "Tidak Ada Data",
+                              "Tidak ada data shift untuk diekspor.",
+                              "warning"
+                            );
+                          }
+                        }}
+                        className="bg-purple-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-purple-700 transition duration-200"
+                      >
+                        🕐 Ekspor Shift
+                      </button>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
+                      <table className="min-w-full border-collapse">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Tanggal
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Kasir
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Waktu Mulai
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Waktu Selesai
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Total Transaksi
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Total Pendapatan
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Status
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Aksi
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {shifts.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={8}
+                                className="border border-gray-200 py-4 text-center text-gray-500"
+                              >
+                                Tidak ada data shift.
+                              </td>
+                            </tr>
+                          ) : (
+                            shifts
+                              .sort(
+                                (a, b) =>
+                                  new Date(b.startTime).getTime() -
+                                  new Date(a.startTime).getTime(),
+                              )
+                              .map((shift) => {
+                                const shiftSales = sales.filter(
+                                  (s) =>
+                                    new Date(s.date).toDateString() ===
+                                    new Date(shift.startTime).toDateString() &&
+                                    s.status === "completed"
+                                );
+                                const shiftRevenue = shiftSales.reduce(
+                                  (sum, sale) => sum + sale.totalAmount,
+                                  0
+                                );
+
+                                return (
+                                  <tr key={shift.id} className="even:bg-gray-50">
+                                    <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                      {new Date(shift.startTime).toLocaleDateString(
+                                        "id-ID"
+                                      )}
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                      {shift.cashierName}
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                      {new Date(shift.startTime).toLocaleTimeString(
+                                        "id-ID"
+                                      )}
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                      {shift.endTime
+                                        ? new Date(shift.endTime).toLocaleTimeString(
+                                            "id-ID"
+                                          )
+                                        : "-"}
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                      {shiftSales.length}
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
+                                      {formatCurrency(shiftRevenue)}
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm">
+                                      <span
+                                        className={
+                                          shift.status === "open"
+                                            ? "text-green-600 font-semibold"
+                                            : "text-blue-600 font-semibold"
+                                        }
+                                      >
+                                        {shift.status === "open" ? "Aktif" : "Selesai"}
+                                      </span>
+                                    </td>
+                                    <td className="border border-gray-200 px-3 py-2 text-sm">
+                                      <button
+                                        onClick={() => printShiftReport(shift)}
+                                        className="text-green-600 hover:text-green-900"
+                                      >
+                                        Cetak
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
