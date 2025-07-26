@@ -3426,7 +3426,7 @@ const EnhancedPOS: React.FC = () => {
                         {getFilteredUsers().length === 0 ? (
                           <tr>
                             <td
-                              colSpan={4}
+                              colSpan={5}
                               className="border border-gray-200 py-4 text-center text-gray-500"
                             >
                               Tidak ada pengguna ditemukan.
