@@ -128,6 +128,7 @@ const EnhancedPOS: React.FC = () => {
   const [userSearch, setUserSearch] = useState("");
   const [reportStartDate, setReportStartDate] = useState("");
   const [reportEndDate, setReportEndDate] = useState("");
+  const [reportPaymentFilter, setReportPaymentFilter] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<
     "cash" | "card" | "ewallet"
   >("cash");
