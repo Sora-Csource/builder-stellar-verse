@@ -62,6 +62,7 @@ interface Settings {
   storeName: string;
   taxRate: number;
   currencySymbol: string;
+  logo?: string;
   rolePermissions: Record<string, string[]>;
   receiptSettings: {
     showStoreName: boolean;
@@ -74,6 +75,9 @@ interface Settings {
     showPaymentMethod: boolean;
     showThankYouMessage: boolean;
     customThankYouMessage: string;
+    headerText: string;
+    footerText: string;
+    showLogo: boolean;
   };
 }
 
