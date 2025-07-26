@@ -1010,7 +1010,7 @@ const EnhancedPOS: React.FC = () => {
   // Settings management
   const handleSettingsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!settingsForm.storeName || settingsForm.taxRate < 0 || !settingsForm.currencySymbol) {
       showAlert('Input Tidak Valid', 'Mohon isi semua field dengan benar.', 'error');
       return;
@@ -1020,10 +1020,46 @@ const EnhancedPOS: React.FC = () => {
       ...settings,
       storeName: settingsForm.storeName,
       taxRate: settingsForm.taxRate,
-      currencySymbol: settingsForm.currencySymbol
+      currencySymbol: settingsForm.currencySymbol,
+      logo: settingsForm.logo
     });
 
-    showAlert('Berhasil', 'Pengaturan berhasil disimpan.', 'success');
+    showAlert('Berhasil', 'Pengaturan umum berhasil disimpan.', 'success');
+  };
+
+  // Handle logo upload
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        showAlert('File Terlalu Besar', 'Ukuran file logo maksimal 2MB.', 'error');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        showAlert('Format File Salah', 'Mohon pilih file gambar (PNG, JPG, atau GIF).', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setSettingsForm({ ...settingsForm, logo: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle receipt settings submit
+  const handleReceiptSettingsSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setSettings({
+      ...settings,
+      receiptSettings: receiptSettingsForm
+    });
+
+    showAlert('Berhasil', 'Pengaturan struk berhasil disimpan.', 'success');
   };
 
   // Initialize settings form when accessing settings
