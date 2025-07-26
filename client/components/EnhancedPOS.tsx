@@ -1565,7 +1565,7 @@ const EnhancedPOS: React.FC = () => {
                           if (salesData.length > 0) {
                             exportToCSV(salesData, 'laporan_penjualan.csv');
                           } else {
-                            alert('Tidak ada data untuk diekspor.');
+                            showAlert('Tidak Ada Data', 'Tidak ada data untuk diekspor.', 'warning');
                           }
                         }}
                         className="bg-green-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200"
