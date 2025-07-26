@@ -30,7 +30,7 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 ### 📊 Laporan & Analytics
 - 💰 Laporan penjualan harian/periode
 - 📈 Analytics performa produk
-- ���� Laporan stok
+- 📋 Laporan stok
 - 📤 Export data ke CSV
 - 📊 Dashboard dengan statistik real-time
 
@@ -221,6 +221,27 @@ enhanced-pos-system/
 5. **Cetak Struk** setelah pembayaran
 6. **Tutup Shift** di akhir jam kerja
 7. **Cek Laporan** untuk analisis penjualan
+
+## 🆕 Update Terbaru
+
+### Versi 2.1.0 - December 2024
+- ✅ **FIXED:** Masalah "Cannot access 'products' before initialization"
+- 🔔 **NEW:** Notification center dengan konsolidasi semua notifikasi
+- 💰 **NEW:** Quick money buttons untuk pembayaran cepat
+- 🖨️ **NEW:** Dukungan thermal printer lengkap
+- 💸 **NEW:** Sistem diskon yang lebih fleksibel
+- 📁 **NEW:** Backup/restore data dengan export/import CSV
+- 🆔 **IMPROVED:** Format Shift ID yang lebih logical dan readable
+- ⚙️ **IMPROVED:** Reorganisasi settings dengan tab finansial terpisah
+- 🔄 **IMPROVED:** UI keranjang belanja yang lebih modern dan responsif
+- 🌐 **IMPROVED:** Status online/offline terintegrasi dengan notification center
+
+### Fitur yang Diperbaiki
+- State initialization order yang menyebabkan error startup
+- Discount button visibility di shopping cart
+- CSV export format dengan proper UTF-8 BOM
+- Duplication removal dalam settings menu
+- Notification system yang lebih komprehensif
 
 ## 🔧 Troubleshooting
 
