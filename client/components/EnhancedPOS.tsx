@@ -881,25 +881,25 @@ const EnhancedPOS: React.FC = () => {
     e.preventDefault();
     
     if (!userForm.username || !userForm.password) {
-      alert('Username dan password tidak boleh kosong.');
+      showAlert('Input Tidak Valid', 'Username dan password tidak boleh kosong.', 'error');
       return;
     }
 
     // Check if username already exists
     const existingUser = users.find(u => u.username === userForm.username && u.id !== editingUser?.id);
     if (existingUser) {
-      alert('Username sudah digunakan.');
+      showAlert('Duplikat Username', 'Username sudah digunakan.', 'error');
       return;
     }
 
     if (editingUser) {
       // Edit existing user
-      setUsers(users.map(u => 
-        u.id === editingUser.id 
+      setUsers(users.map(u =>
+        u.id === editingUser.id
           ? { ...u, ...userForm }
           : u
       ));
-      alert('Pengguna berhasil diperbarui.');
+      showAlert('Berhasil', 'Pengguna berhasil diperbarui.', 'success');
     } else {
       // Add new user
       const newUser: User = {
@@ -908,7 +908,7 @@ const EnhancedPOS: React.FC = () => {
         ...userForm
       };
       setUsers([...users, newUser]);
-      alert('Pengguna baru berhasil ditambahkan.');
+      showAlert('Berhasil', 'Pengguna baru berhasil ditambahkan.', 'success');
     }
 
     setShowUserModal(false);
