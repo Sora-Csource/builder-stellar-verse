@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useModals } from './EnhancedModals';
-import { useKeyboardShortcuts, KeyboardShortcutsHelp } from '../hooks/useKeyboardShortcuts';
+import { useKeyboardShortcuts, KeyboardShortcutsHelp } from '../hooks/useKeyboardShortcuts.tsx';
 
 // Define all interfaces
 interface User {
