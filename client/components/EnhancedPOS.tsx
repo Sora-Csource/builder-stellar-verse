@@ -1301,9 +1301,12 @@ const EnhancedPOS: React.FC = () => {
                     </div>
 
                     <button
-                      onClick={() => {
-                        if (cart.length > 0 && window.confirm('Apakah Anda yakin ingin mengosongkan keranjang?')) {
-                          setCart([]);
+                      onClick={async () => {
+                        if (cart.length > 0) {
+                          const confirmed = await showConfirm('Konfirmasi', 'Apakah Anda yakin ingin mengosongkan keranjang?', 'warning');
+                          if (confirmed) {
+                            setCart([]);
+                          }
                         }
                       }}
                       className="w-full bg-gray-600 text-white py-2 rounded-md font-semibold hover:bg-gray-700 transition duration-200 mb-4"
