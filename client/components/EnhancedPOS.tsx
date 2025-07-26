@@ -2133,7 +2133,7 @@ const EnhancedPOS: React.FC = () => {
                             <div>
                               <label className="block text-gray-700 font-bold mb-2">Teks Footer (Opsional):</label>
                               <textarea
-                                value={receiptSettingsForm.footerText}
+                                value={receiptSettingsForm.footerText || ''}
                                 onChange={(e) => setReceiptSettingsForm({ ...receiptSettingsForm, footerText: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                                 rows={2}
