@@ -972,20 +972,22 @@ const EnhancedPOS: React.FC = () => {
   // Shift management
   const startShift = async () => {
     if (!currentUser) {
-      alert('Anda harus login untuk memulai shift.');
-      return;
-    }
-    
-    if (currentShift && currentShift.status === 'open') {
-      alert('Anda sudah memiliki shift yang sedang berjalan.');
+      showAlert('Login Diperlukan', 'Anda harus login untuk memulai shift.', 'warning');
       return;
     }
 
-    const initialCashStr = prompt('Masukkan Kas Awal Shift:', '0');
-    const initialCash = parseFloat(initialCashStr || '0');
-    
+    if (currentShift && currentShift.status === 'open') {
+      showAlert('Shift Terbuka', 'Anda sudah memiliki shift yang sedang berjalan.', 'warning');
+      return;
+    }
+
+    const initialCashStr = await showPrompt('Mulai Shift', 'Masukkan Kas Awal Shift:', '0', 'number');
+    if (initialCashStr === null) return; // User cancelled
+
+    const initialCash = parseFloat(initialCashStr);
+
     if (isNaN(initialCash) || initialCash < 0) {
-      alert('Kas awal harus berupa angka positif.');
+      showAlert('Input Tidak Valid', 'Kas awal harus berupa angka positif.', 'error');
       return;
     }
 
