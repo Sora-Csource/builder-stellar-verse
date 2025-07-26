@@ -926,15 +926,16 @@ const EnhancedPOS: React.FC = () => {
     setShowUserModal(true);
   };
 
-  const handleDeleteUser = (userId: string) => {
+  const handleDeleteUser = async (userId: string) => {
     if (currentUser && currentUser.id === userId) {
-      alert('Anda tidak dapat menghapus akun yang sedang digunakan.');
+      showAlert('Tidak Dapat Menghapus', 'Anda tidak dapat menghapus akun yang sedang digunakan.', 'warning');
       return;
     }
 
-    if (window.confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) {
+    const confirmed = await showConfirm('Konfirmasi Hapus', 'Apakah Anda yakin ingin menghapus pengguna ini?', 'danger');
+    if (confirmed) {
       setUsers(users.filter(u => u.id !== userId));
-      alert('Pengguna berhasil dihapus.');
+      showAlert('Berhasil', 'Pengguna berhasil dihapus.', 'success');
     }
   };
 
