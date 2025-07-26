@@ -1010,7 +1010,7 @@ const EnhancedPOS: React.FC = () => {
     setCurrentUser(updatedUser);
     setUsers(users.map(u => u.id === currentUser.id ? updatedUser : u));
     
-    alert(`Shift dimulai dengan kas awal ${formatCurrency(initialCash)}.`);
+    showAlert('Shift Dimulai', `Shift dimulai dengan kas awal ${formatCurrency(initialCash)}.`, 'success');
   };
 
   // End shift
