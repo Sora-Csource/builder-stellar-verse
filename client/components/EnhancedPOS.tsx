@@ -75,6 +75,9 @@ interface Settings {
   quickDiscountPresets?: number[];
   serviceChargePercent?: number;
   enableServiceCharge?: boolean;
+  // Backup settings
+  autoBackupEnabled?: boolean;
+  maxBackupFiles?: number;
   receiptSettings: {
     showStoreName: boolean;
     showDateTime: boolean;
