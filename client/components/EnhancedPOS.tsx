@@ -586,7 +586,7 @@ const EnhancedPOS: React.FC = () => {
         setActiveModule(allowedModules[0]);
       }
     } else {
-      alert('Username atau password salah.');
+      showAlert('Login Gagal', 'Username atau password salah.', 'error');
     }
   };
 
