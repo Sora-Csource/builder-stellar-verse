@@ -154,6 +154,17 @@ const EnhancedPOS: React.FC = () => {
   const [discountAmount, setDiscountAmount] = useState<number>(0);
   const [discountType, setDiscountType] = useState<"percentage" | "amount">("percentage");
 
+  // Notification system state
+  const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<Array<{
+    id: string;
+    type: "info" | "warning" | "error" | "success";
+    title: string;
+    message: string;
+    timestamp: Date;
+    read: boolean;
+  }>>([]);
+
   // Product form state
   const [productForm, setProductForm] = useState({
     name: "",
