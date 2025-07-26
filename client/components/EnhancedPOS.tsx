@@ -1964,9 +1964,17 @@ const EnhancedPOS: React.FC = () => {
 
                     {/* Cart and Payment */}
                     <div>
-                      <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                        Keranjang Belanja
-                      </h3>
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-gray-800 flex items-center">
+                          <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6m0 0h.01M16 19a2 2 0 100-4 2 2 0 000 4zm-7 0a2 2 0 100-4 2 2 0 000 4z" />
+                          </svg>
+                          Keranjang Belanja
+                        </h3>
+                        <div className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
+                          {cart.length} item{cart.length !== 1 ? 's' : ''}
+                        </div>
+                      </div>
                       <div className="bg-gray-50 p-4 rounded-lg shadow-inner mb-4 max-h-80 overflow-y-auto">
                         <table className="min-w-full">
                           <thead className="bg-gray-50 sticky top-0">
