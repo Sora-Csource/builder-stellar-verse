@@ -12,9 +12,12 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 - ⚠️ Notifikasi stok rendah dan habis
 
 ### 🛒 Sistem Penjualan
-- 🛍️ Interface kasir yang user-friendly
+- 🛍️ Interface kasir yang user-friendly dan modern
 - 💳 Multiple metode pembayaran (Tunai, Kartu, E-Wallet)
+- 💰 Quick money buttons (20k, 50k, 100k, dll) dan "uang pas"
+- 💸 Sistem diskon fleksibel (persentase & nominal)
 - 🧾 Cetak struk otomatis
+- 🖨️ Dukungan thermal printer dengan konfigurasi lengkap
 - 🔄 Void/batalkan transaksi
 - 👥 Link transaksi dengan pelanggan
 
@@ -170,7 +173,7 @@ enhanced-pos-system/
 │   │   └── useKeyboardShortcuts.tsx
 │   ├── pages/             # Page components
 │   ├── lib/               # Utility functions
-│   └── global.css         # Global styles
+│   └─��� global.css         # Global styles
 ├── server/                # Backend Express server
 │   ├── routes/            # API routes
 │   └── index.ts           # Server entry point
