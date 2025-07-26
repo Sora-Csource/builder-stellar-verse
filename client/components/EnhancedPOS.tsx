@@ -2746,10 +2746,11 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner">
-                  <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                    Laporan Stok
-                  </h3>
+                {activeReportsTab === "stock" && (
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-3 text-gray-800">
+                      Laporan Stok
+                    </h3>
 
                   {/* Stock Export Button */}
                   <div className="mb-4">
@@ -2849,7 +2850,8 @@ const EnhancedPOS: React.FC = () => {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                  </div>
+                )}
 
                 {/* Shift Reports Content */}
                 {activeReportsTab === "shifts" && (
