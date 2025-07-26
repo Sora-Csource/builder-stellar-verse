@@ -2978,8 +2978,135 @@ const EnhancedPOS: React.FC = () => {
                       Laporan Shift
                     </h3>
 
-                    {/* Shift Export Button */}
-                    <div className="mb-4">
+                    {/* Shift Date Filter */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div>
+                        <label className="block text-gray-700 font-bold mb-2">
+                          Tanggal Mulai:
+                        </label>
+                        <input
+                          type="date"
+                          value={reportStartDate}
+                          onChange={(e) => setReportStartDate(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 font-bold mb-2">
+                          Tanggal Akhir:
+                        </label>
+                        <input
+                          type="date"
+                          value={reportEndDate}
+                          onChange={(e) => setReportEndDate(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <button
+                          onClick={() => {
+                            const filteredShifts = shifts.filter((shift) => {
+                              if (!reportStartDate && !reportEndDate) return true;
+                              const shiftDate = new Date(shift.startTime);
+                              const startDate = reportStartDate ? new Date(reportStartDate) : null;
+                              const endDate = reportEndDate ? new Date(reportEndDate) : null;
+                              if (startDate && shiftDate < startDate) return false;
+                              if (endDate && shiftDate > endDate) return false;
+                              return true;
+                            });
+
+                            const shiftData = filteredShifts.map((shift) => {
+                              const shiftSales = sales.filter(
+                                (s) =>
+                                  new Date(s.date).toDateString() ===
+                                  new Date(shift.startTime).toDateString() &&
+                                  s.status === "completed"
+                              );
+                              const shiftRevenue = shiftSales.reduce(
+                                (sum, sale) => sum + sale.totalAmount,
+                                0
+                              );
+
+                              return {
+                                tanggal: new Date(shift.startTime).toLocaleDateString("id-ID"),
+                                kasir: shift.cashierName,
+                                waktu_mulai: new Date(shift.startTime).toLocaleTimeString("id-ID"),
+                                waktu_selesai: shift.endTime ? new Date(shift.endTime).toLocaleTimeString("id-ID") : "-",
+                                total_transaksi: shiftSales.length,
+                                total_pendapatan: `Rp ${shiftRevenue.toLocaleString('id-ID')}`,
+                                status: shift.status === "open" ? "Aktif" : "Selesai"
+                              };
+                            });
+
+                            if (shiftData.length > 0) {
+                              const headers = ['Tanggal', 'Kasir', 'Waktu Mulai', 'Waktu Selesai', 'Total Transaksi', 'Total Pendapatan', 'Status'];
+                              exportToCSV(shiftData, "laporan_shift.csv", headers);
+                            } else {
+                              showAlert(
+                                "Tidak Ada Data",
+                                "Tidak ada data shift untuk diekspor.",
+                                "warning"
+                              );
+                            }
+                          }}
+                          className="bg-purple-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-purple-700 transition duration-200"
+                        >
+                          🕐 Ekspor Shift
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Shift Summary Analytics */}
+                    {(() => {
+                      const filteredShifts = shifts.filter((shift) => {
+                        if (!reportStartDate && !reportEndDate) return true;
+                        const shiftDate = new Date(shift.startTime);
+                        const startDate = reportStartDate ? new Date(reportStartDate) : null;
+                        const endDate = reportEndDate ? new Date(reportEndDate) : null;
+                        if (startDate && shiftDate < startDate) return false;
+                        if (endDate && shiftDate > endDate) return false;
+                        return true;
+                      });
+
+                      const totalShifts = filteredShifts.length;
+                      const activeShifts = filteredShifts.filter(s => s.status === "open").length;
+                      const totalRevenue = filteredShifts.reduce((sum, shift) => {
+                        const shiftSales = sales.filter(
+                          (s) =>
+                            new Date(s.date).toDateString() ===
+                            new Date(shift.startTime).toDateString() &&
+                            s.status === "completed"
+                        );
+                        return sum + shiftSales.reduce((saleSum, sale) => saleSum + sale.totalAmount, 0);
+                      }, 0);
+
+                      return (
+                        <div className="bg-white p-4 rounded-md shadow-sm text-gray-700 mb-4">
+                          <h4 className="font-semibold mb-2">Ringkasan Shift</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">Total Shift</p>
+                              <p className="font-bold text-blue-600 text-lg">{totalShifts}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">Shift Aktif</p>
+                              <p className="font-bold text-green-600 text-lg">{activeShifts}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">Shift Selesai</p>
+                              <p className="font-bold text-gray-600 text-lg">{totalShifts - activeShifts}</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">Total Pendapatan</p>
+                              <p className="font-bold text-purple-600 text-lg">{formatCurrency(totalRevenue)}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Shift Export Button - Backup position */}
+                    <div className="mb-4 hidden">
                       <button
                         onClick={() => {
                           const shiftData = shifts.map((shift) => {
