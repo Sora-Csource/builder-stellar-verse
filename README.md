@@ -30,15 +30,17 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 ### 📊 Laporan & Analytics
 - 💰 Laporan penjualan harian/periode
 - 📈 Analytics performa produk
-- 📋 Laporan stok
+- ���� Laporan stok
 - 📤 Export data ke CSV
 - 📊 Dashboard dengan statistik real-time
 
 ### 👨‍💼 Manajemen User & Shift
 - 🔐 Multi-user dengan role berbeda (Admin, Supervisor, Kasir, Staff)
-- ⏰ Sistem shift dengan tracking
+- ⏰ Sistem shift dengan tracking dan ID format yang logis
 - 🔒 Permission-based access control
 - 👤 Manajemen akun pengguna
+- 🆔 Format Shift ID yang readable (SH241228-1430-42)
+- 📊 Laporan shift lengkap dengan perhitungan kas
 
 ### ⚙️ Pengaturan & Kustomisasi
 - 🏪 Konfigurasi toko (nama, pajak, mata uang)
