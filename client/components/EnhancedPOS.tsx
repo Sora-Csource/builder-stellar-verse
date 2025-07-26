@@ -590,8 +590,9 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
-  const handleLogout = () => {
-    if (window.confirm('Apakah Anda yakin ingin keluar?')) {
+  const handleLogout = async () => {
+    const confirmed = await showConfirm('Konfirmasi Logout', 'Apakah Anda yakin ingin keluar?', 'warning');
+    if (confirmed) {
       setCurrentUser(null);
       setCurrentShift(null);
       setIsLoginVisible(true);
