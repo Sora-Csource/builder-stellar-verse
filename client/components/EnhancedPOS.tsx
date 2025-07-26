@@ -991,6 +991,15 @@ const EnhancedPOS: React.FC = () => {
       setSales([...sales, newSale]);
       setLastCompletedSaleId(saleId);
 
+      // Save offline data if not online
+      if (!isOnline) {
+        addOfflineSale(newSale);
+        saveOfflineData({
+          products: updatedProducts,
+          sales: [...sales, newSale]
+        });
+      }
+
       // Update current shift
       if (currentShift) {
         const updatedShift = {
