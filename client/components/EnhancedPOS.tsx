@@ -2029,7 +2029,7 @@ const EnhancedPOS: React.FC = () => {
                             <label className="block text-gray-700 font-bold mb-2">Nama Toko:</label>
                             <input
                               type="text"
-                              value={settingsForm.storeName}
+                              value={settingsForm.storeName || ''}
                               onChange={(e) => setSettingsForm({ ...settingsForm, storeName: e.target.value })}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                               required
