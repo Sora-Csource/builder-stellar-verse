@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useModals } from './EnhancedModals';
+import { useKeyboardShortcuts, KeyboardShortcutsHelp } from '../hooks/useKeyboardShortcuts';
 
 // Define all interfaces
 interface User {
@@ -2182,8 +2183,16 @@ const EnhancedPOS: React.FC = () => {
       {/* Sale Detail Modal */}
       {showSaleDetailModal && selectedSale && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-lg">
-            <h3 className="text-xl font-bold mb-4 text-gray-800">Detail Penjualan</h3>
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6">
+              <h3 className="text-xl font-bold flex items-center">
+                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Detail Penjualan
+              </h3>
+            </div>
+            <div className="p-6">
             <div className="space-y-3 text-gray-700">
               <p><strong>ID Penjualan:</strong> {selectedSale.id}</p>
               <p><strong>Tanggal:</strong> {new Date(selectedSale.date).toLocaleString('id-ID')}</p>
@@ -2228,11 +2237,14 @@ const EnhancedPOS: React.FC = () => {
                 })()}
               </div>
             </div>
-            <div className="flex space-x-4 mt-6">
+            <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => printReceipt(selectedSale)}
-                className="flex-1 bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200"
+                className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition duration-200 flex items-center justify-center"
               >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
                 Cetak Struk
               </button>
               <button
@@ -2240,10 +2252,14 @@ const EnhancedPOS: React.FC = () => {
                   setShowSaleDetailModal(false);
                   setSelectedSale(null);
                 }}
-                className="flex-1 bg-gray-600 text-white py-2 rounded-md font-semibold hover:bg-gray-700 transition duration-200"
+                className="flex-1 bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition duration-200 flex items-center justify-center"
               >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
                 Tutup
               </button>
+            </div>
             </div>
           </div>
         </div>
