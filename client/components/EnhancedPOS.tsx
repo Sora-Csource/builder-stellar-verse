@@ -1092,7 +1092,19 @@ const EnhancedPOS: React.FC = () => {
       });
 
       setReceiptSettingsForm({
-        ...settings.receiptSettings
+        showStoreName: settings.receiptSettings.showStoreName ?? true,
+        showDateTime: settings.receiptSettings.showDateTime ?? true,
+        showTransactionId: settings.receiptSettings.showTransactionId ?? true,
+        showItemTotals: settings.receiptSettings.showItemTotals ?? true,
+        showSubtotal: settings.receiptSettings.showSubtotal ?? true,
+        showTax: settings.receiptSettings.showTax ?? true,
+        showChange: settings.receiptSettings.showChange ?? true,
+        showPaymentMethod: settings.receiptSettings.showPaymentMethod ?? true,
+        showThankYouMessage: settings.receiptSettings.showThankYouMessage ?? true,
+        customThankYouMessage: settings.receiptSettings.customThankYouMessage || 'Terima kasih atas pembelian Anda!',
+        headerText: settings.receiptSettings.headerText || '',
+        footerText: settings.receiptSettings.footerText || '',
+        showLogo: settings.receiptSettings.showLogo ?? true
       });
     }
   }, [activeModule, settings]);
