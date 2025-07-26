@@ -2498,6 +2498,65 @@ const EnhancedPOS: React.FC = () => {
                             </p>
                           </div>
                         </div>
+
+                        {/* Enhanced Analytics */}
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Payment Method Breakdown */}
+                          <div>
+                            <h5 className="font-semibold mb-3 text-gray-700">Breakdown Metode Pembayaran</h5>
+                            <div className="space-y-2">
+                              {['cash', 'card', 'digital'].map(method => {
+                                const methodSales = completedSales.filter(s => s.paymentMethod === method);
+                                const methodRevenue = methodSales.reduce((sum, s) => sum + s.totalAmount, 0);
+                                const percentage = totalRevenue > 0 ? (methodRevenue / totalRevenue * 100).toFixed(1) : '0';
+                                const methodName = method === 'cash' ? 'Tunai' : method === 'card' ? 'Kartu' : 'Digital';
+
+                                return (
+                                  <div key={method} className="flex justify-between items-center">
+                                    <span className="text-sm text-gray-600">{methodName}</span>
+                                    <div className="text-right">
+                                      <span className="text-sm font-medium">{formatCurrency(methodRevenue)}</span>
+                                      <span className="text-xs text-gray-500 ml-2">({percentage}%)</span>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Top Products */}
+                          <div>
+                            <h5 className="font-semibold mb-3 text-gray-700">Produk Terlaris</h5>
+                            <div className="space-y-2">
+                              {(() => {
+                                const productSales: { [key: string]: { quantity: number; revenue: number; name: string } } = {};
+
+                                completedSales.forEach(sale => {
+                                  sale.items.forEach(item => {
+                                    if (!productSales[item.id]) {
+                                      productSales[item.id] = { quantity: 0, revenue: 0, name: item.name };
+                                    }
+                                    productSales[item.id].quantity += item.quantity;
+                                    productSales[item.id].revenue += item.price * item.quantity;
+                                  });
+                                });
+
+                                return Object.entries(productSales)
+                                  .sort((a, b) => b[1].quantity - a[1].quantity)
+                                  .slice(0, 5)
+                                  .map(([id, data]) => (
+                                    <div key={id} className="flex justify-between items-center">
+                                      <span className="text-sm text-gray-600 truncate">{data.name}</span>
+                                      <div className="text-right">
+                                        <span className="text-sm font-medium">{data.quantity}x</span>
+                                        <span className="text-xs text-gray-500 ml-2">{formatCurrency(data.revenue)}</span>
+                                      </div>
+                                    </div>
+                                  ));
+                              })()}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     );
                   })()}
