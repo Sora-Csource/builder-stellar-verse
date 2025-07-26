@@ -670,25 +670,26 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Process payment
-  const processPayment = () => {
+  const processPayment = async () => {
     if (cart.length === 0) {
-      alert('Tidak ada item di keranjang untuk diproses.');
+      showAlert('Keranjang Kosong', 'Tidak ada item di keranjang untuk diproses.', 'warning');
       return;
     }
 
     if (!currentShift || currentShift.status !== 'open') {
-      alert('Anda harus memulai shift untuk memproses penjualan.');
+      showAlert('Shift Diperlukan', 'Anda harus memulai shift untuk memproses penjualan.', 'warning');
       return;
     }
 
     const { finalTotal } = getCartTotals();
 
     if (paymentMethod === 'cash' && cashGiven < finalTotal) {
-      alert('Jumlah uang yang diberikan tidak mencukupi.');
+      showAlert('Pembayaran Kurang', 'Jumlah uang yang diberikan tidak mencukupi.', 'error');
       return;
     }
 
-    if (window.confirm(`Total Pembayaran: ${formatCurrency(finalTotal)}. Lanjutkan pembayaran?`)) {
+    const confirmed = await showConfirm('Konfirmasi Pembayaran', `Total Pembayaran: ${formatCurrency(finalTotal)}. Lanjutkan pembayaran?`, 'info');
+    if (confirmed) {
       // Update stock
       const updatedProducts = products.map(product => {
         const cartItem = cart.find(item => item.productId === product.id);
