@@ -426,6 +426,33 @@ const EnhancedPOS: React.FC = () => {
     return `${settings.currencySymbol} ${numAmount.toLocaleString("id-ID")}`;
   };
 
+  // Notification functions
+  const addNotification = (type: "info" | "warning" | "error" | "success", title: string, message: string) => {
+    const newNotification = {
+      id: generateUniqueId(),
+      type,
+      title,
+      message,
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+
+  const markNotificationAsRead = (id: string) => {
+    setNotifications(prev => prev.map(notif =>
+      notif.id === id ? { ...notif, read: true } : notif
+    ));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
+
+  const getUnreadCount = () => {
+    return notifications.filter(n => !n.read).length;
+  };
+
   // Receipt generation
   const generateReceiptHTML = (sale: Sale) => {
     const receiptSettings = settings.receiptSettings;
