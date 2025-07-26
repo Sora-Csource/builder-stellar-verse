@@ -145,8 +145,29 @@ const EnhancedPOS: React.FC = () => {
   const [settingsForm, setSettingsForm] = useState({
     storeName: '',
     taxRate: 0,
-    currencySymbol: ''
+    currencySymbol: '',
+    logo: ''
   });
+
+  // Receipt settings form state
+  const [receiptSettingsForm, setReceiptSettingsForm] = useState({
+    showStoreName: true,
+    showDateTime: true,
+    showTransactionId: true,
+    showItemTotals: true,
+    showSubtotal: true,
+    showTax: true,
+    showChange: true,
+    showPaymentMethod: true,
+    showThankYouMessage: true,
+    customThankYouMessage: 'Terima kasih atas kunjungan Anda!',
+    headerText: '',
+    footerText: '',
+    showLogo: true
+  });
+
+  // Settings tab state
+  const [activeSettingsTab, setActiveSettingsTab] = useState('general');
 
   // Settings state
   const [settings, setSettings] = useState<Settings>({
