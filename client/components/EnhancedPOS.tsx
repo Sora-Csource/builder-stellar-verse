@@ -3105,8 +3105,7 @@ const EnhancedPOS: React.FC = () => {
                       );
                     })()}
 
-                    {/* Shift Export Button - Backup position */}
-                    <div className="mb-4 hidden">
+                    <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
                       <button
                         onClick={() => {
                           const shiftData = shifts.map((shift) => {
