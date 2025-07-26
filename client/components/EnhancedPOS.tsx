@@ -2052,7 +2052,7 @@ const EnhancedPOS: React.FC = () => {
                             <input
                               type="text"
                               maxLength={5}
-                              value={settingsForm.currencySymbol}
+                              value={settingsForm.currencySymbol || ''}
                               onChange={(e) => setSettingsForm({ ...settingsForm, currencySymbol: e.target.value })}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                               required
