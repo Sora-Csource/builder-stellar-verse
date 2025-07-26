@@ -1084,6 +1084,151 @@ const EnhancedPOS: React.FC = () => {
     showAlert('Berhasil', 'Pengaturan struk berhasil disimpan.', 'success');
   };
 
+  // Generate shift report HTML
+  const generateShiftReportHTML = (shift: Shift) => {
+    const user = users.find(u => u.id === shift.userId);
+    const shiftSales = sales.filter(s => shift.salesIds.includes(s.id) && s.status === 'completed');
+    const voidedSales = sales.filter(s => shift.salesIds.includes(s.id) && s.status === 'voided');
+    const totalSales = shiftSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const totalVoided = voidedSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const netSales = totalSales - totalVoided;
+    const cashSales = shiftSales.filter(s => s.paymentMethod === 'cash').reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const cardSales = shiftSales.filter(s => s.paymentMethod === 'card').reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const ewalletSales = shiftSales.filter(s => s.paymentMethod === 'ewallet').reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const expectedCash = shift.startCash + cashSales;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Laporan Shift</title>
+        <style>
+          body { font-family: 'Courier New', monospace; font-size: 12px; margin: 0; padding: 20px; }
+          .report { width: 400px; margin: 0 auto; }
+          .center { text-align: center; }
+          .right { text-align: right; }
+          .bold { font-weight: bold; }
+          .line { border-top: 1px dashed #000; margin: 10px 0; }
+          table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+          th, td { padding: 4px 8px; text-align: left; }
+          .header { margin-bottom: 15px; }
+          .section { margin: 20px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="report">
+          ${settings.logo && settings.receiptSettings.showLogo ? `
+            <div class="center" style="margin-bottom: 10px;">
+              <img src="${settings.logo}" alt="Logo" style="max-width: 80px; max-height: 80px; object-fit: contain;">
+            </div>
+          ` : ''}
+
+          <div class="header center">
+            <h2 class="bold">${settings.storeName}</h2>
+            <h3>LAPORAN SHIFT</h3>
+            <p>Dicetak: ${new Date().toLocaleString('id-ID')}</p>
+          </div>
+          <div class="line"></div>
+
+          <div class="section">
+            <h4 class="bold">INFORMASI SHIFT</h4>
+            <table>
+              <tr><td>ID Shift:</td><td class="right">${shift.id}</td></tr>
+              <tr><td>Kasir:</td><td class="right">${user ? user.username : 'Unknown'}</td></tr>
+              <tr><td>Mulai:</td><td class="right">${new Date(shift.startTime).toLocaleString('id-ID')}</td></tr>
+              <tr><td>Selesai:</td><td class="right">${shift.endTime ? new Date(shift.endTime).toLocaleString('id-ID') : 'Belum selesai'}</td></tr>
+              <tr><td>Status:</td><td class="right">${shift.status === 'open' ? 'Aktif' : 'Selesai'}</td></tr>
+            </table>
+          </div>
+          <div class="line"></div>
+
+          <div class="section">
+            <h4 class="bold">RINGKASAN PENJUALAN</h4>
+            <table>
+              <tr><td>Total Transaksi:</td><td class="right">${shiftSales.length}</td></tr>
+              <tr><td>Transaksi Dibatalkan:</td><td class="right">${voidedSales.length}</td></tr>
+              <tr><td>Gross Sales:</td><td class="right bold">${formatCurrency(totalSales)}</td></tr>
+              <tr><td>Void/Refund:</td><td class="right">${formatCurrency(totalVoided)}</td></tr>
+              <tr><td class="bold">Net Sales:</td><td class="right bold">${formatCurrency(netSales)}</td></tr>
+            </table>
+          </div>
+          <div class="line"></div>
+
+          <div class="section">
+            <h4 class="bold">PEMBAYARAN</h4>
+            <table>
+              <tr><td>Tunai:</td><td class="right">${formatCurrency(cashSales)}</td></tr>
+              <tr><td>Kartu:</td><td class="right">${formatCurrency(cardSales)}</td></tr>
+              <tr><td>E-Wallet:</td><td class="right">${formatCurrency(ewalletSales)}</td></tr>
+              <tr><td class="bold">Total:</td><td class="right bold">${formatCurrency(totalSales)}</td></tr>
+            </table>
+          </div>
+          <div class="line"></div>
+
+          <div class="section">
+            <h4 class="bold">PERHITUNGAN KAS</h4>
+            <table>
+              <tr><td>Kas Awal:</td><td class="right">${formatCurrency(shift.startCash)}</td></tr>
+              <tr><td>Penjualan Tunai:</td><td class="right">${formatCurrency(cashSales)}</td></tr>
+              <tr><td class="bold">Kas Seharusnya:</td><td class="right bold">${formatCurrency(expectedCash)}</td></tr>
+              ${shift.endCash !== null ? `
+                <tr><td>Kas Aktual:</td><td class="right">${formatCurrency(shift.endCash)}</td></tr>
+                <tr><td class="bold">Selisih:</td><td class="right bold">${formatCurrency(shift.endCash - expectedCash)}</td></tr>
+              ` : ''}
+            </table>
+          </div>
+
+          ${shiftSales.length > 0 ? `
+            <div class="line"></div>
+            <div class="section">
+              <h4 class="bold">DETAIL TRANSAKSI</h4>
+              <table style="font-size: 10px;">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Waktu</th>
+                    <th>Total</th>
+                    <th>Bayar</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${shiftSales.map(sale => `
+                    <tr>
+                      <td>${sale.id}</td>
+                      <td>${new Date(sale.date).toLocaleTimeString('id-ID')}</td>
+                      <td class="right">${formatCurrency(sale.totalAmount)}</td>
+                      <td>${sale.paymentMethod === 'cash' ? 'Tunai' : sale.paymentMethod === 'card' ? 'Kartu' : 'E-Wallet'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          ` : ''}
+
+          <div class="line"></div>
+          <div class="center">
+            <p>** LAPORAN SHIFT **</p>
+            <p>Terima kasih</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  };
+
+  // Print shift report
+  const printShiftReport = (shift: Shift) => {
+    const reportHTML = generateShiftReportHTML(shift);
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(reportHTML);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
+
   // Initialize settings form when accessing settings
   useEffect(() => {
     if (activeModule === 'settings') {
