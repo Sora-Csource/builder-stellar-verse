@@ -1668,15 +1668,17 @@ const EnhancedPOS: React.FC = () => {
 
   // Get filtered sales for reports
   const getFilteredSales = () => {
-    if (!reportStartDate && !reportEndDate) return sales;
-
     return sales.filter((sale) => {
+      // Date filtering
       const saleDate = new Date(sale.date);
       const startDate = reportStartDate ? new Date(reportStartDate) : null;
       const endDate = reportEndDate ? new Date(reportEndDate) : null;
 
       if (startDate && saleDate < startDate) return false;
       if (endDate && saleDate > endDate) return false;
+
+      // Payment method filtering
+      if (reportPaymentFilter && sale.paymentMethod !== reportPaymentFilter) return false;
 
       return true;
     });
