@@ -544,6 +544,44 @@ const EnhancedPOS: React.FC = () => {
     initializeSampleData();
   }, []);
 
+  // Keyboard shortcuts integration
+  useKeyboardShortcuts({
+    onOpenOrderEntry: () => setActiveModule('order-entry'),
+    onOpenStockManagement: () => setActiveModule('stock-management'),
+    onOpenCustomerManagement: () => setActiveModule('customer-management'),
+    onOpenReports: () => setActiveModule('reports'),
+    onOpenShiftManagement: () => setActiveModule('shift-management'),
+    onOpenSettings: () => setActiveModule('settings'),
+    onProcessPayment: () => {
+      if (activeModule === 'order-entry' && cart.length > 0) {
+        processPayment();
+      }
+    },
+    onClearCart: () => {
+      if (activeModule === 'order-entry' && cart.length > 0) {
+        setCart([]);
+      }
+    },
+    onAddProduct: () => {
+      if (activeModule === 'stock-management') {
+        setShowProductModal(true);
+      }
+    },
+    onAddCustomer: () => {
+      if (activeModule === 'customer-management') {
+        setShowCustomerModal(true);
+      }
+    },
+    onLogout: () => handleLogout(),
+    onSearch: () => {
+      // Focus search input if available
+      const searchInput = document.querySelector('input[placeholder*="Cari"]') as HTMLInputElement;
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }
+  });
+
   // Show alerts for low stock
   useEffect(() => {
     if (products.length > 0) {
