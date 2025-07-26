@@ -182,7 +182,7 @@ enhanced-pos-system/
 │   ├── lib/               # Utility functions
 │   └── global.css         # Global styles
 ├── server/                # Backend Express server
-│   ├── routes/            # API routes
+│   ���── routes/            # API routes
 │   └── index.ts           # Server entry point
 ├── shared/                # Shared types and utilities
 ├── public/                # Static assets
@@ -196,8 +196,10 @@ enhanced-pos-system/
 
 ### Login Default
 - **Username:** `admin`
-- **Password:** `admin123`
+- **Password:** `admin`
 - **Role:** Administrator
+
+> **Catatan:** Untuk keamanan, sebaiknya ubah password default setelah instalasi pertama kali.
 
 ### Keyboard Shortcuts
 - `Ctrl+1` atau `F1` - Buka modul Pesanan
