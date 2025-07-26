@@ -496,11 +496,6 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
-  // Utility functions
-  const generateUniqueId = () => {
-    return "id-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-  };
-
   const generateShiftId = () => {
     const now = new Date();
     const year = now.getFullYear().toString().slice(-2);
