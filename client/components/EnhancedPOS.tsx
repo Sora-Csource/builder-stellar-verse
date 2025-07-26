@@ -77,6 +77,9 @@ interface Settings {
 }
 
 const EnhancedPOS: React.FC = () => {
+  // Custom modals hook
+  const { showAlert, showConfirm, showPrompt, showSuccess, showLoading, hideLoading, Modals } = useModals();
+
   // State management
   const [users, setUsers] = useState<User[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
