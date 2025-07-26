@@ -32,14 +32,7 @@
       "form_factor": "wide"
     }
   ],
-  "features": [
-    "offline-support",
-    "background-sync",
-    "push-notifications"
-  ],
-  "permissions": [
-    "storage",
-    "notifications"
-  ],
+  "features": ["offline-support", "background-sync", "push-notifications"],
+  "permissions": ["storage", "notifications"],
   "prefer_related_applications": false
 }

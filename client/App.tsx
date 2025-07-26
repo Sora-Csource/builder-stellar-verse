@@ -10,20 +10,28 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 // Register Service Worker for PWA functionality
-if ('serviceWorker' in navigator && import.meta.env.PROD) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
       .then((registration) => {
-        console.log('SW registered: ', registration);
+        console.log("SW registered: ", registration);
 
         // Check for updates
-        registration.addEventListener('updatefound', () => {
+        registration.addEventListener("updatefound", () => {
           const newWorker = registration.installing;
           if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            newWorker.addEventListener("statechange", () => {
+              if (
+                newWorker.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
                 // New content is available, prompt user to refresh
-                if (confirm('Versi baru aplikasi tersedia. Refresh untuk menggunakan versi terbaru?')) {
+                if (
+                  confirm(
+                    "Versi baru aplikasi tersedia. Refresh untuk menggunakan versi terbaru?",
+                  )
+                ) {
                   window.location.reload();
                 }
               }
@@ -32,14 +40,14 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
         });
       })
       .catch((error) => {
-        console.log('SW registration failed: ', error);
+        console.log("SW registration failed: ", error);
       });
   });
 
   // Listen for messages from service worker
-  navigator.serviceWorker.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'OFFLINE_READY') {
-      console.log('App is ready to work offline');
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "OFFLINE_READY") {
+      console.log("App is ready to work offline");
     }
   });
 }

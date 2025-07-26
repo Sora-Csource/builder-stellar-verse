@@ -113,7 +113,8 @@ const EnhancedPOS: React.FC = () => {
   } = useModals();
 
   // Offline functionality
-  const { isOnline, getOfflineStatus, saveOfflineData, addOfflineSale } = useOffline();
+  const { isOnline, getOfflineStatus, saveOfflineData, addOfflineSale } =
+    useOffline();
 
   // State management
   const [users, setUsers] = useState<User[]>([]);
@@ -140,7 +141,8 @@ const EnhancedPOS: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [selectedUserForPermissions, setSelectedUserForPermissions] = useState<User | null>(null);
+  const [selectedUserForPermissions, setSelectedUserForPermissions] =
+    useState<User | null>(null);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   // Form states
@@ -149,7 +151,9 @@ const EnhancedPOS: React.FC = () => {
   const [userSearch, setUserSearch] = useState("");
   const [reportStartDate, setReportStartDate] = useState("");
   const [reportEndDate, setReportEndDate] = useState("");
-  const [reportPaymentFilter, setReportPaymentFilter] = useState<string | null>(null);
+  const [reportPaymentFilter, setReportPaymentFilter] = useState<string | null>(
+    null,
+  );
   const [paymentMethod, setPaymentMethod] = useState<
     "cash" | "card" | "ewallet"
   >("cash");
@@ -157,18 +161,22 @@ const EnhancedPOS: React.FC = () => {
 
   // Discount state
   const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [discountType, setDiscountType] = useState<"percentage" | "amount">("percentage");
+  const [discountType, setDiscountType] = useState<"percentage" | "amount">(
+    "percentage",
+  );
 
   // Notification system state
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState<Array<{
-    id: string;
-    type: "info" | "warning" | "error" | "success";
-    title: string;
-    message: string;
-    timestamp: Date;
-    read: boolean;
-  }>>([]);
+  const [notifications, setNotifications] = useState<
+    Array<{
+      id: string;
+      type: "info" | "warning" | "error" | "success";
+      title: string;
+      message: string;
+      timestamp: Date;
+      read: boolean;
+    }>
+  >([]);
 
   // Product form state
   const [productForm, setProductForm] = useState({
@@ -302,22 +310,26 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Notification functions
-  const addNotification = (type: "info" | "warning" | "error" | "success", title: string, message: string) => {
+  const addNotification = (
+    type: "info" | "warning" | "error" | "success",
+    title: string,
+    message: string,
+  ) => {
     const newNotification = {
       id: generateUniqueId(),
       type,
       title,
       message,
       timestamp: new Date(),
-      read: false
+      read: false,
     };
-    setNotifications(prev => [newNotification, ...prev]);
+    setNotifications((prev) => [newNotification, ...prev]);
   };
 
   const markNotificationAsRead = (id: string) => {
-    setNotifications(prev => prev.map(notif =>
-      notif.id === id ? { ...notif, read: true } : notif
-    ));
+    setNotifications((prev) =>
+      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif)),
+    );
   };
 
   const clearAllNotifications = () => {
@@ -325,25 +337,31 @@ const EnhancedPOS: React.FC = () => {
   };
 
   const getUnreadCount = () => {
-    return notifications.filter(n => !n.read).length;
+    return notifications.filter((n) => !n.read).length;
   };
 
   // Monitor stock levels and create notifications
   useEffect(() => {
-    const outOfStockProducts = products.filter(p => p.stock === 0);
-    const lowStockProducts = products.filter(p => p.stock > 0 && p.stock <= 5);
+    const outOfStockProducts = products.filter((p) => p.stock === 0);
+    const lowStockProducts = products.filter(
+      (p) => p.stock > 0 && p.stock <= 5,
+    );
 
     // Clear existing stock notifications
-    setNotifications(prev => prev.filter(n =>
-      !n.message.includes("stok habis") && !n.message.includes("stok rendah")
-    ));
+    setNotifications((prev) =>
+      prev.filter(
+        (n) =>
+          !n.message.includes("stok habis") &&
+          !n.message.includes("stok rendah"),
+      ),
+    );
 
     // Add out of stock notifications
     if (outOfStockProducts.length > 0) {
       addNotification(
         "error",
         "Produk Stok Habis",
-        `${outOfStockProducts.length} produk kehabisan stok: ${outOfStockProducts.map(p => p.name).join(", ")}`
+        `${outOfStockProducts.length} produk kehabisan stok: ${outOfStockProducts.map((p) => p.name).join(", ")}`,
       );
     }
 
@@ -352,7 +370,7 @@ const EnhancedPOS: React.FC = () => {
       addNotification(
         "warning",
         "Stok Rendah",
-        `${lowStockProducts.length} produk dengan stok rendah: ${lowStockProducts.map(p => `${p.name} (${p.stock})`).join(", ")}`
+        `${lowStockProducts.length} produk dengan stok rendah: ${lowStockProducts.map((p) => `${p.name} (${p.stock})`).join(", ")}`,
       );
     }
   }, [products]);
@@ -360,21 +378,22 @@ const EnhancedPOS: React.FC = () => {
   // Monitor online status and create notifications
   useEffect(() => {
     // Clear existing online/offline notifications
-    setNotifications(prev => prev.filter(n =>
-      !n.message.includes("internet") && !n.message.includes("online") && !n.message.includes("offline")
-    ));
+    setNotifications((prev) =>
+      prev.filter(
+        (n) =>
+          !n.message.includes("internet") &&
+          !n.message.includes("online") &&
+          !n.message.includes("offline"),
+      ),
+    );
 
     if (isOnline) {
-      addNotification(
-        "success",
-        "Status Koneksi",
-        "Terhubung ke internet"
-      );
+      addNotification("success", "Status Koneksi", "Terhubung ke internet");
     } else {
       addNotification(
         "warning",
         "Status Koneksi",
-        "Mode offline - Data akan disinkronkan saat online"
+        "Mode offline - Data akan disinkronkan saat online",
       );
     }
   }, [isOnline]);
@@ -499,11 +518,13 @@ const EnhancedPOS: React.FC = () => {
   const generateShiftId = () => {
     const now = new Date();
     const year = now.getFullYear().toString().slice(-2);
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    const hour = now.getHours().toString().padStart(2, '0');
-    const minute = now.getMinutes().toString().padStart(2, '0');
-    const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const hour = now.getHours().toString().padStart(2, "0");
+    const minute = now.getMinutes().toString().padStart(2, "0");
+    const random = Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0");
 
     return `SH${year}${month}${day}-${hour}${minute}-${random}`;
   };
@@ -712,30 +733,34 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Export functions
-  const exportToCSV = (data: any[], filename: string, customHeaders?: string[]) => {
+  const exportToCSV = (
+    data: any[],
+    filename: string,
+    customHeaders?: string[],
+  ) => {
     if (data.length === 0) return;
 
     // Escape CSV values and wrap in quotes if needed
     const escapeCSVValue = (value: any) => {
-      const str = String(value || '');
-      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+      const str = String(value || "");
+      if (str.includes(",") || str.includes('"') || str.includes("\n")) {
         return `"${str.replace(/"/g, '""')}"`;
       }
       return str;
     };
 
     const headers = customHeaders || Object.keys(data[0]);
-    const headerRow = headers.map(escapeCSVValue).join(',');
-    const rows = data.map((row) =>
-      headers.map(key => escapeCSVValue(row[key])).join(',')
-    ).join('\n');
+    const headerRow = headers.map(escapeCSVValue).join(",");
+    const rows = data
+      .map((row) => headers.map((key) => escapeCSVValue(row[key])).join(","))
+      .join("\n");
 
     // Add UTF-8 BOM for proper Excel support
     const csvContent = `\uFEFF${headerRow}\n${rows}`;
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = filename;
     link.click();
@@ -1075,7 +1100,13 @@ const EnhancedPOS: React.FC = () => {
     const taxAmount = subtotalAfterDiscount * (settings.taxRate / 100);
     const finalTotal = subtotalAfterDiscount + taxAmount;
 
-    return { subtotal, discountValue, subtotalAfterDiscount, taxAmount, finalTotal };
+    return {
+      subtotal,
+      discountValue,
+      subtotalAfterDiscount,
+      taxAmount,
+      finalTotal,
+    };
   };
 
   // Process payment
@@ -1147,7 +1178,7 @@ const EnhancedPOS: React.FC = () => {
         addOfflineSale(newSale);
         saveOfflineData({
           products: updatedProducts,
-          sales: [...sales, newSale]
+          sales: [...sales, newSale],
         });
       }
 
@@ -1845,7 +1876,8 @@ const EnhancedPOS: React.FC = () => {
       if (endDate && saleDate > endDate) return false;
 
       // Payment method filtering
-      if (reportPaymentFilter && sale.paymentMethod !== reportPaymentFilter) return false;
+      if (reportPaymentFilter && sale.paymentMethod !== reportPaymentFilter)
+        return false;
 
       return true;
     });
@@ -1975,8 +2007,6 @@ const EnhancedPOS: React.FC = () => {
             </div>
           </nav>
 
-
-
           {/* Main Content */}
           <main className="flex-1 p-6 bg-white m-4 rounded-lg shadow-md">
             <div className="flex items-center justify-center mb-6">
@@ -1996,8 +2026,18 @@ const EnhancedPOS: React.FC = () => {
                 className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors shadow-sm w-full"
               >
                 <div className="relative">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z"
+                    />
                   </svg>
                   {getUnreadCount() > 0 && (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
@@ -2008,8 +2048,18 @@ const EnhancedPOS: React.FC = () => {
                 <span className="text-sm font-medium text-gray-700">
                   Notifikasi {getUnreadCount() > 0 && `(${getUnreadCount()})`}
                 </span>
-                <svg className={`w-4 h-4 text-gray-400 transition-transform ${showNotifications ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <svg
+                  className={`w-4 h-4 text-gray-400 transition-transform ${showNotifications ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
@@ -2017,7 +2067,9 @@ const EnhancedPOS: React.FC = () => {
               {showNotifications && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
                   <div className="p-3 border-b border-gray-200 flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-gray-800">Notifikasi</h3>
+                    <h3 className="text-sm font-semibold text-gray-800">
+                      Notifikasi
+                    </h3>
                     {notifications.length > 0 && (
                       <button
                         onClick={clearAllNotifications}
@@ -2031,8 +2083,18 @@ const EnhancedPOS: React.FC = () => {
                   <div className="max-h-80 overflow-y-auto">
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-gray-500">
-                        <svg className="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                        <svg
+                          className="w-8 h-8 mx-auto mb-2 text-gray-300"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z"
+                          />
                         </svg>
                         <p className="text-sm">Tidak ada notifikasi</p>
                       </div>
@@ -2040,18 +2102,25 @@ const EnhancedPOS: React.FC = () => {
                       notifications.map((notification) => (
                         <div
                           key={notification.id}
-                          onClick={() => markNotificationAsRead(notification.id)}
+                          onClick={() =>
+                            markNotificationAsRead(notification.id)
+                          }
                           className={`p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
-                            !notification.read ? 'bg-blue-50' : ''
+                            !notification.read ? "bg-blue-50" : ""
                           }`}
                         >
                           <div className="flex items-start space-x-2">
-                            <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                              notification.type === 'error' ? 'bg-red-500' :
-                              notification.type === 'warning' ? 'bg-yellow-500' :
-                              notification.type === 'success' ? 'bg-green-500' :
-                              'bg-blue-500'
-                            }`} />
+                            <div
+                              className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                                notification.type === "error"
+                                  ? "bg-red-500"
+                                  : notification.type === "warning"
+                                    ? "bg-yellow-500"
+                                    : notification.type === "success"
+                                      ? "bg-green-500"
+                                      : "bg-blue-500"
+                              }`}
+                            />
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-gray-900">
                                 {notification.title}
@@ -2060,7 +2129,9 @@ const EnhancedPOS: React.FC = () => {
                                 {notification.message}
                               </p>
                               <p className="text-xs text-gray-400 mt-1">
-                                {notification.timestamp.toLocaleTimeString('id-ID')}
+                                {notification.timestamp.toLocaleTimeString(
+                                  "id-ID",
+                                )}
                               </p>
                             </div>
                             {!notification.read && (
@@ -2144,13 +2215,23 @@ const EnhancedPOS: React.FC = () => {
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-xl font-bold text-gray-800 flex items-center">
-                          <svg className="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6m0 0h.01M16 19a2 2 0 100-4 2 2 0 000 4zm-7 0a2 2 0 100-4 2 2 0 000 4z" />
+                          <svg
+                            className="w-6 h-6 mr-2 text-indigo-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6m0 0h.01M16 19a2 2 0 100-4 2 2 0 000 4zm-7 0a2 2 0 100-4 2 2 0 000 4z"
+                            />
                           </svg>
                           Keranjang Belanja
                         </h3>
                         <div className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
-                          {cart.length} item{cart.length !== 1 ? 's' : ''}
+                          {cart.length} item{cart.length !== 1 ? "s" : ""}
                         </div>
                       </div>
                       <div className="bg-gray-50 p-4 rounded-lg shadow-inner mb-4 max-h-80 overflow-y-auto">
@@ -2255,8 +2336,18 @@ const EnhancedPOS: React.FC = () => {
                       {cart.length > 0 && (
                         <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-lg border-2 border-orange-200 mb-4">
                           <h4 className="text-lg font-semibold text-orange-800 mb-3 flex items-center">
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                            <svg
+                              className="w-5 h-5 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                              />
                             </svg>
                             Diskon
                           </h4>
@@ -2289,35 +2380,41 @@ const EnhancedPOS: React.FC = () => {
 
                           {/* Discount Preset Buttons */}
                           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-3">
-                            {discountType === "percentage" ? (
-                              (settings.quickDiscountPresets || [5, 10, 15, 20]).map((percent) => (
-                                <button
-                                  key={percent}
-                                  onClick={() => setDiscountAmount(percent)}
-                                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                    discountAmount === percent && discountType === "percentage"
-                                      ? "bg-orange-600 text-white"
-                                      : "bg-white text-orange-600 border border-orange-300 hover:bg-orange-100"
-                                  }`}
-                                >
-                                  {percent}%
-                                </button>
-                              ))
-                            ) : (
-                              [5000, 10000, 15000, 20000, 25000, 50000].map((amount) => (
-                                <button
-                                  key={amount}
-                                  onClick={() => setDiscountAmount(amount)}
-                                  className={`px-2 py-2 rounded-md text-xs font-medium transition-colors ${
-                                    discountAmount === amount && discountType === "amount"
-                                      ? "bg-orange-600 text-white"
-                                      : "bg-white text-orange-600 border border-orange-300 hover:bg-orange-100"
-                                  }`}
-                                >
-                                  {formatCurrency(amount)}
-                                </button>
-                              ))
-                            )}
+                            {discountType === "percentage"
+                              ? (
+                                  settings.quickDiscountPresets || [
+                                    5, 10, 15, 20,
+                                  ]
+                                ).map((percent) => (
+                                  <button
+                                    key={percent}
+                                    onClick={() => setDiscountAmount(percent)}
+                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                                      discountAmount === percent &&
+                                      discountType === "percentage"
+                                        ? "bg-orange-600 text-white"
+                                        : "bg-white text-orange-600 border border-orange-300 hover:bg-orange-100"
+                                    }`}
+                                  >
+                                    {percent}%
+                                  </button>
+                                ))
+                              : [5000, 10000, 15000, 20000, 25000, 50000].map(
+                                  (amount) => (
+                                    <button
+                                      key={amount}
+                                      onClick={() => setDiscountAmount(amount)}
+                                      className={`px-2 py-2 rounded-md text-xs font-medium transition-colors ${
+                                        discountAmount === amount &&
+                                        discountType === "amount"
+                                          ? "bg-orange-600 text-white"
+                                          : "bg-white text-orange-600 border border-orange-300 hover:bg-orange-100"
+                                      }`}
+                                    >
+                                      {formatCurrency(amount)}
+                                    </button>
+                                  ),
+                                )}
                           </div>
 
                           {/* Custom Discount Input */}
@@ -2326,9 +2423,15 @@ const EnhancedPOS: React.FC = () => {
                               type="number"
                               min="0"
                               value={discountAmount}
-                              onChange={(e) => setDiscountAmount(parseFloat(e.target.value) || 0)}
+                              onChange={(e) =>
+                                setDiscountAmount(
+                                  parseFloat(e.target.value) || 0,
+                                )
+                              }
                               className="flex-1 px-3 py-2 border border-orange-300 rounded-md focus:outline-none focus:border-orange-500 text-sm"
-                              placeholder={discountType === "percentage" ? "0%" : "0"}
+                              placeholder={
+                                discountType === "percentage" ? "0%" : "0"
+                              }
                             />
                             <button
                               onClick={() => {
@@ -2345,8 +2448,13 @@ const EnhancedPOS: React.FC = () => {
                       {/* Payment Section */}
                       <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
                         {(() => {
-                          const { subtotal, discountValue, subtotalAfterDiscount, taxAmount, finalTotal } =
-                            getCartTotals();
+                          const {
+                            subtotal,
+                            discountValue,
+                            subtotalAfterDiscount,
+                            taxAmount,
+                            finalTotal,
+                          } = getCartTotals();
                           const change =
                             paymentMethod === "cash"
                               ? Math.max(0, cashGiven - finalTotal)
@@ -2362,12 +2470,22 @@ const EnhancedPOS: React.FC = () => {
                                 {discountValue > 0 && (
                                   <>
                                     <div className="flex justify-between font-semibold text-orange-600">
-                                      <span>Diskon ({discountType === 'percentage' ? `${discountAmount}%` : 'Nominal'}):</span>
-                                      <span>-{formatCurrency(discountValue)}</span>
+                                      <span>
+                                        Diskon (
+                                        {discountType === "percentage"
+                                          ? `${discountAmount}%`
+                                          : "Nominal"}
+                                        ):
+                                      </span>
+                                      <span>
+                                        -{formatCurrency(discountValue)}
+                                      </span>
                                     </div>
                                     <div className="flex justify-between font-semibold text-gray-700">
                                       <span>Subtotal setelah diskon:</span>
-                                      <span>{formatCurrency(subtotalAfterDiscount)}</span>
+                                      <span>
+                                        {formatCurrency(subtotalAfterDiscount)}
+                                      </span>
                                     </div>
                                   </>
                                 )}
@@ -2472,14 +2590,18 @@ const EnhancedPOS: React.FC = () => {
                                       </button>
                                       <button
                                         type="button"
-                                        onClick={() => setCashGiven(finalTotal + 50000)}
+                                        onClick={() =>
+                                          setCashGiven(finalTotal + 50000)
+                                        }
                                         className="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
                                       >
                                         +50k
                                       </button>
                                       <button
                                         type="button"
-                                        onClick={() => setCashGiven(finalTotal + 100000)}
+                                        onClick={() =>
+                                          setCashGiven(finalTotal + 100000)
+                                        }
                                         className="bg-pink-100 hover:bg-pink-200 text-pink-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
                                       >
                                         +100k
@@ -2774,462 +2896,666 @@ const EnhancedPOS: React.FC = () => {
                     <h3 className="text-xl font-semibold mb-3 text-gray-800">
                       Filter Laporan Penjualan
                     </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                    <div>
-                      <label className="block text-gray-700 font-bold mb-2">
-                        Tanggal Mulai:
-                      </label>
-                      <input
-                        type="date"
-                        value={reportStartDate}
-                        onChange={(e) => setReportStartDate(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-bold mb-2">
-                        Tanggal Akhir:
-                      </label>
-                      <input
-                        type="date"
-                        value={reportEndDate}
-                        onChange={(e) => setReportEndDate(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-bold mb-2">
-                        Metode Pembayaran:
-                      </label>
-                      <select
-                        value={reportPaymentFilter || ""}
-                        onChange={(e) => setReportPaymentFilter(e.target.value || null)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                      >
-                        <option value="">Semua Metode</option>
-                        <option value="cash">Tunai</option>
-                        <option value="card">Kartu</option>
-                        <option value="digital">Digital</option>
-                      </select>
-                    </div>
-                    <div className="flex items-end space-x-2">
-                      <button
-                        onClick={() => {
-                          const salesData = getFilteredSales().map((sale) => ({
-                            id: sale.id,
-                            tanggal: new Date(sale.date).toLocaleDateString(
-                              "id-ID",
-                            ),
-                            waktu: new Date(sale.date).toLocaleTimeString(
-                              "id-ID",
-                            ),
-                            total: `Rp ${sale.totalAmount.toLocaleString('id-ID')}`,
-                            pembayaran: sale.paymentMethod,
-                            status: sale.status,
-                            items: sale.items.map(item => `${item.name} (${item.quantity}x)`).join('; '),
-                            kasir: sale.cashier || 'Admin'
-                          }));
-                          if (salesData.length > 0) {
-                            const headers = ['ID Transaksi', 'Tanggal', 'Waktu', 'Total', 'Metode Pembayaran', 'Status', 'Items', 'Kasir'];
-                            exportToCSV(salesData, "laporan_penjualan.csv", headers);
-                          } else {
-                            showAlert(
-                              "Tidak Ada Data",
-                              "Tidak ada data untuk diekspor.",
-                              "warning",
-                            );
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <div>
+                        <label className="block text-gray-700 font-bold mb-2">
+                          Tanggal Mulai:
+                        </label>
+                        <input
+                          type="date"
+                          value={reportStartDate}
+                          onChange={(e) => setReportStartDate(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 font-bold mb-2">
+                          Tanggal Akhir:
+                        </label>
+                        <input
+                          type="date"
+                          value={reportEndDate}
+                          onChange={(e) => setReportEndDate(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 font-bold mb-2">
+                          Metode Pembayaran:
+                        </label>
+                        <select
+                          value={reportPaymentFilter || ""}
+                          onChange={(e) =>
+                            setReportPaymentFilter(e.target.value || null)
                           }
-                        }}
-                        className="bg-green-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200"
-                      >
-                        📊 Ekspor Transaksi
-                      </button>
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                        >
+                          <option value="">Semua Metode</option>
+                          <option value="cash">Tunai</option>
+                          <option value="card">Kartu</option>
+                          <option value="digital">Digital</option>
+                        </select>
+                      </div>
+                      <div className="flex items-end space-x-2">
+                        <button
+                          onClick={() => {
+                            const salesData = getFilteredSales().map(
+                              (sale) => ({
+                                id: sale.id,
+                                tanggal: new Date(sale.date).toLocaleDateString(
+                                  "id-ID",
+                                ),
+                                waktu: new Date(sale.date).toLocaleTimeString(
+                                  "id-ID",
+                                ),
+                                total: `Rp ${sale.totalAmount.toLocaleString("id-ID")}`,
+                                pembayaran: sale.paymentMethod,
+                                status: sale.status,
+                                items: sale.items
+                                  .map(
+                                    (item) =>
+                                      `${item.name} (${item.quantity}x)`,
+                                  )
+                                  .join("; "),
+                                kasir: sale.cashier || "Admin",
+                              }),
+                            );
+                            if (salesData.length > 0) {
+                              const headers = [
+                                "ID Transaksi",
+                                "Tanggal",
+                                "Waktu",
+                                "Total",
+                                "Metode Pembayaran",
+                                "Status",
+                                "Items",
+                                "Kasir",
+                              ];
+                              exportToCSV(
+                                salesData,
+                                "laporan_penjualan.csv",
+                                headers,
+                              );
+                            } else {
+                              showAlert(
+                                "Tidak Ada Data",
+                                "Tidak ada data untuk diekspor.",
+                                "warning",
+                              );
+                            }
+                          }}
+                          className="bg-green-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200"
+                        >
+                          📊 Ekspor Transaksi
+                        </button>
 
-                      <button
-                        onClick={() => {
-                          const completedSales = getFilteredSales().filter(s => s.status === "completed");
-                          const productSales: { [key: string]: { quantity: number; revenue: number; name: string; category: string } } = {};
+                        <button
+                          onClick={() => {
+                            const completedSales = getFilteredSales().filter(
+                              (s) => s.status === "completed",
+                            );
+                            const productSales: {
+                              [key: string]: {
+                                quantity: number;
+                                revenue: number;
+                                name: string;
+                                category: string;
+                              };
+                            } = {};
 
-                          completedSales.forEach(sale => {
-                            sale.items.forEach(item => {
-                              if (!productSales[item.id]) {
-                                const product = products.find(p => p.id === item.id);
-                                productSales[item.id] = {
-                                  quantity: 0,
-                                  revenue: 0,
-                                  name: item.name,
-                                  category: product?.category || 'Tidak Diketahui'
-                                };
-                              }
-                              productSales[item.id].quantity += item.quantity;
-                              productSales[item.id].revenue += item.price * item.quantity;
+                            completedSales.forEach((sale) => {
+                              sale.items.forEach((item) => {
+                                if (!productSales[item.id]) {
+                                  const product = products.find(
+                                    (p) => p.id === item.id,
+                                  );
+                                  productSales[item.id] = {
+                                    quantity: 0,
+                                    revenue: 0,
+                                    name: item.name,
+                                    category:
+                                      product?.category || "Tidak Diketahui",
+                                  };
+                                }
+                                productSales[item.id].quantity += item.quantity;
+                                productSales[item.id].revenue +=
+                                  item.price * item.quantity;
+                              });
                             });
-                          });
 
-                          const productData = Object.entries(productSales).map(([id, data]) => ({
-                            produk: data.name,
-                            kategori: data.category,
-                            terjual: data.quantity,
-                            pendapatan: `Rp ${data.revenue.toLocaleString('id-ID')}`
-                          }));
+                            const productData = Object.entries(
+                              productSales,
+                            ).map(([id, data]) => ({
+                              produk: data.name,
+                              kategori: data.category,
+                              terjual: data.quantity,
+                              pendapatan: `Rp ${data.revenue.toLocaleString("id-ID")}`,
+                            }));
 
-                          if (productData.length > 0) {
-                            const headers = ['Nama Produk', 'Kategori', 'Jumlah Terjual', 'Total Pendapatan'];
-                            exportToCSV(productData, "laporan_produk.csv", headers);
-                          } else {
-                            showAlert(
-                              "Tidak Ada Data",
-                              "Tidak ada data produk untuk diekspor.",
-                              "warning",
-                            );
-                          }
-                        }}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
-                      >
-                        ��� Ekspor Produk
-                      </button>
+                            if (productData.length > 0) {
+                              const headers = [
+                                "Nama Produk",
+                                "Kategori",
+                                "Jumlah Terjual",
+                                "Total Pendapatan",
+                              ];
+                              exportToCSV(
+                                productData,
+                                "laporan_produk.csv",
+                                headers,
+                              );
+                            } else {
+                              showAlert(
+                                "Tidak Ada Data",
+                                "Tidak ada data produk untuk diekspor.",
+                                "warning",
+                              );
+                            }
+                          }}
+                          className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+                        >
+                          ��� Ekspor Produk
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  {(() => {
-                    const filteredSales = getFilteredSales();
-                    const completedSales = filteredSales.filter(
-                      (s) => s.status === "completed",
-                    );
-                    const voidedSales = filteredSales.filter(
-                      (s) => s.status === "voided",
-                    );
-                    const totalRevenue = completedSales.reduce(
-                      (sum, sale) => sum + sale.totalAmount,
-                      0,
-                    );
-                    const totalTransactions = completedSales.length;
+                    {(() => {
+                      const filteredSales = getFilteredSales();
+                      const completedSales = filteredSales.filter(
+                        (s) => s.status === "completed",
+                      );
+                      const voidedSales = filteredSales.filter(
+                        (s) => s.status === "voided",
+                      );
+                      const totalRevenue = completedSales.reduce(
+                        (sum, sale) => sum + sale.totalAmount,
+                        0,
+                      );
+                      const totalTransactions = completedSales.length;
 
-                    return (
-                      <div className="bg-white p-4 rounded-md shadow-sm text-gray-700 mb-4">
-                        <h4 className="font-semibold mb-2">
-                          Ringkasan Laporan
-                        </h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div>
-                            <p className="text-sm text-gray-500">
-                              Total Pendapatan
-                            </p>
-                            <p className="font-bold text-green-600 text-lg">
-                              {formatCurrency(totalRevenue)}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500">
-                              Transaksi Selesai
-                            </p>
-                            <p className="font-bold text-blue-600 text-lg">
-                              {totalTransactions}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500">
-                              Transaksi Dibatalkan
-                            </p>
-                            <p className="font-bold text-red-600 text-lg">
-                              {voidedSales.length}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500">
-                              Rata-rata per Transaksi
-                            </p>
-                            <p className="font-bold text-purple-600 text-lg">
-                              {formatCurrency(
-                                totalTransactions > 0
-                                  ? totalRevenue / totalTransactions
-                                  : 0,
-                              )}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Enhanced Analytics */}
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                          {/* Payment Method Breakdown */}
-                          <div>
-                            <h5 className="font-semibold mb-3 text-gray-700">Breakdown Metode Pembayaran</h5>
-                            <div className="space-y-2">
-                              {['cash', 'card', 'digital'].map(method => {
-                                const methodSales = completedSales.filter(s => s.paymentMethod === method);
-                                const methodRevenue = methodSales.reduce((sum, s) => sum + s.totalAmount, 0);
-                                const percentage = totalRevenue > 0 ? (methodRevenue / totalRevenue * 100).toFixed(1) : '0';
-                                const methodName = method === 'cash' ? 'Tunai' : method === 'card' ? 'Kartu' : 'Digital';
-
-                                return (
-                                  <div key={method} className="flex justify-between items-center">
-                                    <span className="text-sm text-gray-600">{methodName}</span>
-                                    <div className="text-right">
-                                      <span className="text-sm font-medium">{formatCurrency(methodRevenue)}</span>
-                                      <span className="text-xs text-gray-500 ml-2">({percentage}%)</span>
-                                    </div>
-                                  </div>
-                                );
-                              })}
+                      return (
+                        <div className="bg-white p-4 rounded-md shadow-sm text-gray-700 mb-4">
+                          <h4 className="font-semibold mb-2">
+                            Ringkasan Laporan
+                          </h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Total Pendapatan
+                              </p>
+                              <p className="font-bold text-green-600 text-lg">
+                                {formatCurrency(totalRevenue)}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Transaksi Selesai
+                              </p>
+                              <p className="font-bold text-blue-600 text-lg">
+                                {totalTransactions}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Transaksi Dibatalkan
+                              </p>
+                              <p className="font-bold text-red-600 text-lg">
+                                {voidedSales.length}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Rata-rata per Transaksi
+                              </p>
+                              <p className="font-bold text-purple-600 text-lg">
+                                {formatCurrency(
+                                  totalTransactions > 0
+                                    ? totalRevenue / totalTransactions
+                                    : 0,
+                                )}
+                              </p>
                             </div>
                           </div>
 
-                          {/* Top Products */}
-                          <div>
-                            <h5 className="font-semibold mb-3 text-gray-700">Produk Terlaris</h5>
-                            <div className="space-y-2">
-                              {(() => {
-                                const productSales: { [key: string]: { quantity: number; revenue: number; name: string } } = {};
+                          {/* Enhanced Analytics */}
+                          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Payment Method Breakdown */}
+                            <div>
+                              <h5 className="font-semibold mb-3 text-gray-700">
+                                Breakdown Metode Pembayaran
+                              </h5>
+                              <div className="space-y-2">
+                                {["cash", "card", "digital"].map((method) => {
+                                  const methodSales = completedSales.filter(
+                                    (s) => s.paymentMethod === method,
+                                  );
+                                  const methodRevenue = methodSales.reduce(
+                                    (sum, s) => sum + s.totalAmount,
+                                    0,
+                                  );
+                                  const percentage =
+                                    totalRevenue > 0
+                                      ? (
+                                          (methodRevenue / totalRevenue) *
+                                          100
+                                        ).toFixed(1)
+                                      : "0";
+                                  const methodName =
+                                    method === "cash"
+                                      ? "Tunai"
+                                      : method === "card"
+                                        ? "Kartu"
+                                        : "Digital";
 
-                                completedSales.forEach(sale => {
-                                  sale.items.forEach(item => {
-                                    if (!productSales[item.id]) {
-                                      productSales[item.id] = { quantity: 0, revenue: 0, name: item.name };
-                                    }
-                                    productSales[item.id].quantity += item.quantity;
-                                    productSales[item.id].revenue += item.price * item.quantity;
-                                  });
-                                });
-
-                                return Object.entries(productSales)
-                                  .sort((a, b) => b[1].quantity - a[1].quantity)
-                                  .slice(0, 5)
-                                  .map(([id, data]) => (
-                                    <div key={id} className="flex justify-between items-center">
-                                      <span className="text-sm text-gray-600 truncate">{data.name}</span>
-                                      <div className="text-right">
-                                        <span className="text-sm font-medium">{data.quantity}x</span>
-                                        <span className="text-xs text-gray-500 ml-2">{formatCurrency(data.revenue)}</span>
-                                      </div>
-                                    </div>
-                                  ));
-                              })()}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Additional Analytics */}
-                        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                          {/* Hourly Sales Pattern */}
-                          <div>
-                            <h5 className="font-semibold mb-3 text-gray-700">Pola Penjualan per Jam</h5>
-                            <div className="space-y-2 max-h-40 overflow-y-auto">
-                              {(() => {
-                                const hourlyData: { [key: number]: { count: number; revenue: number } } = {};
-
-                                completedSales.forEach(sale => {
-                                  const hour = new Date(sale.date).getHours();
-                                  if (!hourlyData[hour]) {
-                                    hourlyData[hour] = { count: 0, revenue: 0 };
-                                  }
-                                  hourlyData[hour].count++;
-                                  hourlyData[hour].revenue += sale.totalAmount;
-                                });
-
-                                return Array.from({length: 24}, (_, hour) => {
-                                  const data = hourlyData[hour] || { count: 0, revenue: 0 };
                                   return (
-                                    <div key={hour} className="flex justify-between items-center text-sm">
-                                      <span className="text-gray-600">{hour.toString().padStart(2, '0')}:00</span>
+                                    <div
+                                      key={method}
+                                      className="flex justify-between items-center"
+                                    >
+                                      <span className="text-sm text-gray-600">
+                                        {methodName}
+                                      </span>
                                       <div className="text-right">
-                                        <span className="font-medium">{data.count} trans</span>
-                                        <span className="text-xs text-gray-500 ml-2">{formatCurrency(data.revenue)}</span>
+                                        <span className="text-sm font-medium">
+                                          {formatCurrency(methodRevenue)}
+                                        </span>
+                                        <span className="text-xs text-gray-500 ml-2">
+                                          ({percentage}%)
+                                        </span>
                                       </div>
                                     </div>
                                   );
-                                }).filter((_, hour) => hourlyData[hour]?.count > 0);
-                              })()}
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Top Products */}
+                            <div>
+                              <h5 className="font-semibold mb-3 text-gray-700">
+                                Produk Terlaris
+                              </h5>
+                              <div className="space-y-2">
+                                {(() => {
+                                  const productSales: {
+                                    [key: string]: {
+                                      quantity: number;
+                                      revenue: number;
+                                      name: string;
+                                    };
+                                  } = {};
+
+                                  completedSales.forEach((sale) => {
+                                    sale.items.forEach((item) => {
+                                      if (!productSales[item.id]) {
+                                        productSales[item.id] = {
+                                          quantity: 0,
+                                          revenue: 0,
+                                          name: item.name,
+                                        };
+                                      }
+                                      productSales[item.id].quantity +=
+                                        item.quantity;
+                                      productSales[item.id].revenue +=
+                                        item.price * item.quantity;
+                                    });
+                                  });
+
+                                  return Object.entries(productSales)
+                                    .sort(
+                                      (a, b) => b[1].quantity - a[1].quantity,
+                                    )
+                                    .slice(0, 5)
+                                    .map(([id, data]) => (
+                                      <div
+                                        key={id}
+                                        className="flex justify-between items-center"
+                                      >
+                                        <span className="text-sm text-gray-600 truncate">
+                                          {data.name}
+                                        </span>
+                                        <div className="text-right">
+                                          <span className="text-sm font-medium">
+                                            {data.quantity}x
+                                          </span>
+                                          <span className="text-xs text-gray-500 ml-2">
+                                            {formatCurrency(data.revenue)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ));
+                                })()}
+                              </div>
                             </div>
                           </div>
 
-                          {/* Daily Comparison */}
-                          <div>
-                            <h5 className="font-semibold mb-3 text-gray-700">Perbandingan Harian</h5>
-                            <div className="space-y-2">
-                              {(() => {
-                                const dailyData: { [key: string]: { count: number; revenue: number } } = {};
+                          {/* Additional Analytics */}
+                          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Hourly Sales Pattern */}
+                            <div>
+                              <h5 className="font-semibold mb-3 text-gray-700">
+                                Pola Penjualan per Jam
+                              </h5>
+                              <div className="space-y-2 max-h-40 overflow-y-auto">
+                                {(() => {
+                                  const hourlyData: {
+                                    [key: number]: {
+                                      count: number;
+                                      revenue: number;
+                                    };
+                                  } = {};
 
-                                completedSales.forEach(sale => {
-                                  const day = new Date(sale.date).toLocaleDateString('id-ID');
-                                  if (!dailyData[day]) {
-                                    dailyData[day] = { count: 0, revenue: 0 };
-                                  }
-                                  dailyData[day].count++;
-                                  dailyData[day].revenue += sale.totalAmount;
-                                });
+                                  completedSales.forEach((sale) => {
+                                    const hour = new Date(sale.date).getHours();
+                                    if (!hourlyData[hour]) {
+                                      hourlyData[hour] = {
+                                        count: 0,
+                                        revenue: 0,
+                                      };
+                                    }
+                                    hourlyData[hour].count++;
+                                    hourlyData[hour].revenue +=
+                                      sale.totalAmount;
+                                  });
 
-                                return Object.entries(dailyData)
-                                  .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
-                                  .slice(-7) // Last 7 days
-                                  .map(([day, data]) => (
-                                    <div key={day} className="flex justify-between items-center text-sm">
-                                      <span className="text-gray-600">{day}</span>
-                                      <div className="text-right">
-                                        <span className="font-medium">{data.count}</span>
-                                        <span className="text-xs text-gray-500 ml-2">{formatCurrency(data.revenue)}</span>
-                                      </div>
-                                    </div>
-                                  ));
-                              })()}
-                            </div>
-                          </div>
-
-                          {/* Transaction Size Analysis */}
-                          <div>
-                            <h5 className="font-semibold mb-3 text-gray-700">Analisis Ukuran Transaksi</h5>
-                            <div className="space-y-3">
-                              {(() => {
-                                const amounts = completedSales.map(s => s.totalAmount).sort((a, b) => a - b);
-                                const median = amounts.length > 0 ? amounts[Math.floor(amounts.length / 2)] : 0;
-                                const min = amounts.length > 0 ? Math.min(...amounts) : 0;
-                                const max = amounts.length > 0 ? Math.max(...amounts) : 0;
-
-                                const ranges = [
-                                  { label: 'Kecil (< 50k)', min: 0, max: 50000 },
-                                  { label: 'Sedang (50k-200k)', min: 50000, max: 200000 },
-                                  { label: 'Besar (> 200k)', min: 200000, max: Infinity }
-                                ];
-
-                                return (
-                                  <div className="space-y-2">
-                                    <div className="text-xs space-y-1">
-                                      <div className="flex justify-between">
-                                        <span className="text-gray-500">Minimum:</span>
-                                        <span className="font-medium">{formatCurrency(min)}</span>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-gray-500">Median:</span>
-                                        <span className="font-medium">{formatCurrency(median)}</span>
-                                      </div>
-                                      <div className="flex justify-between">
-                                        <span className="text-gray-500">Maksimum:</span>
-                                        <span className="font-medium">{formatCurrency(max)}</span>
-                                      </div>
-                                    </div>
-                                    {ranges.map(range => {
-                                      const count = amounts.filter(a => a >= range.min && a < range.max).length;
-                                      const percentage = amounts.length > 0 ? (count / amounts.length * 100).toFixed(1) : '0';
-
+                                  return Array.from(
+                                    { length: 24 },
+                                    (_, hour) => {
+                                      const data = hourlyData[hour] || {
+                                        count: 0,
+                                        revenue: 0,
+                                      };
                                       return (
-                                        <div key={range.label} className="flex justify-between items-center text-xs">
-                                          <span className="text-gray-600">{range.label}</span>
-                                          <span className="font-medium">{count} ({percentage}%)</span>
+                                        <div
+                                          key={hour}
+                                          className="flex justify-between items-center text-sm"
+                                        >
+                                          <span className="text-gray-600">
+                                            {hour.toString().padStart(2, "0")}
+                                            :00
+                                          </span>
+                                          <div className="text-right">
+                                            <span className="font-medium">
+                                              {data.count} trans
+                                            </span>
+                                            <span className="text-xs text-gray-500 ml-2">
+                                              {formatCurrency(data.revenue)}
+                                            </span>
+                                          </div>
                                         </div>
                                       );
-                                    })}
-                                  </div>
-                                );
-                              })()}
+                                    },
+                                  ).filter(
+                                    (_, hour) => hourlyData[hour]?.count > 0,
+                                  );
+                                })()}
+                              </div>
+                            </div>
+
+                            {/* Daily Comparison */}
+                            <div>
+                              <h5 className="font-semibold mb-3 text-gray-700">
+                                Perbandingan Harian
+                              </h5>
+                              <div className="space-y-2">
+                                {(() => {
+                                  const dailyData: {
+                                    [key: string]: {
+                                      count: number;
+                                      revenue: number;
+                                    };
+                                  } = {};
+
+                                  completedSales.forEach((sale) => {
+                                    const day = new Date(
+                                      sale.date,
+                                    ).toLocaleDateString("id-ID");
+                                    if (!dailyData[day]) {
+                                      dailyData[day] = { count: 0, revenue: 0 };
+                                    }
+                                    dailyData[day].count++;
+                                    dailyData[day].revenue += sale.totalAmount;
+                                  });
+
+                                  return Object.entries(dailyData)
+                                    .sort(
+                                      (a, b) =>
+                                        new Date(a[0]).getTime() -
+                                        new Date(b[0]).getTime(),
+                                    )
+                                    .slice(-7) // Last 7 days
+                                    .map(([day, data]) => (
+                                      <div
+                                        key={day}
+                                        className="flex justify-between items-center text-sm"
+                                      >
+                                        <span className="text-gray-600">
+                                          {day}
+                                        </span>
+                                        <div className="text-right">
+                                          <span className="font-medium">
+                                            {data.count}
+                                          </span>
+                                          <span className="text-xs text-gray-500 ml-2">
+                                            {formatCurrency(data.revenue)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ));
+                                })()}
+                              </div>
+                            </div>
+
+                            {/* Transaction Size Analysis */}
+                            <div>
+                              <h5 className="font-semibold mb-3 text-gray-700">
+                                Analisis Ukuran Transaksi
+                              </h5>
+                              <div className="space-y-3">
+                                {(() => {
+                                  const amounts = completedSales
+                                    .map((s) => s.totalAmount)
+                                    .sort((a, b) => a - b);
+                                  const median =
+                                    amounts.length > 0
+                                      ? amounts[Math.floor(amounts.length / 2)]
+                                      : 0;
+                                  const min =
+                                    amounts.length > 0
+                                      ? Math.min(...amounts)
+                                      : 0;
+                                  const max =
+                                    amounts.length > 0
+                                      ? Math.max(...amounts)
+                                      : 0;
+
+                                  const ranges = [
+                                    {
+                                      label: "Kecil (< 50k)",
+                                      min: 0,
+                                      max: 50000,
+                                    },
+                                    {
+                                      label: "Sedang (50k-200k)",
+                                      min: 50000,
+                                      max: 200000,
+                                    },
+                                    {
+                                      label: "Besar (> 200k)",
+                                      min: 200000,
+                                      max: Infinity,
+                                    },
+                                  ];
+
+                                  return (
+                                    <div className="space-y-2">
+                                      <div className="text-xs space-y-1">
+                                        <div className="flex justify-between">
+                                          <span className="text-gray-500">
+                                            Minimum:
+                                          </span>
+                                          <span className="font-medium">
+                                            {formatCurrency(min)}
+                                          </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-gray-500">
+                                            Median:
+                                          </span>
+                                          <span className="font-medium">
+                                            {formatCurrency(median)}
+                                          </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                          <span className="text-gray-500">
+                                            Maksimum:
+                                          </span>
+                                          <span className="font-medium">
+                                            {formatCurrency(max)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                      {ranges.map((range) => {
+                                        const count = amounts.filter(
+                                          (a) =>
+                                            a >= range.min && a < range.max,
+                                        ).length;
+                                        const percentage =
+                                          amounts.length > 0
+                                            ? (
+                                                (count / amounts.length) *
+                                                100
+                                              ).toFixed(1)
+                                            : "0";
+
+                                        return (
+                                          <div
+                                            key={range.label}
+                                            className="flex justify-between items-center text-xs"
+                                          >
+                                            <span className="text-gray-600">
+                                              {range.label}
+                                            </span>
+                                            <span className="font-medium">
+                                              {count} ({percentage}%)
+                                            </span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  );
+                                })()}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })()}
+                      );
+                    })()}
 
-                  <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
-                    <table className="min-w-full border-collapse">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            ID Penjualan
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Tanggal
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Total
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Metode Bayar
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Status
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Aksi
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {getFilteredSales().length === 0 ? (
+                    <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
+                      <table className="min-w-full border-collapse">
+                        <thead className="bg-gray-50">
                           <tr>
-                            <td
-                              colSpan={6}
-                              className="border border-gray-200 py-4 text-center text-gray-500"
-                            >
-                              Tidak ada data penjualan.
-                            </td>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              ID Penjualan
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Tanggal
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Total
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Metode Bayar
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Status
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Aksi
+                            </th>
                           </tr>
-                        ) : (
-                          getFilteredSales()
-                            .sort(
-                              (a, b) =>
-                                new Date(b.date).getTime() -
-                                new Date(a.date).getTime(),
-                            )
-                            .map((sale) => (
-                              <tr key={sale.id} className="even:bg-gray-50">
-                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                  {sale.id}
-                                </td>
-                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                  {new Date(sale.date).toLocaleString("id-ID")}
-                                </td>
-                                <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900 ${sale.status === 'voided' ? 'line-through' : ''}">
-                                  {formatCurrency(sale.totalAmount)}
-                                </td>
-                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                  {sale.paymentMethod === "cash"
-                                    ? "Tunai"
-                                    : sale.paymentMethod === "card"
-                                      ? "Kartu"
-                                      : "E-Wallet"}
-                                </td>
-                                <td className="border border-gray-200 px-3 py-2 text-sm">
-                                  <span
-                                    className={
-                                      sale.status === "completed"
-                                        ? "text-green-600 font-semibold"
-                                        : "text-red-600 font-semibold"
-                                    }
-                                  >
-                                    {sale.status === "completed"
-                                      ? "Selesai"
-                                      : "Dibatalkan"}
-                                  </span>
-                                </td>
-                                <td className="border border-gray-200 px-3 py-2 text-sm">
-                                  <button
-                                    onClick={() => {
-                                      setSelectedSale(sale);
-                                      setShowSaleDetailModal(true);
-                                    }}
-                                    className="text-blue-600 hover:text-blue-900 mr-2"
-                                  >
-                                    Detail
-                                  </button>
-                                  <button
-                                    onClick={() => printReceipt(sale)}
-                                    className="text-green-600 hover:text-green-900 mr-2"
-                                  >
-                                    Cetak
-                                  </button>
-                                  {sale.status === "completed" && (
-                                    <button
-                                      onClick={() => voidSale(sale.id)}
-                                      className="text-red-600 hover:text-red-900"
+                        </thead>
+                        <tbody>
+                          {getFilteredSales().length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={6}
+                                className="border border-gray-200 py-4 text-center text-gray-500"
+                              >
+                                Tidak ada data penjualan.
+                              </td>
+                            </tr>
+                          ) : (
+                            getFilteredSales()
+                              .sort(
+                                (a, b) =>
+                                  new Date(b.date).getTime() -
+                                  new Date(a.date).getTime(),
+                              )
+                              .map((sale) => (
+                                <tr key={sale.id} className="even:bg-gray-50">
+                                  <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                    {sale.id}
+                                  </td>
+                                  <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                    {new Date(sale.date).toLocaleString(
+                                      "id-ID",
+                                    )}
+                                  </td>
+                                  <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900 ${sale.status === 'voided' ? 'line-through' : ''}">
+                                    {formatCurrency(sale.totalAmount)}
+                                  </td>
+                                  <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                    {sale.paymentMethod === "cash"
+                                      ? "Tunai"
+                                      : sale.paymentMethod === "card"
+                                        ? "Kartu"
+                                        : "E-Wallet"}
+                                  </td>
+                                  <td className="border border-gray-200 px-3 py-2 text-sm">
+                                    <span
+                                      className={
+                                        sale.status === "completed"
+                                          ? "text-green-600 font-semibold"
+                                          : "text-red-600 font-semibold"
+                                      }
                                     >
-                                      Batalkan
+                                      {sale.status === "completed"
+                                        ? "Selesai"
+                                        : "Dibatalkan"}
+                                    </span>
+                                  </td>
+                                  <td className="border border-gray-200 px-3 py-2 text-sm">
+                                    <button
+                                      onClick={() => {
+                                        setSelectedSale(sale);
+                                        setShowSaleDetailModal(true);
+                                      }}
+                                      className="text-blue-600 hover:text-blue-900 mr-2"
+                                    >
+                                      Detail
                                     </button>
-                                  )}
-                                </td>
-                              </tr>
-                            ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                                    <button
+                                      onClick={() => printReceipt(sale)}
+                                      className="text-green-600 hover:text-green-900 mr-2"
+                                    >
+                                      Cetak
+                                    </button>
+                                    {sale.status === "completed" && (
+                                      <button
+                                        onClick={() => voidSale(sale.id)}
+                                        className="text-red-600 hover:text-red-900"
+                                      >
+                                        Batalkan
+                                      </button>
+                                    )}
+                                  </td>
+                                </tr>
+                              ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
 
@@ -3239,104 +3565,118 @@ const EnhancedPOS: React.FC = () => {
                       Laporan Stok
                     </h3>
 
-                  {/* Stock Export Button */}
-                  <div className="mb-4">
-                    <button
-                      onClick={() => {
-                        const stockData = products.map((product) => ({
-                          nama_produk: product.name,
-                          kategori: product.category,
-                          stok_saat_ini: product.stock,
-                          harga: `Rp ${product.price.toLocaleString('id-ID')}`,
-                          nilai_stok: `Rp ${(product.stock * product.price).toLocaleString('id-ID')}`,
-                          status: product.stock === 0 ? "Habis" : product.stock <= 5 ? "Rendah" : "Normal"
-                        }));
+                    {/* Stock Export Button */}
+                    <div className="mb-4">
+                      <button
+                        onClick={() => {
+                          const stockData = products.map((product) => ({
+                            nama_produk: product.name,
+                            kategori: product.category,
+                            stok_saat_ini: product.stock,
+                            harga: `Rp ${product.price.toLocaleString("id-ID")}`,
+                            nilai_stok: `Rp ${(product.stock * product.price).toLocaleString("id-ID")}`,
+                            status:
+                              product.stock === 0
+                                ? "Habis"
+                                : product.stock <= 5
+                                  ? "Rendah"
+                                  : "Normal",
+                          }));
 
-                        if (stockData.length > 0) {
-                          const headers = ['Nama Produk', 'Kategori', 'Stok Saat Ini', 'Harga', 'Nilai Stok', 'Status'];
-                          exportToCSV(stockData, "laporan_stok.csv", headers);
-                        } else {
-                          showAlert(
-                            "Tidak Ada Data",
-                            "Tidak ada data stok untuk diekspor.",
-                            "warning"
-                          );
-                        }
-                      }}
-                      className="bg-orange-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-orange-700 transition duration-200"
-                    >
-                      📦 Ekspor Stok
-                    </button>
-                  </div>
+                          if (stockData.length > 0) {
+                            const headers = [
+                              "Nama Produk",
+                              "Kategori",
+                              "Stok Saat Ini",
+                              "Harga",
+                              "Nilai Stok",
+                              "Status",
+                            ];
+                            exportToCSV(stockData, "laporan_stok.csv", headers);
+                          } else {
+                            showAlert(
+                              "Tidak Ada Data",
+                              "Tidak ada data stok untuk diekspor.",
+                              "warning",
+                            );
+                          }
+                        }}
+                        className="bg-orange-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-orange-700 transition duration-200"
+                      >
+                        📦 Ekspor Stok
+                      </button>
+                    </div>
 
-                  <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
-                    <table className="min-w-full border-collapse">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Nama Produk
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Stok Saat Ini
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Harga
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Nilai Stok
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Status
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {products
-                          .sort((a, b) => a.stock - b.stock)
-                          .map((product) => (
-                            <tr key={product.id} className="even:bg-gray-50">
-                              <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
-                                {product.name}
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm">
-                                <span
-                                  className={
-                                    product.stock <= 5
-                                      ? "text-red-500 font-bold"
-                                      : "text-gray-500"
-                                  }
-                                >
-                                  {product.stock}
-                                </span>
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                {formatCurrency(product.price)}
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                {formatCurrency(product.price * product.stock)}
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm">
-                                {product.stock === 0 && (
-                                  <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">
-                                    Habis
+                    <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
+                      <table className="min-w-full border-collapse">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Nama Produk
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Stok Saat Ini
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Harga
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Nilai Stok
+                            </th>
+                            <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                              Status
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {products
+                            .sort((a, b) => a.stock - b.stock)
+                            .map((product) => (
+                              <tr key={product.id} className="even:bg-gray-50">
+                                <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
+                                  {product.name}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm">
+                                  <span
+                                    className={
+                                      product.stock <= 5
+                                        ? "text-red-500 font-bold"
+                                        : "text-gray-500"
+                                    }
+                                  >
+                                    {product.stock}
                                   </span>
-                                )}
-                                {product.stock > 0 && product.stock <= 5 && (
-                                  <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">
-                                    Rendah
-                                  </span>
-                                )}
-                                {product.stock > 5 && (
-                                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
-                                    Normal
-                                  </span>
-                                )}
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
-                  </div>
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  {formatCurrency(product.price)}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  {formatCurrency(
+                                    product.price * product.stock,
+                                  )}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm">
+                                  {product.stock === 0 && (
+                                    <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs">
+                                      Habis
+                                    </span>
+                                  )}
+                                  {product.stock > 0 && product.stock <= 5 && (
+                                    <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs">
+                                      Rendah
+                                    </span>
+                                  )}
+                                  {product.stock > 5 && (
+                                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs">
+                                      Normal
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
 
@@ -3375,11 +3715,17 @@ const EnhancedPOS: React.FC = () => {
                         <button
                           onClick={() => {
                             const filteredShifts = shifts.filter((shift) => {
-                              if (!reportStartDate && !reportEndDate) return true;
+                              if (!reportStartDate && !reportEndDate)
+                                return true;
                               const shiftDate = new Date(shift.startTime);
-                              const startDate = reportStartDate ? new Date(reportStartDate) : null;
-                              const endDate = reportEndDate ? new Date(reportEndDate) : null;
-                              if (startDate && shiftDate < startDate) return false;
+                              const startDate = reportStartDate
+                                ? new Date(reportStartDate)
+                                : null;
+                              const endDate = reportEndDate
+                                ? new Date(reportEndDate)
+                                : null;
+                              if (startDate && shiftDate < startDate)
+                                return false;
                               if (endDate && shiftDate > endDate) return false;
                               return true;
                             });
@@ -3388,33 +3734,54 @@ const EnhancedPOS: React.FC = () => {
                               const shiftSales = sales.filter(
                                 (s) =>
                                   new Date(s.date).toDateString() ===
-                                  new Date(shift.startTime).toDateString() &&
-                                  s.status === "completed"
+                                    new Date(shift.startTime).toDateString() &&
+                                  s.status === "completed",
                               );
                               const shiftRevenue = shiftSales.reduce(
                                 (sum, sale) => sum + sale.totalAmount,
-                                0
+                                0,
                               );
 
                               return {
-                                tanggal: new Date(shift.startTime).toLocaleDateString("id-ID"),
+                                tanggal: new Date(
+                                  shift.startTime,
+                                ).toLocaleDateString("id-ID"),
                                 kasir: shift.cashierName,
-                                waktu_mulai: new Date(shift.startTime).toLocaleTimeString("id-ID"),
-                                waktu_selesai: shift.endTime ? new Date(shift.endTime).toLocaleTimeString("id-ID") : "-",
+                                waktu_mulai: new Date(
+                                  shift.startTime,
+                                ).toLocaleTimeString("id-ID"),
+                                waktu_selesai: shift.endTime
+                                  ? new Date(shift.endTime).toLocaleTimeString(
+                                      "id-ID",
+                                    )
+                                  : "-",
                                 total_transaksi: shiftSales.length,
-                                total_pendapatan: `Rp ${shiftRevenue.toLocaleString('id-ID')}`,
-                                status: shift.status === "open" ? "Aktif" : "Selesai"
+                                total_pendapatan: `Rp ${shiftRevenue.toLocaleString("id-ID")}`,
+                                status:
+                                  shift.status === "open" ? "Aktif" : "Selesai",
                               };
                             });
 
                             if (shiftData.length > 0) {
-                              const headers = ['Tanggal', 'Kasir', 'Waktu Mulai', 'Waktu Selesai', 'Total Transaksi', 'Total Pendapatan', 'Status'];
-                              exportToCSV(shiftData, "laporan_shift.csv", headers);
+                              const headers = [
+                                "Tanggal",
+                                "Kasir",
+                                "Waktu Mulai",
+                                "Waktu Selesai",
+                                "Total Transaksi",
+                                "Total Pendapatan",
+                                "Status",
+                              ];
+                              exportToCSV(
+                                shiftData,
+                                "laporan_shift.csv",
+                                headers,
+                              );
                             } else {
                               showAlert(
                                 "Tidak Ada Data",
                                 "Tidak ada data shift untuk diekspor.",
-                                "warning"
+                                "warning",
                               );
                             }
                           }}
@@ -3430,44 +3797,77 @@ const EnhancedPOS: React.FC = () => {
                       const filteredShifts = shifts.filter((shift) => {
                         if (!reportStartDate && !reportEndDate) return true;
                         const shiftDate = new Date(shift.startTime);
-                        const startDate = reportStartDate ? new Date(reportStartDate) : null;
-                        const endDate = reportEndDate ? new Date(reportEndDate) : null;
+                        const startDate = reportStartDate
+                          ? new Date(reportStartDate)
+                          : null;
+                        const endDate = reportEndDate
+                          ? new Date(reportEndDate)
+                          : null;
                         if (startDate && shiftDate < startDate) return false;
                         if (endDate && shiftDate > endDate) return false;
                         return true;
                       });
 
                       const totalShifts = filteredShifts.length;
-                      const activeShifts = filteredShifts.filter(s => s.status === "open").length;
-                      const totalRevenue = filteredShifts.reduce((sum, shift) => {
-                        const shiftSales = sales.filter(
-                          (s) =>
-                            new Date(s.date).toDateString() ===
-                            new Date(shift.startTime).toDateString() &&
-                            s.status === "completed"
-                        );
-                        return sum + shiftSales.reduce((saleSum, sale) => saleSum + sale.totalAmount, 0);
-                      }, 0);
+                      const activeShifts = filteredShifts.filter(
+                        (s) => s.status === "open",
+                      ).length;
+                      const totalRevenue = filteredShifts.reduce(
+                        (sum, shift) => {
+                          const shiftSales = sales.filter(
+                            (s) =>
+                              new Date(s.date).toDateString() ===
+                                new Date(shift.startTime).toDateString() &&
+                              s.status === "completed",
+                          );
+                          return (
+                            sum +
+                            shiftSales.reduce(
+                              (saleSum, sale) => saleSum + sale.totalAmount,
+                              0,
+                            )
+                          );
+                        },
+                        0,
+                      );
 
                       return (
                         <div className="bg-white p-4 rounded-md shadow-sm text-gray-700 mb-4">
-                          <h4 className="font-semibold mb-2">Ringkasan Shift</h4>
+                          <h4 className="font-semibold mb-2">
+                            Ringkasan Shift
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="text-center">
-                              <p className="text-sm text-gray-500">Total Shift</p>
-                              <p className="font-bold text-blue-600 text-lg">{totalShifts}</p>
+                              <p className="text-sm text-gray-500">
+                                Total Shift
+                              </p>
+                              <p className="font-bold text-blue-600 text-lg">
+                                {totalShifts}
+                              </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-sm text-gray-500">Shift Aktif</p>
-                              <p className="font-bold text-green-600 text-lg">{activeShifts}</p>
+                              <p className="text-sm text-gray-500">
+                                Shift Aktif
+                              </p>
+                              <p className="font-bold text-green-600 text-lg">
+                                {activeShifts}
+                              </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-sm text-gray-500">Shift Selesai</p>
-                              <p className="font-bold text-gray-600 text-lg">{totalShifts - activeShifts}</p>
+                              <p className="text-sm text-gray-500">
+                                Shift Selesai
+                              </p>
+                              <p className="font-bold text-gray-600 text-lg">
+                                {totalShifts - activeShifts}
+                              </p>
                             </div>
                             <div className="text-center">
-                              <p className="text-sm text-gray-500">Total Pendapatan</p>
-                              <p className="font-bold text-purple-600 text-lg">{formatCurrency(totalRevenue)}</p>
+                              <p className="text-sm text-gray-500">
+                                Total Pendapatan
+                              </p>
+                              <p className="font-bold text-purple-600 text-lg">
+                                {formatCurrency(totalRevenue)}
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -3481,33 +3881,54 @@ const EnhancedPOS: React.FC = () => {
                             const shiftSales = sales.filter(
                               (s) =>
                                 new Date(s.date).toDateString() ===
-                                new Date(shift.startTime).toDateString() &&
-                                s.status === "completed"
+                                  new Date(shift.startTime).toDateString() &&
+                                s.status === "completed",
                             );
                             const shiftRevenue = shiftSales.reduce(
                               (sum, sale) => sum + sale.totalAmount,
-                              0
+                              0,
                             );
 
                             return {
-                              tanggal: new Date(shift.startTime).toLocaleDateString("id-ID"),
+                              tanggal: new Date(
+                                shift.startTime,
+                              ).toLocaleDateString("id-ID"),
                               kasir: shift.cashierName,
-                              waktu_mulai: new Date(shift.startTime).toLocaleTimeString("id-ID"),
-                              waktu_selesai: shift.endTime ? new Date(shift.endTime).toLocaleTimeString("id-ID") : "-",
+                              waktu_mulai: new Date(
+                                shift.startTime,
+                              ).toLocaleTimeString("id-ID"),
+                              waktu_selesai: shift.endTime
+                                ? new Date(shift.endTime).toLocaleTimeString(
+                                    "id-ID",
+                                  )
+                                : "-",
                               total_transaksi: shiftSales.length,
-                              total_pendapatan: `Rp ${shiftRevenue.toLocaleString('id-ID')}`,
-                              status: shift.status === "open" ? "Aktif" : "Selesai"
+                              total_pendapatan: `Rp ${shiftRevenue.toLocaleString("id-ID")}`,
+                              status:
+                                shift.status === "open" ? "Aktif" : "Selesai",
                             };
                           });
 
                           if (shiftData.length > 0) {
-                            const headers = ['Tanggal', 'Kasir', 'Waktu Mulai', 'Waktu Selesai', 'Total Transaksi', 'Total Pendapatan', 'Status'];
-                            exportToCSV(shiftData, "laporan_shift.csv", headers);
+                            const headers = [
+                              "Tanggal",
+                              "Kasir",
+                              "Waktu Mulai",
+                              "Waktu Selesai",
+                              "Total Transaksi",
+                              "Total Pendapatan",
+                              "Status",
+                            ];
+                            exportToCSV(
+                              shiftData,
+                              "laporan_shift.csv",
+                              headers,
+                            );
                           } else {
                             showAlert(
                               "Tidak Ada Data",
                               "Tidak ada data shift untuk diekspor.",
-                              "warning"
+                              "warning",
                             );
                           }
                         }}
@@ -3519,68 +3940,117 @@ const EnhancedPOS: React.FC = () => {
 
                     {/* Stock Analytics Summary */}
                     <div className="bg-white p-4 rounded-md shadow-sm text-gray-700 mb-4">
-                      <h4 className="font-semibold mb-3">Ringkasan Inventori</h4>
+                      <h4 className="font-semibold mb-3">
+                        Ringkasan Inventori
+                      </h4>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Total Produk</p>
-                          <p className="font-bold text-blue-600 text-lg">{products.length}</p>
+                          <p className="font-bold text-blue-600 text-lg">
+                            {products.length}
+                          </p>
                         </div>
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Stok Rendah</p>
                           <p className="font-bold text-red-600 text-lg">
-                            {products.filter(p => p.stock <= 5 && p.stock > 0).length}
+                            {
+                              products.filter(
+                                (p) => p.stock <= 5 && p.stock > 0,
+                              ).length
+                            }
                           </p>
                         </div>
                         <div className="text-center">
                           <p className="text-sm text-gray-500">Stok Habis</p>
                           <p className="font-bold text-orange-600 text-lg">
-                            {products.filter(p => p.stock === 0).length}
+                            {products.filter((p) => p.stock === 0).length}
                           </p>
                         </div>
                         <div className="text-center">
-                          <p className="text-sm text-gray-500">Nilai Total Stok</p>
+                          <p className="text-sm text-gray-500">
+                            Nilai Total Stok
+                          </p>
                           <p className="font-bold text-green-600 text-lg">
-                            {formatCurrency(products.reduce((sum, p) => sum + (p.stock * p.price), 0))}
+                            {formatCurrency(
+                              products.reduce(
+                                (sum, p) => sum + p.stock * p.price,
+                                0,
+                              ),
+                            )}
                           </p>
                         </div>
                       </div>
 
                       {/* Category Breakdown */}
                       <div className="mt-6">
-                        <h5 className="font-semibold mb-3 text-gray-700">Breakdown per Kategori</h5>
+                        <h5 className="font-semibold mb-3 text-gray-700">
+                          Breakdown per Kategori
+                        </h5>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {(() => {
-                            const categoryStats: { [key: string]: { count: number; totalValue: number; lowStock: number } } = {};
+                            const categoryStats: {
+                              [key: string]: {
+                                count: number;
+                                totalValue: number;
+                                lowStock: number;
+                              };
+                            } = {};
 
-                            products.forEach(product => {
-                              const category = product.category || 'Tidak Berkategori';
+                            products.forEach((product) => {
+                              const category =
+                                product.category || "Tidak Berkategori";
                               if (!categoryStats[category]) {
-                                categoryStats[category] = { count: 0, totalValue: 0, lowStock: 0 };
+                                categoryStats[category] = {
+                                  count: 0,
+                                  totalValue: 0,
+                                  lowStock: 0,
+                                };
                               }
                               categoryStats[category].count++;
-                              categoryStats[category].totalValue += product.stock * product.price;
-                              if (product.stock <= 5) categoryStats[category].lowStock++;
+                              categoryStats[category].totalValue +=
+                                product.stock * product.price;
+                              if (product.stock <= 5)
+                                categoryStats[category].lowStock++;
                             });
 
-                            return Object.entries(categoryStats).map(([category, stats]) => (
-                              <div key={category} className="bg-gray-50 p-3 rounded-lg">
-                                <div className="font-medium text-gray-800 mb-2">{category}</div>
-                                <div className="grid grid-cols-3 gap-2 text-sm">
-                                  <div>
-                                    <span className="text-gray-500">Produk:</span>
-                                    <div className="font-medium">{stats.count}</div>
+                            return Object.entries(categoryStats).map(
+                              ([category, stats]) => (
+                                <div
+                                  key={category}
+                                  className="bg-gray-50 p-3 rounded-lg"
+                                >
+                                  <div className="font-medium text-gray-800 mb-2">
+                                    {category}
                                   </div>
-                                  <div>
-                                    <span className="text-gray-500">Nilai:</span>
-                                    <div className="font-medium">{formatCurrency(stats.totalValue)}</div>
-                                  </div>
-                                  <div>
-                                    <span className="text-gray-500">Stok Rendah:</span>
-                                    <div className="font-medium text-red-600">{stats.lowStock}</div>
+                                  <div className="grid grid-cols-3 gap-2 text-sm">
+                                    <div>
+                                      <span className="text-gray-500">
+                                        Produk:
+                                      </span>
+                                      <div className="font-medium">
+                                        {stats.count}
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <span className="text-gray-500">
+                                        Nilai:
+                                      </span>
+                                      <div className="font-medium">
+                                        {formatCurrency(stats.totalValue)}
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <span className="text-gray-500">
+                                        Stok Rendah:
+                                      </span>
+                                      <div className="font-medium text-red-600">
+                                        {stats.lowStock}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ));
+                              ),
+                            );
                           })()}
                         </div>
                       </div>
@@ -3629,12 +4099,19 @@ const EnhancedPOS: React.FC = () => {
                           ) : (
                             shifts
                               .filter((shift) => {
-                                if (!reportStartDate && !reportEndDate) return true;
+                                if (!reportStartDate && !reportEndDate)
+                                  return true;
                                 const shiftDate = new Date(shift.startTime);
-                                const startDate = reportStartDate ? new Date(reportStartDate) : null;
-                                const endDate = reportEndDate ? new Date(reportEndDate) : null;
-                                if (startDate && shiftDate < startDate) return false;
-                                if (endDate && shiftDate > endDate) return false;
+                                const startDate = reportStartDate
+                                  ? new Date(reportStartDate)
+                                  : null;
+                                const endDate = reportEndDate
+                                  ? new Date(reportEndDate)
+                                  : null;
+                                if (startDate && shiftDate < startDate)
+                                  return false;
+                                if (endDate && shiftDate > endDate)
+                                  return false;
                                 return true;
                               })
                               .sort(
@@ -3646,34 +4123,39 @@ const EnhancedPOS: React.FC = () => {
                                 const shiftSales = sales.filter(
                                   (s) =>
                                     new Date(s.date).toDateString() ===
-                                    new Date(shift.startTime).toDateString() &&
-                                    s.status === "completed"
+                                      new Date(
+                                        shift.startTime,
+                                      ).toDateString() &&
+                                    s.status === "completed",
                                 );
                                 const shiftRevenue = shiftSales.reduce(
                                   (sum, sale) => sum + sale.totalAmount,
-                                  0
+                                  0,
                                 );
 
                                 return (
-                                  <tr key={shift.id} className="even:bg-gray-50">
+                                  <tr
+                                    key={shift.id}
+                                    className="even:bg-gray-50"
+                                  >
                                     <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                      {new Date(shift.startTime).toLocaleDateString(
-                                        "id-ID"
-                                      )}
+                                      {new Date(
+                                        shift.startTime,
+                                      ).toLocaleDateString("id-ID")}
                                     </td>
                                     <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
                                       {shift.cashierName}
                                     </td>
                                     <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                      {new Date(shift.startTime).toLocaleTimeString(
-                                        "id-ID"
-                                      )}
+                                      {new Date(
+                                        shift.startTime,
+                                      ).toLocaleTimeString("id-ID")}
                                     </td>
                                     <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
                                       {shift.endTime
-                                        ? new Date(shift.endTime).toLocaleTimeString(
-                                            "id-ID"
-                                          )
+                                        ? new Date(
+                                            shift.endTime,
+                                          ).toLocaleTimeString("id-ID")
                                         : "-"}
                                     </td>
                                     <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
@@ -3690,7 +4172,9 @@ const EnhancedPOS: React.FC = () => {
                                             : "text-blue-600 font-semibold"
                                         }
                                       >
-                                        {shift.status === "open" ? "Aktif" : "Selesai"}
+                                        {shift.status === "open"
+                                          ? "Aktif"
+                                          : "Selesai"}
                                       </span>
                                     </td>
                                     <td className="border border-gray-200 px-3 py-2 text-sm">
@@ -4333,8 +4817,18 @@ const EnhancedPOS: React.FC = () => {
                       {/* Tax Settings */}
                       <div className="bg-white p-6 rounded-lg shadow-sm">
                         <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                            />
                           </svg>
                           Pengaturan Pajak
                         </h4>
@@ -4376,8 +4870,12 @@ const EnhancedPOS: React.FC = () => {
                               }
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                             >
-                              <option value="inclusive">Inclusive (Sudah termasuk dalam harga)</option>
-                              <option value="exclusive">Exclusive (Ditambahkan ke harga)</option>
+                              <option value="inclusive">
+                                Inclusive (Sudah termasuk dalam harga)
+                              </option>
+                              <option value="exclusive">
+                                Exclusive (Ditambahkan ke harga)
+                              </option>
                             </select>
                             <p className="text-sm text-gray-500 mt-1">
                               Pilih apakah pajak sudah termasuk atau ditambahkan
@@ -4389,8 +4887,18 @@ const EnhancedPOS: React.FC = () => {
                       {/* Discount Settings */}
                       <div className="bg-white p-6 rounded-lg shadow-sm">
                         <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-orange-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                            />
                           </svg>
                           Pengaturan Diskon
                         </h4>
@@ -4408,7 +4916,8 @@ const EnhancedPOS: React.FC = () => {
                               onChange={(e) =>
                                 setSettingsForm({
                                   ...settingsForm,
-                                  maxDiscountPercent: parseFloat(e.target.value) || 0,
+                                  maxDiscountPercent:
+                                    parseFloat(e.target.value) || 0,
                                 })
                               }
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
@@ -4429,7 +4938,8 @@ const EnhancedPOS: React.FC = () => {
                               onChange={(e) =>
                                 setSettingsForm({
                                   ...settingsForm,
-                                  quickDiscountAmount: parseFloat(e.target.value) || 0,
+                                  quickDiscountAmount:
+                                    parseFloat(e.target.value) || 0,
                                 })
                               }
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
@@ -4448,35 +4958,53 @@ const EnhancedPOS: React.FC = () => {
                           </label>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             {[5, 10, 15, 20, 25, 30, 50, 100].map((percent) => (
-                              <div key={percent} className="flex items-center space-x-2">
+                              <div
+                                key={percent}
+                                className="flex items-center space-x-2"
+                              >
                                 <input
                                   type="checkbox"
                                   id={`discount-${percent}`}
-                                  checked={settingsForm.quickDiscountPresets?.includes(percent) || false}
+                                  checked={
+                                    settingsForm.quickDiscountPresets?.includes(
+                                      percent,
+                                    ) || false
+                                  }
                                   onChange={(e) => {
-                                    const currentPresets = settingsForm.quickDiscountPresets || [];
+                                    const currentPresets =
+                                      settingsForm.quickDiscountPresets || [];
                                     if (e.target.checked) {
                                       setSettingsForm({
                                         ...settingsForm,
-                                        quickDiscountPresets: [...currentPresets, percent]
+                                        quickDiscountPresets: [
+                                          ...currentPresets,
+                                          percent,
+                                        ],
                                       });
                                     } else {
                                       setSettingsForm({
                                         ...settingsForm,
-                                        quickDiscountPresets: currentPresets.filter(p => p !== percent)
+                                        quickDiscountPresets:
+                                          currentPresets.filter(
+                                            (p) => p !== percent,
+                                          ),
                                       });
                                     }
                                   }}
                                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                                 />
-                                <label htmlFor={`discount-${percent}`} className="text-sm text-gray-700">
+                                <label
+                                  htmlFor={`discount-${percent}`}
+                                  className="text-sm text-gray-700"
+                                >
                                   {percent}%
                                 </label>
                               </div>
                             ))}
                           </div>
                           <p className="text-sm text-gray-500 mt-2">
-                            Pilih preset diskon yang akan ditampilkan sebagai tombol cepat
+                            Pilih preset diskon yang akan ditampilkan sebagai
+                            tombol cepat
                           </p>
                         </div>
                       </div>
@@ -4484,8 +5012,18 @@ const EnhancedPOS: React.FC = () => {
                       {/* Service Charge Settings */}
                       <div className="bg-white p-6 rounded-lg shadow-sm">
                         <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                            />
                           </svg>
                           Biaya Layanan
                         </h4>
@@ -4503,7 +5041,8 @@ const EnhancedPOS: React.FC = () => {
                               onChange={(e) =>
                                 setSettingsForm({
                                   ...settingsForm,
-                                  serviceChargePercent: parseFloat(e.target.value) || 0,
+                                  serviceChargePercent:
+                                    parseFloat(e.target.value) || 0,
                                 })
                               }
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
@@ -4517,7 +5056,9 @@ const EnhancedPOS: React.FC = () => {
                             <input
                               type="checkbox"
                               id="enableServiceCharge"
-                              checked={settingsForm.enableServiceCharge || false}
+                              checked={
+                                settingsForm.enableServiceCharge || false
+                              }
                               onChange={(e) =>
                                 setSettingsForm({
                                   ...settingsForm,
@@ -4526,7 +5067,10 @@ const EnhancedPOS: React.FC = () => {
                               }
                               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                             />
-                            <label htmlFor="enableServiceCharge" className="text-sm font-medium text-gray-700">
+                            <label
+                              htmlFor="enableServiceCharge"
+                              className="text-sm font-medium text-gray-700"
+                            >
                               Aktifkan Biaya Layanan
                             </label>
                           </div>
@@ -4563,8 +5107,18 @@ const EnhancedPOS: React.FC = () => {
                       {/* Export Data Section */}
                       <div className="bg-white p-6 rounded-lg shadow-sm">
                         <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                            />
                           </svg>
                           Export Data (Backup)
                         </h4>
@@ -4583,29 +5137,45 @@ const EnhancedPOS: React.FC = () => {
                                   customers,
                                   sales,
                                   shifts,
-                                  settings
-                                }
+                                  settings,
+                                },
                               };
 
-                              const dataStr = JSON.stringify(backupData, null, 2);
-                              const blob = new Blob([dataStr], { type: 'application/json' });
+                              const dataStr = JSON.stringify(
+                                backupData,
+                                null,
+                                2,
+                              );
+                              const blob = new Blob([dataStr], {
+                                type: "application/json",
+                              });
                               const url = URL.createObjectURL(blob);
-                              const link = document.createElement('a');
+                              const link = document.createElement("a");
                               link.href = url;
-                              link.download = `crema-pos-backup-${new Date().toISOString().split('T')[0]}.json`;
+                              link.download = `crema-pos-backup-${new Date().toISOString().split("T")[0]}.json`;
                               link.click();
                               URL.revokeObjectURL(url);
 
                               showAlert(
                                 "Backup Berhasil",
                                 "Data berhasil diekspor ke file JSON.",
-                                "success"
+                                "success",
                               );
                             }}
                             className="w-full bg-blue-600 text-white px-4 py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-200 flex items-center justify-center"
                           >
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            <svg
+                              className="w-5 h-5 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
                             </svg>
                             Export Semua Data
                           </button>
@@ -4618,29 +5188,48 @@ const EnhancedPOS: React.FC = () => {
                                 data: {
                                   products,
                                   customers,
-                                  settings: { ...settings, rolePermissions: undefined }
-                                }
+                                  settings: {
+                                    ...settings,
+                                    rolePermissions: undefined,
+                                  },
+                                },
                               };
 
-                              const dataStr = JSON.stringify(backupData, null, 2);
-                              const blob = new Blob([dataStr], { type: 'application/json' });
+                              const dataStr = JSON.stringify(
+                                backupData,
+                                null,
+                                2,
+                              );
+                              const blob = new Blob([dataStr], {
+                                type: "application/json",
+                              });
                               const url = URL.createObjectURL(blob);
-                              const link = document.createElement('a');
+                              const link = document.createElement("a");
                               link.href = url;
-                              link.download = `crema-pos-master-data-${new Date().toISOString().split('T')[0]}.json`;
+                              link.download = `crema-pos-master-data-${new Date().toISOString().split("T")[0]}.json`;
                               link.click();
                               URL.revokeObjectURL(url);
 
                               showAlert(
                                 "Export Berhasil",
                                 "Data master berhasil diekspor.",
-                                "success"
+                                "success",
                               );
                             }}
                             className="w-full bg-green-600 text-white px-4 py-3 rounded-md font-semibold hover:bg-green-700 transition duration-200 flex items-center justify-center"
                           >
-                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            <svg
+                              className="w-5 h-5 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                              />
                             </svg>
                             Export Data Master
                           </button>
@@ -4650,8 +5239,18 @@ const EnhancedPOS: React.FC = () => {
                       {/* Import Data Section */}
                       <div className="bg-white p-6 rounded-lg shadow-sm">
                         <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                            />
                           </svg>
                           Import Data (Restore)
                         </h4>
@@ -4669,33 +5268,48 @@ const EnhancedPOS: React.FC = () => {
                                   const reader = new FileReader();
                                   reader.onload = async (event) => {
                                     try {
-                                      const backupData = JSON.parse(event.target?.result as string);
+                                      const backupData = JSON.parse(
+                                        event.target?.result as string,
+                                      );
 
                                       const confirmed = await showConfirm(
                                         "Konfirmasi Import",
                                         "Import data akan mengganti data yang ada. Pastikan Anda sudah backup data sebelumnya. Lanjutkan?",
-                                        "warning"
+                                        "warning",
                                       );
 
                                       if (confirmed) {
                                         if (backupData.data) {
-                                          if (backupData.data.users) setUsers(backupData.data.users);
-                                          if (backupData.data.products) setProducts(backupData.data.products);
-                                          if (backupData.data.customers) setCustomers(backupData.data.customers);
-                                          if (backupData.data.sales) setSales(backupData.data.sales);
-                                          if (backupData.data.shifts) setShifts(backupData.data.shifts);
-                                          if (backupData.data.settings) setSettings({ ...settings, ...backupData.data.settings });
+                                          if (backupData.data.users)
+                                            setUsers(backupData.data.users);
+                                          if (backupData.data.products)
+                                            setProducts(
+                                              backupData.data.products,
+                                            );
+                                          if (backupData.data.customers)
+                                            setCustomers(
+                                              backupData.data.customers,
+                                            );
+                                          if (backupData.data.sales)
+                                            setSales(backupData.data.sales);
+                                          if (backupData.data.shifts)
+                                            setShifts(backupData.data.shifts);
+                                          if (backupData.data.settings)
+                                            setSettings({
+                                              ...settings,
+                                              ...backupData.data.settings,
+                                            });
 
                                           showAlert(
                                             "Import Berhasil",
                                             "Data berhasil diimport dari file backup.",
-                                            "success"
+                                            "success",
                                           );
                                         } else {
                                           showAlert(
                                             "Format Tidak Valid",
                                             "File backup tidak memiliki format yang benar.",
-                                            "error"
+                                            "error",
                                           );
                                         }
                                       }
@@ -4703,7 +5317,7 @@ const EnhancedPOS: React.FC = () => {
                                       showAlert(
                                         "Error Import",
                                         "Gagal membaca file backup. Pastikan file valid.",
-                                        "error"
+                                        "error",
                                       );
                                     }
                                   };
@@ -4719,15 +5333,27 @@ const EnhancedPOS: React.FC = () => {
 
                           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                             <div className="flex">
-                              <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                              <svg
+                                className="w-5 h-5 text-yellow-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                                />
                               </svg>
                               <div className="ml-3">
                                 <h3 className="text-sm font-medium text-yellow-800">
                                   Peringatan
                                 </h3>
                                 <p className="text-sm text-yellow-700 mt-1">
-                                  Import data akan mengganti semua data yang ada. Pastikan backup data saat ini sebelum melakukan import.
+                                  Import data akan mengganti semua data yang
+                                  ada. Pastikan backup data saat ini sebelum
+                                  melakukan import.
                                 </p>
                               </div>
                             </div>
@@ -4739,8 +5365,18 @@ const EnhancedPOS: React.FC = () => {
                     {/* Auto Backup Settings */}
                     <div className="mt-6 bg-white p-6 rounded-lg shadow-sm">
                       <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                        <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-5 h-5 mr-2 text-purple-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         Pengaturan Auto Backup
                       </h4>
@@ -4758,7 +5394,10 @@ const EnhancedPOS: React.FC = () => {
                             }
                             className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                           />
-                          <label htmlFor="autoBackup" className="text-sm font-medium text-gray-700">
+                          <label
+                            htmlFor="autoBackup"
+                            className="text-sm font-medium text-gray-700"
+                          >
                             Aktifkan Auto Backup Harian
                           </label>
                         </div>
@@ -4815,7 +5454,8 @@ const EnhancedPOS: React.FC = () => {
                             </span>
                           </label>
                           <p className="text-sm text-gray-500 mt-2">
-                            Mengaktifkan pencetakan otomatis ke thermal printer untuk struk
+                            Mengaktifkan pencetakan otomatis ke thermal printer
+                            untuk struk
                           </p>
                         </div>
 
@@ -4877,8 +5517,8 @@ const EnhancedPOS: React.FC = () => {
                                     productId: "test",
                                     name: "Test Item",
                                     price: 10000,
-                                    quantity: 1
-                                  }
+                                    quantity: 1,
+                                  },
                                 ],
                                 totalAmount: 10000,
                                 paymentMethod: "cash",
@@ -4886,7 +5526,7 @@ const EnhancedPOS: React.FC = () => {
                                 customer: null,
                                 status: "completed",
                                 processedByUserId: currentUser?.id || "test",
-                                shiftId: currentShift?.id || "test"
+                                shiftId: currentShift?.id || "test",
                               };
 
                               // Print test receipt
@@ -4895,7 +5535,7 @@ const EnhancedPOS: React.FC = () => {
                               addNotification(
                                 "info",
                                 "Test Print",
-                                "Test receipt telah dikirim untuk dicetak"
+                                "Test receipt telah dikirim untuk dicetak",
                               );
                             }}
                             disabled={!settings.thermalPrinterEnabled}
@@ -4912,11 +5552,25 @@ const EnhancedPOS: React.FC = () => {
                           Petunjuk Penggunaan:
                         </h4>
                         <ul className="text-sm text-blue-700 space-y-1">
-                          <li>• Pastikan thermal printer sudah terhubung via USB atau jaringan</li>
-                          <li>• Untuk printer USB, browser akan meminta izin akses serial port</li>
-                          <li>• Untuk printer jaringan, masukkan IP address yang benar</li>
-                          <li>• Gunakan "Test Print" untuk memastikan printer berfungsi</li>
-                          <li>• Printer thermal mendukung kertas 58mm dan 80mm</li>
+                          <li>
+                            • Pastikan thermal printer sudah terhubung via USB
+                            atau jaringan
+                          </li>
+                          <li>
+                            • Untuk printer USB, browser akan meminta izin akses
+                            serial port
+                          </li>
+                          <li>
+                            • Untuk printer jaringan, masukkan IP address yang
+                            benar
+                          </li>
+                          <li>
+                            • Gunakan "Test Print" untuk memastikan printer
+                            berfungsi
+                          </li>
+                          <li>
+                            • Printer thermal mendukung kertas 58mm dan 80mm
+                          </li>
                         </ul>
                       </div>
                     </div>
@@ -5007,7 +5661,9 @@ const EnhancedPOS: React.FC = () => {
                                   }}
                                   className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs hover:bg-blue-200 transition-colors"
                                 >
-                                  {settings.rolePermissions[user.role]?.length || 0} modul
+                                  {settings.rolePermissions[user.role]
+                                    ?.length || 0}{" "}
+                                  modul
                                 </button>
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
@@ -5519,41 +6175,66 @@ const EnhancedPOS: React.FC = () => {
             </div>
             <div className="p-6">
               <p className="text-gray-600 mb-6">
-                Pilih modul yang dapat diakses oleh user <strong>{selectedUserForPermissions.username}</strong> dengan role <strong>{selectedUserForPermissions.role}</strong>:
+                Pilih modul yang dapat diakses oleh user{" "}
+                <strong>{selectedUserForPermissions.username}</strong> dengan
+                role <strong>{selectedUserForPermissions.role}</strong>:
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 {allModules.map((module) => {
-                  const isChecked = settings.rolePermissions[selectedUserForPermissions.role]?.includes(module.id) || false;
+                  const isChecked =
+                    settings.rolePermissions[
+                      selectedUserForPermissions.role
+                    ]?.includes(module.id) || false;
 
                   return (
-                    <label key={module.id} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                    <label
+                      key={module.id}
+                      className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                    >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={(e) => {
-                          const newPermissions = { ...settings.rolePermissions };
-                          if (!newPermissions[selectedUserForPermissions.role]) {
-                            newPermissions[selectedUserForPermissions.role] = [];
+                          const newPermissions = {
+                            ...settings.rolePermissions,
+                          };
+                          if (
+                            !newPermissions[selectedUserForPermissions.role]
+                          ) {
+                            newPermissions[selectedUserForPermissions.role] =
+                              [];
                           }
 
                           if (e.target.checked) {
-                            if (!newPermissions[selectedUserForPermissions.role].includes(module.id)) {
-                              newPermissions[selectedUserForPermissions.role].push(module.id);
+                            if (
+                              !newPermissions[
+                                selectedUserForPermissions.role
+                              ].includes(module.id)
+                            ) {
+                              newPermissions[
+                                selectedUserForPermissions.role
+                              ].push(module.id);
                             }
                           } else {
-                            newPermissions[selectedUserForPermissions.role] = newPermissions[selectedUserForPermissions.role].filter(
-                              (id) => id !== module.id
-                            );
+                            newPermissions[selectedUserForPermissions.role] =
+                              newPermissions[
+                                selectedUserForPermissions.role
+                              ].filter((id) => id !== module.id);
                           }
 
-                          setSettings({ ...settings, rolePermissions: newPermissions });
+                          setSettings({
+                            ...settings,
+                            rolePermissions: newPermissions,
+                          });
                         }}
                         className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       />
                       <div className="flex items-center space-x-2">
                         <span className="text-lg">{module.icon}</span>
-                        <span className="font-medium text-gray-700">{module.name}</span>
+                        <span className="font-medium text-gray-700">
+                          {module.name}
+                        </span>
                       </div>
                     </label>
                   );
@@ -5567,7 +6248,9 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                   <div className="ml-3">
                     <p className="text-sm text-blue-700">
-                      <strong>Catatan:</strong> Perubahan izin akan diterapkan segera. User perlu login ulang jika sedang aktif untuk melihat perubahan.
+                      <strong>Catatan:</strong> Perubahan izin akan diterapkan
+                      segera. User perlu login ulang jika sedang aktif untuk
+                      melihat perubahan.
                     </p>
                   </div>
                 </div>
@@ -5590,7 +6273,7 @@ const EnhancedPOS: React.FC = () => {
                     showAlert(
                       "Berhasil",
                       `Izin akses untuk ${selectedUserForPermissions.username} telah diperbarui.`,
-                      "success"
+                      "success",
                     );
                     setShowPermissionsModal(false);
                     setSelectedUserForPermissions(null);
