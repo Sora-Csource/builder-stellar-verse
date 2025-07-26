@@ -2122,7 +2122,7 @@ const EnhancedPOS: React.FC = () => {
                             <div>
                               <label className="block text-gray-700 font-bold mb-2">Pesan Terima Kasih:</label>
                               <textarea
-                                value={receiptSettingsForm.customThankYouMessage}
+                                value={receiptSettingsForm.customThankYouMessage || 'Terima kasih atas pembelian Anda!'}
                                 onChange={(e) => setReceiptSettingsForm({ ...receiptSettingsForm, customThankYouMessage: e.target.value })}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                                 rows={2}
