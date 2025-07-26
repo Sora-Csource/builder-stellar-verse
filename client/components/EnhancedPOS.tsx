@@ -818,10 +818,11 @@ const EnhancedPOS: React.FC = () => {
     setShowProductModal(true);
   };
 
-  const handleDeleteProduct = (productId: string) => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+  const handleDeleteProduct = async (productId: string) => {
+    const confirmed = await showConfirm('Konfirmasi Hapus', 'Apakah Anda yakin ingin menghapus produk ini?', 'danger');
+    if (confirmed) {
       setProducts(products.filter(p => p.id !== productId));
-      alert('Produk berhasil dihapus.');
+      showAlert('Berhasil', 'Produk berhasil dihapus.', 'success');
     }
   };
 
