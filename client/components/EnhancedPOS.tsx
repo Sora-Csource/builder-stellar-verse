@@ -1906,6 +1906,9 @@ const EnhancedPOS: React.FC = () => {
                     </button>
                   </form>
                 </div>
+
+                {/* Keyboard Shortcuts Help */}
+                <KeyboardShortcutsHelp />
               </div>
             )}
 
