@@ -296,6 +296,89 @@ const EnhancedPOS: React.FC = () => {
     { id: "user-management", name: "Akun" },
   ];
 
+  // Utility functions
+  const generateUniqueId = () => {
+    return "id-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+  };
+
+  // Notification functions
+  const addNotification = (type: "info" | "warning" | "error" | "success", title: string, message: string) => {
+    const newNotification = {
+      id: generateUniqueId(),
+      type,
+      title,
+      message,
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+
+  const markNotificationAsRead = (id: string) => {
+    setNotifications(prev => prev.map(notif =>
+      notif.id === id ? { ...notif, read: true } : notif
+    ));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
+
+  const getUnreadCount = () => {
+    return notifications.filter(n => !n.read).length;
+  };
+
+  // Monitor stock levels and create notifications
+  useEffect(() => {
+    const outOfStockProducts = products.filter(p => p.stock === 0);
+    const lowStockProducts = products.filter(p => p.stock > 0 && p.stock <= 5);
+
+    // Clear existing stock notifications
+    setNotifications(prev => prev.filter(n =>
+      !n.message.includes("stok habis") && !n.message.includes("stok rendah")
+    ));
+
+    // Add out of stock notifications
+    if (outOfStockProducts.length > 0) {
+      addNotification(
+        "error",
+        "Produk Stok Habis",
+        `${outOfStockProducts.length} produk kehabisan stok: ${outOfStockProducts.map(p => p.name).join(", ")}`
+      );
+    }
+
+    // Add low stock notifications
+    if (lowStockProducts.length > 0) {
+      addNotification(
+        "warning",
+        "Stok Rendah",
+        `${lowStockProducts.length} produk dengan stok rendah: ${lowStockProducts.map(p => `${p.name} (${p.stock})`).join(", ")}`
+      );
+    }
+  }, [products]);
+
+  // Monitor online status and create notifications
+  useEffect(() => {
+    // Clear existing online/offline notifications
+    setNotifications(prev => prev.filter(n =>
+      !n.message.includes("internet") && !n.message.includes("online") && !n.message.includes("offline")
+    ));
+
+    if (isOnline) {
+      addNotification(
+        "success",
+        "Status Koneksi",
+        "Terhubung ke internet"
+      );
+    } else {
+      addNotification(
+        "warning",
+        "Status Koneksi",
+        "Mode offline - Data akan disinkronkan saat online"
+      );
+    }
+  }, [isOnline]);
+
   // Sample data initialization
   const initializeSampleData = () => {
     if (products.length === 0) {
