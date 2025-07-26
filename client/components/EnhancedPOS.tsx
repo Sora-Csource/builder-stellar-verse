@@ -397,6 +397,18 @@ const EnhancedPOS: React.FC = () => {
     return "id-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
   };
 
+  const generateShiftId = () => {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hour = now.getHours().toString().padStart(2, '0');
+    const minute = now.getMinutes().toString().padStart(2, '0');
+    const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
+
+    return `SH${year}${month}${day}-${hour}${minute}-${random}`;
+  };
+
   const formatCurrency = (amount: number) => {
     const numAmount = Number(amount);
     if (isNaN(numAmount)) return `${settings.currencySymbol} 0`;
