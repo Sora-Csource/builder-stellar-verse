@@ -1637,7 +1637,7 @@ const EnhancedPOS: React.FC = () => {
     }
 
     const newShift: Shift = {
-      id: generateUniqueId(),
+      id: generateShiftId(),
       userId: currentUser.id,
       startTime: new Date().toISOString(),
       startCash: initialCash,
