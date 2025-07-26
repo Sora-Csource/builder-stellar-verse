@@ -174,6 +174,7 @@ const EnhancedPOS: React.FC = () => {
     storeName: 'Crema POS',
     taxRate: 10,
     currencySymbol: 'Rp',
+    logo: '',
     rolePermissions: {
       admin: ['order-entry', 'stock-management', 'customer-management', 'reports', 'shift-management', 'settings', 'integration', 'user-management'],
       supervisor: ['order-entry', 'stock-management', 'customer-management', 'reports', 'shift-management', 'user-management'],
@@ -190,7 +191,10 @@ const EnhancedPOS: React.FC = () => {
       showChange: true,
       showPaymentMethod: true,
       showThankYouMessage: true,
-      customThankYouMessage: 'Terima kasih atas pembelian Anda!'
+      customThankYouMessage: 'Terima kasih atas pembelian Anda!',
+      headerText: '',
+      footerText: '',
+      showLogo: true
     }
   });
 
