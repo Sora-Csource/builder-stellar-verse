@@ -110,6 +110,33 @@ const EnhancedPOS: React.FC = () => {
   // Offline functionality
   const { isOnline, getOfflineStatus, saveOfflineData, addOfflineSale } = useOffline();
 
+  // Notification functions (moved here to be available in useEffect)
+  const addNotification = (type: "info" | "warning" | "error" | "success", title: string, message: string) => {
+    const newNotification = {
+      id: generateUniqueId(),
+      type,
+      title,
+      message,
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+  };
+
+  const markNotificationAsRead = (id: string) => {
+    setNotifications(prev => prev.map(notif =>
+      notif.id === id ? { ...notif, read: true } : notif
+    ));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
+
+  const getUnreadCount = () => {
+    return notifications.filter(n => !n.read).length;
+  };
+
   // Monitor stock levels and create notifications
   useEffect(() => {
     const outOfStockProducts = products.filter(p => p.stock === 0);
