@@ -2162,7 +2162,7 @@ const EnhancedPOS: React.FC = () => {
                               <label key={item.key} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                                 <input
                                   type="checkbox"
-                                  checked={receiptSettingsForm[item.key as keyof typeof receiptSettingsForm] as boolean}
+                                  checked={Boolean(receiptSettingsForm[item.key as keyof typeof receiptSettingsForm])}
                                   onChange={(e) => setReceiptSettingsForm({
                                     ...receiptSettingsForm,
                                     [item.key]: e.target.checked
