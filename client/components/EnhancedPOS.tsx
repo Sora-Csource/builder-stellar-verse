@@ -2004,26 +2004,91 @@ const EnhancedPOS: React.FC = () => {
               </span>
             </div>
 
-            {/* Offline Status Indicator */}
-            {(() => {
-              const status = getOfflineStatus();
-              return (
-                <div className={`mb-4 p-3 rounded-lg border-l-4 ${
-                  status.status === 'online'
-                    ? 'bg-green-50 border-green-400 text-green-700'
-                    : status.status === 'offline'
-                    ? 'bg-yellow-50 border-yellow-400 text-yellow-700'
-                    : 'bg-red-50 border-red-400 text-red-700'
-                }`}>
-                  <div className="flex items-center">
-                    <span className="mr-2">
-                      {status.status === 'online' ? '🟢' : status.status === 'offline' ? '🟡' : '🔴'}
+            {/* Notification Center */}
+            <div className="mb-4 relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="flex items-center space-x-2 bg-white border border-gray-200 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors shadow-sm w-full"
+              >
+                <div className="relative">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                  </svg>
+                  {getUnreadCount() > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                      {getUnreadCount()}
                     </span>
-                    <span className="text-sm font-medium">{status.message}</span>
+                  )}
+                </div>
+                <span className="text-sm font-medium text-gray-700">
+                  Notifikasi {getUnreadCount() > 0 && `(${getUnreadCount()})`}
+                </span>
+                <svg className={`w-4 h-4 text-gray-400 transition-transform ${showNotifications ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Notification Dropdown */}
+              {showNotifications && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                  <div className="p-3 border-b border-gray-200 flex items-center justify-between">
+                    <h3 className="text-sm font-semibold text-gray-800">Notifikasi</h3>
+                    {notifications.length > 0 && (
+                      <button
+                        onClick={clearAllNotifications}
+                        className="text-xs text-gray-500 hover:text-gray-700"
+                      >
+                        Hapus Semua
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-gray-500">
+                        <svg className="w-8 h-8 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                        </svg>
+                        <p className="text-sm">Tidak ada notifikasi</p>
+                      </div>
+                    ) : (
+                      notifications.map((notification) => (
+                        <div
+                          key={notification.id}
+                          onClick={() => markNotificationAsRead(notification.id)}
+                          className={`p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
+                            !notification.read ? 'bg-blue-50' : ''
+                          }`}
+                        >
+                          <div className="flex items-start space-x-2">
+                            <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                              notification.type === 'error' ? 'bg-red-500' :
+                              notification.type === 'warning' ? 'bg-yellow-500' :
+                              notification.type === 'success' ? 'bg-green-500' :
+                              'bg-blue-500'
+                            }`} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900">
+                                {notification.title}
+                              </p>
+                              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {notification.timestamp.toLocaleTimeString('id-ID')}
+                              </p>
+                            </div>
+                            {!notification.read && (
+                              <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2" />
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
-              );
-            })()}
+              )}
+            </div>
 
             {/* Order Entry Module */}
             {activeModule === "order-entry" &&
