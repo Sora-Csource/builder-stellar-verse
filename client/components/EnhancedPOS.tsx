@@ -1713,7 +1713,7 @@ const EnhancedPOS: React.FC = () => {
               />
             </div>
             <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
-              Login POS
+              <p>Login</p>
             </h2>
             <form onSubmit={handleLogin}>
               <div className="mb-4">
