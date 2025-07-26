@@ -570,14 +570,30 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Export functions
-  const exportToCSV = (data: any[], filename: string) => {
-    const headers = Object.keys(data[0]).join(",");
-    const rows = data.map((row) => Object.values(row).join(",")).join("\n");
-    const csvContent = `${headers}\n${rows}`;
+  const exportToCSV = (data: any[], filename: string, customHeaders?: string[]) => {
+    if (data.length === 0) return;
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    // Escape CSV values and wrap in quotes if needed
+    const escapeCSVValue = (value: any) => {
+      const str = String(value || '');
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const headers = customHeaders || Object.keys(data[0]);
+    const headerRow = headers.map(escapeCSVValue).join(',');
+    const rows = data.map((row) =>
+      headers.map(key => escapeCSVValue(row[key])).join(',')
+    ).join('\n');
+
+    // Add UTF-8 BOM for proper Excel support
+    const csvContent = `\uFEFF${headerRow}\n${rows}`;
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
     link.download = filename;
     link.click();
@@ -2377,15 +2393,21 @@ const EnhancedPOS: React.FC = () => {
                         onClick={() => {
                           const salesData = getFilteredSales().map((sale) => ({
                             id: sale.id,
-                            date: new Date(sale.date).toLocaleDateString(
+                            tanggal: new Date(sale.date).toLocaleDateString(
                               "id-ID",
                             ),
-                            total: sale.totalAmount,
-                            payment: sale.paymentMethod,
+                            waktu: new Date(sale.date).toLocaleTimeString(
+                              "id-ID",
+                            ),
+                            total: `Rp ${sale.totalAmount.toLocaleString('id-ID')}`,
+                            pembayaran: sale.paymentMethod,
                             status: sale.status,
+                            items: sale.items.map(item => `${item.name} (${item.quantity}x)`).join('; '),
+                            kasir: sale.cashier || 'Admin'
                           }));
                           if (salesData.length > 0) {
-                            exportToCSV(salesData, "laporan_penjualan.csv");
+                            const headers = ['ID Transaksi', 'Tanggal', 'Waktu', 'Total', 'Metode Pembayaran', 'Status', 'Items', 'Kasir'];
+                            exportToCSV(salesData, "laporan_penjualan.csv", headers);
                           } else {
                             showAlert(
                               "Tidak Ada Data",
