@@ -2082,9 +2082,9 @@ const EnhancedPOS: React.FC = () => {
                         </table>
                       </div>
 
-                      <button
-                        onClick={async () => {
-                          if (cart.length > 0) {
+                      {cart.length > 0 && (
+                        <button
+                          onClick={async () => {
                             const confirmed = await showConfirm(
                               "Konfirmasi",
                               "Apakah Anda yakin ingin mengosongkan keranjang?",
@@ -2093,12 +2093,12 @@ const EnhancedPOS: React.FC = () => {
                             if (confirmed) {
                               setCart([]);
                             }
-                          }
-                        }}
-                        className="w-full bg-gray-600 text-white py-2 rounded-md font-semibold hover:bg-gray-700 transition duration-200 mb-4"
-                      >
-                        Kosongkan Keranjang
-                      </button>
+                          }}
+                          className="w-full bg-gray-600 text-white py-2 rounded-md font-semibold hover:bg-gray-700 transition duration-200 mb-4"
+                        >
+                          Kosongkan Keranjang
+                        </button>
+                      )}
 
                       {/* Discount Section */}
                       {cart.length > 0 && (
