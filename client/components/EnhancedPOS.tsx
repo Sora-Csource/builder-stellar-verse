@@ -3960,6 +3960,106 @@ const EnhancedPOS: React.FC = () => {
         </div>
       )}
 
+      {/* Permissions Management Modal */}
+      {showPermissionsModal && selectedUserForPermissions && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all border border-gray-100">
+            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-xl">
+              <div className="flex items-center space-x-3">
+                <div className="text-2xl">🔐</div>
+                <h3 className="text-xl font-bold">
+                  Kelola Izin Akses - {selectedUserForPermissions.username}
+                </h3>
+              </div>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-600 mb-6">
+                Pilih modul yang dapat diakses oleh user <strong>{selectedUserForPermissions.username}</strong> dengan role <strong>{selectedUserForPermissions.role}</strong>:
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {allModules.map((module) => {
+                  const isChecked = settings.rolePermissions[selectedUserForPermissions.role]?.includes(module.id) || false;
+
+                  return (
+                    <label key={module.id} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={(e) => {
+                          const newPermissions = { ...settings.rolePermissions };
+                          if (!newPermissions[selectedUserForPermissions.role]) {
+                            newPermissions[selectedUserForPermissions.role] = [];
+                          }
+
+                          if (e.target.checked) {
+                            if (!newPermissions[selectedUserForPermissions.role].includes(module.id)) {
+                              newPermissions[selectedUserForPermissions.role].push(module.id);
+                            }
+                          } else {
+                            newPermissions[selectedUserForPermissions.role] = newPermissions[selectedUserForPermissions.role].filter(
+                              (id) => id !== module.id
+                            );
+                          }
+
+                          setSettings({ ...settings, rolePermissions: newPermissions });
+                        }}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">{module.icon}</span>
+                        <span className="font-medium text-gray-700">{module.name}</span>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <span className="text-blue-400 text-lg">ℹ️</span>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-blue-700">
+                      <strong>Catatan:</strong> Perubahan izin akan diterapkan segera. User perlu login ulang jika sedang aktif untuk melihat perubahan.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPermissionsModal(false);
+                    setSelectedUserForPermissions(null);
+                  }}
+                  className="px-6 py-3 bg-gray-500 text-white rounded-md font-semibold hover:bg-gray-600 transition duration-200"
+                >
+                  Tutup
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    showAlert(
+                      "Berhasil",
+                      `Izin akses untuk ${selectedUserForPermissions.username} telah diperbarui.`,
+                      "success"
+                    );
+                    setShowPermissionsModal(false);
+                    setSelectedUserForPermissions(null);
+                  }}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+                >
+                  Simpan Perubahan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Custom Modals */}
       <Modals />
     </div>
