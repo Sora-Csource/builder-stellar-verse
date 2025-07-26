@@ -1068,7 +1068,12 @@ const EnhancedPOS: React.FC = () => {
       setSettingsForm({
         storeName: settings.storeName,
         taxRate: settings.taxRate,
-        currencySymbol: settings.currencySymbol
+        currencySymbol: settings.currencySymbol,
+        logo: settings.logo || ''
+      });
+
+      setReceiptSettingsForm({
+        ...settings.receiptSettings
       });
     }
   }, [activeModule, settings]);
