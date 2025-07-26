@@ -3454,6 +3454,17 @@ const EnhancedPOS: React.FC = () => {
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
                                 <button
+                                  onClick={() => {
+                                    setSelectedUserForPermissions(user);
+                                    setShowPermissionsModal(true);
+                                  }}
+                                  className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs hover:bg-blue-200 transition-colors"
+                                >
+                                  {settings.rolePermissions[user.role]?.length || 0} modul
+                                </button>
+                              </td>
+                              <td className="border border-gray-200 px-3 py-2 text-sm">
+                                <button
                                   onClick={() => handleEditUser(user)}
                                   className="text-indigo-600 hover:text-indigo-900 mr-4"
                                 >
