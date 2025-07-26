@@ -42,9 +42,14 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 
 ### ⚙️ Pengaturan & Kustomisasi
 - 🏪 Konfigurasi toko (nama, pajak, mata uang)
-- 🧾 Pengaturan struk
+- 💰 Pengaturan finansial (pajak, diskon, service charge)
+- 🧾 Pengaturan struk dengan customization lengkap
+- 🖨️ Konfigurasi thermal printer dan receipt settings
+- 📁 Sistem backup/restore data dengan export/import
 - ⌨️ Keyboard shortcuts untuk efisiensi
 - 💾 Auto-save dengan localStorage
+- 🔔 Notification center dengan status online/offline
+- ⚠️ Alert stok rendah dan habis otomatis
 
 ## 💻 Persyaratan Sistem
 
@@ -173,7 +178,7 @@ enhanced-pos-system/
 │   │   └── useKeyboardShortcuts.tsx
 │   ├── pages/             # Page components
 │   ├── lib/               # Utility functions
-│   └─��� global.css         # Global styles
+│   └── global.css         # Global styles
 ├── server/                # Backend Express server
 │   ├── routes/            # API routes
 │   └── index.ts           # Server entry point
