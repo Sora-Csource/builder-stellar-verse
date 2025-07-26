@@ -2155,13 +2155,7 @@ const EnhancedPOS: React.FC = () => {
                   <option value="staff">Staff</option>
                 </select>
               </div>
-              <div className="flex space-x-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
-                >
-                  Simpan Pengguna
-                </button>
+              <div className="flex space-x-4 pt-4 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={() => {
@@ -2169,9 +2163,15 @@ const EnhancedPOS: React.FC = () => {
                     setEditingUser(null);
                     setUserForm({ username: '', password: '', role: 'kasir' });
                   }}
-                  className="flex-1 bg-gray-600 text-white py-2 rounded-md font-semibold hover:bg-gray-700 transition duration-200"
+                  className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-200"
                 >
                   Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-200 shadow-md"
+                >
+                  🔐 Simpan Pengguna
                 </button>
               </div>
             </form>
