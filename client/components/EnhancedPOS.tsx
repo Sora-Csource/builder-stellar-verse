@@ -169,6 +169,9 @@ const EnhancedPOS: React.FC = () => {
   // Settings tab state
   const [activeSettingsTab, setActiveSettingsTab] = useState('general');
 
+  // Reports tab state
+  const [activeReportsTab, setActiveReportsTab] = useState('sales');
+
   // Settings state
   const [settings, setSettings] = useState<Settings>({
     storeName: 'Crema POS',
