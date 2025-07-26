@@ -611,24 +611,24 @@ const EnhancedPOS: React.FC = () => {
   const addToCart = (productId: string) => {
     const product = products.find(p => p.id === productId);
     if (!product) {
-      alert('Produk tidak ditemukan.');
+      showAlert('Produk Tidak Ditemukan', 'Produk tidak ditemukan.', 'error');
       return;
     }
 
     if (product.stock <= 0) {
-      alert(`Stok ${product.name} saat ini kosong.`);
+      showAlert('Stok Habis', `Stok ${product.name} saat ini kosong.`, 'warning');
       return;
     }
 
     if (!currentShift || currentShift.status !== 'open') {
-      alert('Anda harus memulai shift untuk menambahkan produk ke keranjang.');
+      showAlert('Shift Diperlukan', 'Anda harus memulai shift untuk menambahkan produk ke keranjang.', 'warning');
       return;
     }
 
     const existingItem = cart.find(item => item.productId === productId);
     if (existingItem) {
       if (existingItem.quantity + 1 > product.stock) {
-        alert(`Hanya ada ${product.stock} unit ${product.name} yang tersedia.`);
+        showAlert('Stok Tidak Cukup', `Hanya ada ${product.stock} unit ${product.name} yang tersedia.`, 'warning');
         return;
       }
       setCart(cart.map(item => 
