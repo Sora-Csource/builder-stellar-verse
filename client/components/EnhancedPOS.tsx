@@ -2400,10 +2400,11 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg shadow-inner">
-                  <h3 className="text-xl font-semibold mb-3 text-gray-800">
-                    Filter Laporan Penjualan
-                  </h3>
+                {activeReportsTab === "sales" && (
+                  <div className="mb-6 p-4 bg-gray-50 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-3 text-gray-800">
+                      Filter Laporan Penjualan
+                    </h3>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                     <div>
                       <label className="block text-gray-700 font-bold mb-2">
@@ -2744,7 +2745,8 @@ const EnhancedPOS: React.FC = () => {
                       </tbody>
                     </table>
                   </div>
-                </div>
+                  </div>
+                )}
 
                 {activeReportsTab === "stock" && (
                   <div className="mt-6 p-4 bg-gray-50 rounded-lg shadow-inner">
