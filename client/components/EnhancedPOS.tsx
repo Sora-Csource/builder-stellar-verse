@@ -4369,6 +4369,241 @@ const EnhancedPOS: React.FC = () => {
                     <KeyboardShortcutsHelp />
                   </div>
                 )}
+
+                {/* Backup Data Tab */}
+                {activeSettingsTab === "backup" && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-6 text-gray-800">
+                      Backup & Restore Data
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Export Data Section */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                          </svg>
+                          Export Data (Backup)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-4">
+                          Ekspor semua data POS ke file JSON untuk backup
+                        </p>
+                        <div className="space-y-3">
+                          <button
+                            onClick={() => {
+                              const backupData = {
+                                timestamp: new Date().toISOString(),
+                                version: "1.0",
+                                data: {
+                                  users,
+                                  products,
+                                  customers,
+                                  sales,
+                                  shifts,
+                                  settings
+                                }
+                              };
+
+                              const dataStr = JSON.stringify(backupData, null, 2);
+                              const blob = new Blob([dataStr], { type: 'application/json' });
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement('a');
+                              link.href = url;
+                              link.download = `crema-pos-backup-${new Date().toISOString().split('T')[0]}.json`;
+                              link.click();
+                              URL.revokeObjectURL(url);
+
+                              showAlert(
+                                "Backup Berhasil",
+                                "Data berhasil diekspor ke file JSON.",
+                                "success"
+                              );
+                            }}
+                            className="w-full bg-blue-600 text-white px-4 py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-200 flex items-center justify-center"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Export Semua Data
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              const backupData = {
+                                timestamp: new Date().toISOString(),
+                                version: "1.0",
+                                data: {
+                                  products,
+                                  customers,
+                                  settings: { ...settings, rolePermissions: undefined }
+                                }
+                              };
+
+                              const dataStr = JSON.stringify(backupData, null, 2);
+                              const blob = new Blob([dataStr], { type: 'application/json' });
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement('a');
+                              link.href = url;
+                              link.download = `crema-pos-master-data-${new Date().toISOString().split('T')[0]}.json`;
+                              link.click();
+                              URL.revokeObjectURL(url);
+
+                              showAlert(
+                                "Export Berhasil",
+                                "Data master berhasil diekspor.",
+                                "success"
+                              );
+                            }}
+                            className="w-full bg-green-600 text-white px-4 py-3 rounded-md font-semibold hover:bg-green-700 transition duration-200 flex items-center justify-center"
+                          >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            Export Data Master
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Import Data Section */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                          Import Data (Restore)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-4">
+                          Import data dari file backup JSON
+                        </p>
+                        <div className="space-y-3">
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                            <input
+                              type="file"
+                              accept=".json"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = async (event) => {
+                                    try {
+                                      const backupData = JSON.parse(event.target?.result as string);
+
+                                      const confirmed = await showConfirm(
+                                        "Konfirmasi Import",
+                                        "Import data akan mengganti data yang ada. Pastikan Anda sudah backup data sebelumnya. Lanjutkan?",
+                                        "warning"
+                                      );
+
+                                      if (confirmed) {
+                                        if (backupData.data) {
+                                          if (backupData.data.users) setUsers(backupData.data.users);
+                                          if (backupData.data.products) setProducts(backupData.data.products);
+                                          if (backupData.data.customers) setCustomers(backupData.data.customers);
+                                          if (backupData.data.sales) setSales(backupData.data.sales);
+                                          if (backupData.data.shifts) setShifts(backupData.data.shifts);
+                                          if (backupData.data.settings) setSettings({ ...settings, ...backupData.data.settings });
+
+                                          showAlert(
+                                            "Import Berhasil",
+                                            "Data berhasil diimport dari file backup.",
+                                            "success"
+                                          );
+                                        } else {
+                                          showAlert(
+                                            "Format Tidak Valid",
+                                            "File backup tidak memiliki format yang benar.",
+                                            "error"
+                                          );
+                                        }
+                                      }
+                                    } catch (error) {
+                                      showAlert(
+                                        "Error Import",
+                                        "Gagal membaca file backup. Pastikan file valid.",
+                                        "error"
+                                      );
+                                    }
+                                  };
+                                  reader.readAsText(file);
+                                }
+                              }}
+                              className="w-full"
+                            />
+                            <p className="text-sm text-gray-500 mt-2">
+                              Pilih file JSON backup untuk restore data
+                            </p>
+                          </div>
+
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                            <div className="flex">
+                              <svg className="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                              </svg>
+                              <div className="ml-3">
+                                <h3 className="text-sm font-medium text-yellow-800">
+                                  Peringatan
+                                </h3>
+                                <p className="text-sm text-yellow-700 mt-1">
+                                  Import data akan mengganti semua data yang ada. Pastikan backup data saat ini sebelum melakukan import.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Auto Backup Settings */}
+                    <div className="mt-6 bg-white p-6 rounded-lg shadow-sm">
+                      <h4 className="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                        <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Pengaturan Auto Backup
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            id="autoBackup"
+                            checked={settings.autoBackupEnabled || false}
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                autoBackupEnabled: e.target.checked,
+                              })
+                            }
+                            className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                          />
+                          <label htmlFor="autoBackup" className="text-sm font-medium text-gray-700">
+                            Aktifkan Auto Backup Harian
+                          </label>
+                        </div>
+                        <div>
+                          <label className="block text-gray-700 font-medium mb-1 text-sm">
+                            Maksimal File Backup:
+                          </label>
+                          <select
+                            value={settings.maxBackupFiles || 7}
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                maxBackupFiles: parseInt(e.target.value),
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-purple-500 text-sm"
+                          >
+                            <option value={3}>3 file</option>
+                            <option value={7}>7 file</option>
+                            <option value={14}>14 file</option>
+                            <option value={30}>30 file</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
