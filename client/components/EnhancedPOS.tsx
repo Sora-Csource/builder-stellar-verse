@@ -221,6 +221,9 @@ const EnhancedPOS: React.FC = () => {
     quickDiscountPresets: [5, 10, 15, 20],
     serviceChargePercent: 0,
     enableServiceCharge: false,
+    // Backup settings defaults
+    autoBackupEnabled: false,
+    maxBackupFiles: 7,
     rolePermissions: {
       admin: [
         "order-entry",
