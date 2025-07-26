@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useModals } from './EnhancedModals';
 
 // Define all interfaces
 interface User {
