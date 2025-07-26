@@ -731,10 +731,13 @@ const EnhancedPOS: React.FC = () => {
       setCart([]);
       setCashGiven(0);
 
-      // Show receipt option
-      if (window.confirm(`Pembayaran berhasil! Transaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}\n\nApakah Anda ingin mencetak struk?`)) {
-        printReceipt(newSale);
-      }
+      // Show success modal with print option
+      showSuccess(
+        'Pembayaran Berhasil!',
+        `Transaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
+        true,
+        () => printReceipt(newSale)
+      );
     }
   };
 
