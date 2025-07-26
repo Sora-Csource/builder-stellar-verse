@@ -1932,53 +1932,237 @@ const EnhancedPOS: React.FC = () => {
             {/* Settings Module */}
             {activeModule === 'settings' && hasModuleAccess('settings') && (
               <div>
-                <h2 className="text-2xl font-semibold mb-4 text-gray-800">Pengaturan</h2>
-                <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
-                  <form onSubmit={handleSettingsSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-gray-700 font-bold mb-2">Nama Toko:</label>
-                      <input
-                        type="text"
-                        value={settingsForm.storeName}
-                        onChange={(e) => setSettingsForm({ ...settingsForm, storeName: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-bold mb-2">Tarif Pajak (%):</label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={settingsForm.taxRate}
-                        onChange={(e) => setSettingsForm({ ...settingsForm, taxRate: parseFloat(e.target.value) || 0 })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 font-bold mb-2">Simbol Mata Uang:</label>
-                      <input
-                        type="text"
-                        maxLength={5}
-                        value={settingsForm.currencySymbol}
-                        onChange={(e) => setSettingsForm({ ...settingsForm, currencySymbol: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                        required
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
-                    >
-                      Simpan Pengaturan
-                    </button>
-                  </form>
+                <h2 className="text-2xl font-semibold mb-6 text-gray-800">Pengaturan</h2>
+
+                {/* Settings Tabs */}
+                <div className="mb-6">
+                  <div className="border-b border-gray-200">
+                    <nav className="-mb-px flex space-x-8">
+                      <button
+                        onClick={() => setActiveSettingsTab('general')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeSettingsTab === 'general'
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        <span className="flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Pengaturan Umum
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => setActiveSettingsTab('receipt')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeSettingsTab === 'receipt'
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        <span className="flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Pengaturan Struk
+                        </span>
+                      </button>
+                      <button
+                        onClick={() => setActiveSettingsTab('shortcuts')}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeSettingsTab === 'shortcuts'
+                            ? 'border-indigo-500 text-indigo-600'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                        }`}
+                      >
+                        <span className="flex items-center">
+                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 011-1h1a2 2 0 100-4H7a1 1 0 01-1-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                          </svg>
+                          Keyboard Shortcuts
+                        </span>
+                      </button>
+                    </nav>
+                  </div>
                 </div>
 
-                {/* Keyboard Shortcuts Help */}
-                <KeyboardShortcutsHelp />
+                {/* General Settings Tab */}
+                {activeSettingsTab === 'general' && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <form onSubmit={handleSettingsSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">Nama Toko:</label>
+                            <input
+                              type="text"
+                              value={settingsForm.storeName}
+                              onChange={(e) => setSettingsForm({ ...settingsForm, storeName: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">Tarif Pajak (%):</label>
+                            <input
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              value={settingsForm.taxRate}
+                              onChange={(e) => setSettingsForm({ ...settingsForm, taxRate: parseFloat(e.target.value) || 0 })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">Simbol Mata Uang:</label>
+                            <input
+                              type="text"
+                              maxLength={5}
+                              value={settingsForm.currencySymbol}
+                              onChange={(e) => setSettingsForm({ ...settingsForm, currencySymbol: e.target.value })}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">Logo Toko:</label>
+                            <div className="space-y-3">
+                              {settingsForm.logo && (
+                                <div className="flex items-center justify-center w-32 h-32 border border-gray-300 rounded-lg bg-white">
+                                  <img
+                                    src={settingsForm.logo}
+                                    alt="Logo Toko"
+                                    className="max-w-full max-h-full object-contain"
+                                  />
+                                </div>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleLogoUpload}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              />
+                              <p className="text-sm text-gray-500">
+                                Format: PNG, JPG, GIF. Maksimal 2MB.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-200">
+                        <button
+                          type="submit"
+                          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-md font-semibold hover:from-indigo-700 hover:to-purple-700 transition duration-200"
+                        >
+                          Simpan Pengaturan Umum
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Receipt Settings Tab */}
+                {activeSettingsTab === 'receipt' && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <form onSubmit={handleReceiptSettingsSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="space-y-6">
+                          <h3 className="text-lg font-semibold text-gray-800 mb-4">Konten Struk</h3>
+
+                          <div className="space-y-4">
+                            <div>
+                              <label className="block text-gray-700 font-bold mb-2">Teks Header (Opsional):</label>
+                              <textarea
+                                value={receiptSettingsForm.headerText}
+                                onChange={(e) => setReceiptSettingsForm({ ...receiptSettingsForm, headerText: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                rows={2}
+                                placeholder="Teks yang ditampilkan di atas struk"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-gray-700 font-bold mb-2">Pesan Terima Kasih:</label>
+                              <textarea
+                                value={receiptSettingsForm.customThankYouMessage}
+                                onChange={(e) => setReceiptSettingsForm({ ...receiptSettingsForm, customThankYouMessage: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                rows={2}
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-gray-700 font-bold mb-2">Teks Footer (Opsional):</label>
+                              <textarea
+                                value={receiptSettingsForm.footerText}
+                                onChange={(e) => setReceiptSettingsForm({ ...receiptSettingsForm, footerText: e.target.value })}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                rows={2}
+                                placeholder="Teks yang ditampilkan di bawah struk"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-6">
+                          <h3 className="text-lg font-semibold text-gray-800 mb-4">Elemen yang Ditampilkan</h3>
+
+                          <div className="grid grid-cols-1 gap-3">
+                            {[
+                              { key: 'showLogo', label: 'Tampilkan Logo' },
+                              { key: 'showStoreName', label: 'Nama Toko' },
+                              { key: 'showDateTime', label: 'Tanggal & Waktu' },
+                              { key: 'showTransactionId', label: 'ID Transaksi' },
+                              { key: 'showItemTotals', label: 'Detail Item' },
+                              { key: 'showSubtotal', label: 'Subtotal' },
+                              { key: 'showTax', label: 'Pajak' },
+                              { key: 'showPaymentMethod', label: 'Metode Pembayaran' },
+                              { key: 'showChange', label: 'Kembalian' },
+                              { key: 'showThankYouMessage', label: 'Pesan Terima Kasih' }
+                            ].map((item) => (
+                              <label key={item.key} className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                                <input
+                                  type="checkbox"
+                                  checked={receiptSettingsForm[item.key as keyof typeof receiptSettingsForm] as boolean}
+                                  onChange={(e) => setReceiptSettingsForm({
+                                    ...receiptSettingsForm,
+                                    [item.key]: e.target.checked
+                                  })}
+                                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                />
+                                <span className="text-sm font-medium text-gray-700">{item.label}</span>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-200">
+                        <button
+                          type="submit"
+                          className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-3 rounded-md font-semibold hover:from-green-700 hover:to-blue-700 transition duration-200"
+                        >
+                          Simpan Pengaturan Struk
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Keyboard Shortcuts Tab */}
+                {activeSettingsTab === 'shortcuts' && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <KeyboardShortcutsHelp />
+                  </div>
+                )}
               </div>
             )}
 
