@@ -1957,8 +1957,8 @@ const EnhancedPOS: React.FC = () => {
 
       {/* Product Modal */}
       {showProductModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all border border-gray-100">
             <h3 className="text-xl font-bold mb-4 text-gray-800">
               {editingProduct ? 'Edit Produk' : 'Tambah Produk Baru'}
             </h3>
