@@ -2072,12 +2072,13 @@ const EnhancedPOS: React.FC = () => {
                         <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Kas Awal</th>
                         <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Total Penjualan</th>
                         <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
                       {shifts.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="border border-gray-200 py-4 text-center text-gray-500">Tidak ada riwayat shift.</td>
+                          <td colSpan={7} className="border border-gray-200 py-4 text-center text-gray-500">Tidak ada riwayat shift.</td>
                         </tr>
                       ) : (
                         [...shifts].sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()).map((shift) => {
