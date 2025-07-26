@@ -767,9 +767,9 @@ const EnhancedPOS: React.FC = () => {
         });
         setProducts(updatedProducts);
 
-        alert(`Transaksi ${saleId} berhasil dibatalkan dan stok dikembalikan.`);
+        showAlert('Berhasil', `Transaksi ${saleId} berhasil dibatalkan dan stok dikembalikan.`, 'success');
       } else {
-        alert('Transaksi tidak dapat dibatalkan atau sudah dibatalkan.');
+        showAlert('Error', 'Transaksi tidak dapat dibatalkan atau sudah dibatalkan.', 'error');
       }
     }
   };
