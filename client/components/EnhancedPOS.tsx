@@ -2187,7 +2187,7 @@ const EnhancedPOS: React.FC = () => {
                       {/* Payment Section */}
                       <div className="bg-gray-50 p-4 rounded-lg shadow-inner">
                         {(() => {
-                          const { subtotal, taxAmount, finalTotal } =
+                          const { subtotal, discountValue, subtotalAfterDiscount, taxAmount, finalTotal } =
                             getCartTotals();
                           const change =
                             paymentMethod === "cash"
@@ -2201,6 +2201,18 @@ const EnhancedPOS: React.FC = () => {
                                   <span>Subtotal:</span>
                                   <span>{formatCurrency(subtotal)}</span>
                                 </div>
+                                {discountValue > 0 && (
+                                  <>
+                                    <div className="flex justify-between font-semibold text-orange-600">
+                                      <span>Diskon ({discountType === 'percentage' ? `${discountAmount}%` : 'Nominal'}):</span>
+                                      <span>-{formatCurrency(discountValue)}</span>
+                                    </div>
+                                    <div className="flex justify-between font-semibold text-gray-700">
+                                      <span>Subtotal setelah diskon:</span>
+                                      <span>{formatCurrency(subtotalAfterDiscount)}</span>
+                                    </div>
+                                  </>
+                                )}
                                 <div className="flex justify-between font-semibold text-gray-700">
                                   <span>Pajak ({settings.taxRate}%):</span>
                                   <span>{formatCurrency(taxAmount)}</span>
