@@ -105,5 +105,174 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* POS Application Specific Styles */
+@layer components {
+  /* Form components */
+  .form-group label {
+    @apply block mb-2 font-medium text-gray-700 text-sm;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm text-gray-900 focus:outline-none focus:border-indigo-500;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply bg-indigo-600 text-white px-6 py-3 rounded-md font-semibold cursor-pointer transition-colors duration-200 shadow-md hover:bg-indigo-700;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-600 text-white px-6 py-3 rounded-md font-semibold cursor-pointer transition-colors duration-200 shadow-md hover:bg-gray-700;
+  }
+
+  /* Table styles */
+  .table-auto {
+    @apply w-full border-collapse;
+  }
+
+  .table-auto th,
+  .table-auto td {
+    @apply border border-gray-200 px-3 py-2 text-left;
+  }
+
+  .table-auto th {
+    @apply bg-gray-50 font-semibold text-gray-700;
+  }
+
+  .table-auto tr:nth-child(even) {
+    @apply bg-gray-50;
+  }
+
+  /* Product card styles */
+  .product-card {
+    @apply border border-gray-200 rounded-lg p-4 text-center cursor-pointer transition-all duration-150 bg-white shadow-sm hover:shadow-md;
+  }
+
+  .product-card:hover {
+    @apply transform -translate-y-1;
+  }
+
+  .product-card.out-of-stock {
+    @apply opacity-60 cursor-not-allowed bg-red-50;
+  }
+
+  .product-card img {
+    @apply w-20 h-20 object-cover rounded-md mx-auto mb-3 border border-gray-200;
+  }
+
+  .product-card .product-name {
+    @apply font-semibold text-gray-900 mb-1;
+  }
+
+  .product-card .product-price {
+    @apply text-sm text-indigo-600 font-medium;
+  }
+
+  .product-card .product-stock {
+    @apply text-xs text-gray-500;
+  }
+
+  .product-card.out-of-stock .product-stock {
+    @apply text-red-500 font-semibold;
+  }
+
+  /* Modal styles */
+  .modal {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-content {
+    @apply bg-white mx-auto p-8 rounded-lg shadow-xl relative;
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .close-button {
+    @apply absolute top-4 right-6 text-xl font-bold cursor-pointer text-gray-500 hover:text-gray-900;
+  }
+
+  /* Top navigation specific styles */
+  .top-nav {
+    @apply bg-gray-800 text-gray-300 px-6 py-3 flex justify-center items-center shadow-lg rounded-b-lg;
+    flex-wrap: wrap;
+    z-index: 10;
+    position: relative;
+  }
+
+  .top-nav-item {
+    @apply flex flex-col items-center px-4 py-2 mx-2 rounded-md cursor-pointer transition-colors duration-200 whitespace-nowrap text-xs;
+  }
+
+  .top-nav-item:hover,
+  .top-nav-item.active {
+    @apply bg-gray-700 text-white;
+  }
+
+  .top-nav-item svg {
+    @apply mb-1;
+  }
+
+  /* Main content styling */
+  .main-content {
+    @apply flex-grow p-6 bg-white rounded-lg mx-4 shadow-md;
+  }
+
+  /* Receipt print styles */
+  @media print {
+    body {
+      @apply m-0 p-0 text-black;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+    }
+
+    .receipt-container {
+      width: 80mm;
+      @apply mx-auto p-2;
+      box-sizing: border-box;
+    }
+
+    .receipt-header,
+    .receipt-footer {
+      @apply text-center mb-2;
+    }
+
+    .receipt-items {
+      @apply w-full border-collapse mb-2;
+    }
+
+    .receipt-items th,
+    .receipt-items td {
+      @apply text-left py-1;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    .receipt-items th:nth-child(2),
+    .receipt-items td:nth-child(2) {
+      @apply text-right;
+    }
+
+    .receipt-totals {
+      @apply w-full border-collapse mb-2;
+    }
+
+    .receipt-totals td {
+      @apply py-1;
+    }
+
+    .receipt-totals td:nth-child(2) {
+      @apply text-right;
+    }
+
+    .line-dashed {
+      border-top: 1px dashed #000;
+      @apply my-2;
+    }
   }
 }
