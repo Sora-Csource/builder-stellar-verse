@@ -318,6 +318,11 @@ const EnhancedPOS: React.FC = () => {
     // Backup settings defaults
     autoBackupEnabled: false,
     maxBackupFiles: 7,
+    // Thermal printer defaults
+    thermalPrinterEnabled: false,
+    thermalPrinterWidth: 58, // 58mm thermal printer
+    thermalPrinterIP: "192.168.1.100",
+    thermalPrinterPort: 9100,
     rolePermissions: {
       admin: [
         "order-entry",
