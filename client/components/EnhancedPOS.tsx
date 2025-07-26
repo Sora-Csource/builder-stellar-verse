@@ -2638,6 +2638,122 @@ const EnhancedPOS: React.FC = () => {
                             </div>
                           </div>
                         </div>
+
+                        {/* Additional Analytics */}
+                        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                          {/* Hourly Sales Pattern */}
+                          <div>
+                            <h5 className="font-semibold mb-3 text-gray-700">Pola Penjualan per Jam</h5>
+                            <div className="space-y-2 max-h-40 overflow-y-auto">
+                              {(() => {
+                                const hourlyData: { [key: number]: { count: number; revenue: number } } = {};
+
+                                completedSales.forEach(sale => {
+                                  const hour = new Date(sale.date).getHours();
+                                  if (!hourlyData[hour]) {
+                                    hourlyData[hour] = { count: 0, revenue: 0 };
+                                  }
+                                  hourlyData[hour].count++;
+                                  hourlyData[hour].revenue += sale.totalAmount;
+                                });
+
+                                return Array.from({length: 24}, (_, hour) => {
+                                  const data = hourlyData[hour] || { count: 0, revenue: 0 };
+                                  return (
+                                    <div key={hour} className="flex justify-between items-center text-sm">
+                                      <span className="text-gray-600">{hour.toString().padStart(2, '0')}:00</span>
+                                      <div className="text-right">
+                                        <span className="font-medium">{data.count} trans</span>
+                                        <span className="text-xs text-gray-500 ml-2">{formatCurrency(data.revenue)}</span>
+                                      </div>
+                                    </div>
+                                  );
+                                }).filter((_, hour) => hourlyData[hour]?.count > 0);
+                              })()}
+                            </div>
+                          </div>
+
+                          {/* Daily Comparison */}
+                          <div>
+                            <h5 className="font-semibold mb-3 text-gray-700">Perbandingan Harian</h5>
+                            <div className="space-y-2">
+                              {(() => {
+                                const dailyData: { [key: string]: { count: number; revenue: number } } = {};
+
+                                completedSales.forEach(sale => {
+                                  const day = new Date(sale.date).toLocaleDateString('id-ID');
+                                  if (!dailyData[day]) {
+                                    dailyData[day] = { count: 0, revenue: 0 };
+                                  }
+                                  dailyData[day].count++;
+                                  dailyData[day].revenue += sale.totalAmount;
+                                });
+
+                                return Object.entries(dailyData)
+                                  .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
+                                  .slice(-7) // Last 7 days
+                                  .map(([day, data]) => (
+                                    <div key={day} className="flex justify-between items-center text-sm">
+                                      <span className="text-gray-600">{day}</span>
+                                      <div className="text-right">
+                                        <span className="font-medium">{data.count}</span>
+                                        <span className="text-xs text-gray-500 ml-2">{formatCurrency(data.revenue)}</span>
+                                      </div>
+                                    </div>
+                                  ));
+                              })()}
+                            </div>
+                          </div>
+
+                          {/* Transaction Size Analysis */}
+                          <div>
+                            <h5 className="font-semibold mb-3 text-gray-700">Analisis Ukuran Transaksi</h5>
+                            <div className="space-y-3">
+                              {(() => {
+                                const amounts = completedSales.map(s => s.totalAmount).sort((a, b) => a - b);
+                                const median = amounts.length > 0 ? amounts[Math.floor(amounts.length / 2)] : 0;
+                                const min = amounts.length > 0 ? Math.min(...amounts) : 0;
+                                const max = amounts.length > 0 ? Math.max(...amounts) : 0;
+
+                                const ranges = [
+                                  { label: 'Kecil (< 50k)', min: 0, max: 50000 },
+                                  { label: 'Sedang (50k-200k)', min: 50000, max: 200000 },
+                                  { label: 'Besar (> 200k)', min: 200000, max: Infinity }
+                                ];
+
+                                return (
+                                  <div className="space-y-2">
+                                    <div className="text-xs space-y-1">
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-500">Minimum:</span>
+                                        <span className="font-medium">{formatCurrency(min)}</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-500">Median:</span>
+                                        <span className="font-medium">{formatCurrency(median)}</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-gray-500">Maksimum:</span>
+                                        <span className="font-medium">{formatCurrency(max)}</span>
+                                      </div>
+                                    </div>
+                                    {ranges.map(range => {
+                                      const count = amounts.filter(a => a >= range.min && a < range.max).length;
+                                      const percentage = amounts.length > 0 ? (count / amounts.length * 100).toFixed(1) : '0';
+
+                                      return (
+                                        <div key={range.label} className="flex justify-between items-center text-xs">
+                                          <span className="text-gray-600">{range.label}</span>
+                                          <span className="font-medium">{count} ({percentage}%)</span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     );
                   })()}
