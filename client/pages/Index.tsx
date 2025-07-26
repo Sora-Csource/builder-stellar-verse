@@ -1,8 +1,8 @@
 import React from 'react';
-import POS from '../components/POS';
+import CompletePOS from '../components/CompletePOS';
 
 const Index: React.FC = () => {
-  return <POS />;
+  return <CompletePOS />;
 };
 
 export default Index;
