@@ -2406,7 +2406,7 @@ const EnhancedPOS: React.FC = () => {
                         <option value="digital">Digital</option>
                       </select>
                     </div>
-                    <div className="flex items-end">
+                    <div className="flex items-end space-x-2">
                       <button
                         onClick={() => {
                           const salesData = getFilteredSales().map((sale) => ({
@@ -2436,7 +2436,51 @@ const EnhancedPOS: React.FC = () => {
                         }}
                         className="bg-green-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200"
                       >
-                        Ekspor CSV
+                        📊 Ekspor Transaksi
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const completedSales = getFilteredSales().filter(s => s.status === "completed");
+                          const productSales: { [key: string]: { quantity: number; revenue: number; name: string; category: string } } = {};
+
+                          completedSales.forEach(sale => {
+                            sale.items.forEach(item => {
+                              if (!productSales[item.id]) {
+                                const product = products.find(p => p.id === item.id);
+                                productSales[item.id] = {
+                                  quantity: 0,
+                                  revenue: 0,
+                                  name: item.name,
+                                  category: product?.category || 'Tidak Diketahui'
+                                };
+                              }
+                              productSales[item.id].quantity += item.quantity;
+                              productSales[item.id].revenue += item.price * item.quantity;
+                            });
+                          });
+
+                          const productData = Object.entries(productSales).map(([id, data]) => ({
+                            produk: data.name,
+                            kategori: data.category,
+                            terjual: data.quantity,
+                            pendapatan: `Rp ${data.revenue.toLocaleString('id-ID')}`
+                          }));
+
+                          if (productData.length > 0) {
+                            const headers = ['Nama Produk', 'Kategori', 'Jumlah Terjual', 'Total Pendapatan'];
+                            exportToCSV(productData, "laporan_produk.csv", headers);
+                          } else {
+                            showAlert(
+                              "Tidak Ada Data",
+                              "Tidak ada data produk untuk diekspor.",
+                              "warning",
+                            );
+                          }
+                        }}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+                      >
+                        📦 Ekspor Produk
                       </button>
                     </div>
                   </div>
