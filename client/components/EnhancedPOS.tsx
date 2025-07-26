@@ -2906,6 +2906,75 @@ const EnhancedPOS: React.FC = () => {
                       </button>
                     </div>
 
+                    {/* Stock Analytics Summary */}
+                    <div className="bg-white p-4 rounded-md shadow-sm text-gray-700 mb-4">
+                      <h4 className="font-semibold mb-3">Ringkasan Inventori</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Total Produk</p>
+                          <p className="font-bold text-blue-600 text-lg">{products.length}</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Stok Rendah</p>
+                          <p className="font-bold text-red-600 text-lg">
+                            {products.filter(p => p.stock <= 5 && p.stock > 0).length}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Stok Habis</p>
+                          <p className="font-bold text-orange-600 text-lg">
+                            {products.filter(p => p.stock === 0).length}
+                          </p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Nilai Total Stok</p>
+                          <p className="font-bold text-green-600 text-lg">
+                            {formatCurrency(products.reduce((sum, p) => sum + (p.stock * p.price), 0))}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Category Breakdown */}
+                      <div className="mt-6">
+                        <h5 className="font-semibold mb-3 text-gray-700">Breakdown per Kategori</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {(() => {
+                            const categoryStats: { [key: string]: { count: number; totalValue: number; lowStock: number } } = {};
+
+                            products.forEach(product => {
+                              const category = product.category || 'Tidak Berkategori';
+                              if (!categoryStats[category]) {
+                                categoryStats[category] = { count: 0, totalValue: 0, lowStock: 0 };
+                              }
+                              categoryStats[category].count++;
+                              categoryStats[category].totalValue += product.stock * product.price;
+                              if (product.stock <= 5) categoryStats[category].lowStock++;
+                            });
+
+                            return Object.entries(categoryStats).map(([category, stats]) => (
+                              <div key={category} className="bg-gray-50 p-3 rounded-lg">
+                                <div className="font-medium text-gray-800 mb-2">{category}</div>
+                                <div className="grid grid-cols-3 gap-2 text-sm">
+                                  <div>
+                                    <span className="text-gray-500">Produk:</span>
+                                    <div className="font-medium">{stats.count}</div>
+                                  </div>
+                                  <div>
+                                    <span className="text-gray-500">Nilai:</span>
+                                    <div className="font-medium">{formatCurrency(stats.totalValue)}</div>
+                                  </div>
+                                  <div>
+                                    <span className="text-gray-500">Stok Rendah:</span>
+                                    <div className="font-medium text-red-600">{stats.lowStock}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            ));
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="bg-white p-4 rounded-lg shadow-inner overflow-x-auto">
                       <table className="min-w-full border-collapse">
                         <thead className="bg-gray-50">
