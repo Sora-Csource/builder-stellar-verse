@@ -4,6 +4,7 @@ import {
   useKeyboardShortcuts,
   KeyboardShortcutsHelp,
 } from "../hooks/useKeyboardShortcuts.tsx";
+import { useOffline } from "../hooks/useOffline";
 
 // Define all interfaces
 interface User {
