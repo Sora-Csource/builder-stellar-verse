@@ -1965,32 +1965,7 @@ const EnhancedPOS: React.FC = () => {
             </div>
           </nav>
 
-          {/* Stock Alerts */}
-          {(getLowStockProducts().length > 0 ||
-            getOutOfStockProducts().length > 0) && (
-            <div className="mx-4 mt-2">
-              {getOutOfStockProducts().length > 0 && (
-                <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2 rounded">
-                  <p className="font-bold">Produk Habis:</p>
-                  <p className="text-sm">
-                    {getOutOfStockProducts()
-                      .map((p) => p.name)
-                      .join(", ")}
-                  </p>
-                </div>
-              )}
-              {getLowStockProducts().length > 0 && (
-                <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2 mb-2 rounded">
-                  <p className="font-bold">Stok Rendah:</p>
-                  <p className="text-sm">
-                    {getLowStockProducts()
-                      .map((p) => `${p.name} (${p.stock})`)
-                      .join(", ")}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+
 
           {/* Main Content */}
           <main className="flex-1 p-6 bg-white m-4 rounded-lg shadow-md">
