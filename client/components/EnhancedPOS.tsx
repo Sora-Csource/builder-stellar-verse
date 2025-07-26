@@ -779,18 +779,18 @@ const EnhancedPOS: React.FC = () => {
     e.preventDefault();
     
     if (!productForm.name || productForm.price <= 0 || productForm.stock < 0) {
-      alert('Mohon isi semua field dengan benar.');
+      showAlert('Input Tidak Valid', 'Mohon isi semua field dengan benar.', 'error');
       return;
     }
 
     if (editingProduct) {
       // Edit existing product
-      setProducts(products.map(p => 
-        p.id === editingProduct.id 
+      setProducts(products.map(p =>
+        p.id === editingProduct.id
           ? { ...p, ...productForm }
           : p
       ));
-      alert('Produk berhasil diperbarui.');
+      showAlert('Berhasil', 'Produk berhasil diperbarui.', 'success');
     } else {
       // Add new product
       const newProduct: Product = {
@@ -798,7 +798,7 @@ const EnhancedPOS: React.FC = () => {
         ...productForm
       };
       setProducts([...products, newProduct]);
-      alert('Produk baru berhasil ditambahkan.');
+      showAlert('Berhasil', 'Produk baru berhasil ditambahkan.', 'success');
     }
 
     setShowProductModal(false);
