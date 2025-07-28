@@ -3401,23 +3401,25 @@ const EnhancedPOS: React.FC = () => {
                           onClick={() => {
                             const salesData = getFilteredSales().map(
                               (sale) => ({
-                                id: sale.id,
-                                tanggal: new Date(sale.date).toLocaleDateString(
+                                "ID Transaksi": sale.id,
+                                "Tanggal": new Date(sale.date).toLocaleDateString(
                                   "id-ID",
                                 ),
-                                waktu: new Date(sale.date).toLocaleTimeString(
+                                "Waktu": new Date(sale.date).toLocaleTimeString(
                                   "id-ID",
                                 ),
-                                total: `Rp ${sale.totalAmount.toLocaleString("id-ID")}`,
-                                pembayaran: sale.paymentMethod,
-                                status: sale.status,
-                                items: sale.items
+                                "Total": `Rp ${sale.totalAmount.toLocaleString("id-ID")}`,
+                                "Metode Pembayaran": sale.paymentMethod === "cash" ? "Tunai" :
+                                                    sale.paymentMethod === "card" ? "Kartu" : "E-Wallet",
+                                "Status": sale.status === "completed" ? "Selesai" :
+                                         sale.status === "voided" ? "Dibatalkan" : sale.status,
+                                "Items": sale.items
                                   .map(
                                     (item) =>
-                                      `${item.name} (${item.quantity}x)`,
+                                      `${item.name} (${item.quantity}x @ ${formatCurrency(item.price)})`,
                                   )
                                   .join("; "),
-                                kasir: sale.cashier || "Admin",
+                                "Kasir": users.find(u => u.id === sale.processedByUserId)?.username || "Unknown",
                               }),
                             );
                             if (salesData.length > 0) {
