@@ -440,6 +440,21 @@ const EnhancedPOS: React.FC = () => {
     }
   }, [isOnline]);
 
+  // Click outside handler for notifications
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (showNotifications && !target.closest('.notification-dropdown') && !target.closest('.notification-button')) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showNotifications]);
+
   // Sample data initialization
   const initializeSampleData = () => {
     if (products.length === 0) {
