@@ -1710,7 +1710,6 @@ const EnhancedPOS: React.FC = () => {
     setEditingProduct(product);
     setProductForm({
       name: product.name,
-      barcode: product.barcode || "",
       price: product.price,
       stock: product.stock,
       imageUrl: product.imageUrl || "",
