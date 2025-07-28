@@ -4043,6 +4043,26 @@ const EnhancedPOS: React.FC = () => {
                                 {customer.phone || "-"}
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
+                                <div className="flex items-center space-x-2">
+                                  <span
+                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      customer.tier === "Platinum" ? "bg-purple-100 text-purple-800" :
+                                      customer.tier === "Gold" ? "bg-yellow-100 text-yellow-800" :
+                                      customer.tier === "Silver" ? "bg-gray-100 text-gray-800" :
+                                      "bg-orange-100 text-orange-800"
+                                    }`}
+                                  >
+                                    {customer.tier || "Bronze"}
+                                  </span>
+                                  <span className="text-xs text-gray-600">
+                                    {customer.loyaltyPoints || 0} pts
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                {formatCurrency(customer.totalSpent || 0)}
+                              </td>
+                              <td className="border border-gray-200 px-3 py-2 text-sm">
                                 <button
                                   onClick={() => handleEditCustomer(customer)}
                                   className="text-indigo-600 hover:text-indigo-900 mr-4"
