@@ -7485,6 +7485,99 @@ const EnhancedPOS: React.FC = () => {
         </div>
       )}
 
+      {/* Receipt Modal */}
+      {showReceiptModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-gray-800">
+                {selectedSale ? "Struk Pembayaran" : "Preview Struk"}
+              </h3>
+              <button
+                onClick={() => setShowReceiptModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div
+              className="receipt-preview border p-4 bg-gray-50 rounded text-sm font-mono whitespace-pre-line max-h-96 overflow-y-auto"
+              dangerouslySetInnerHTML={{
+                __html: selectedSale
+                  ? generateReceiptHTML(selectedSale)
+                  : generateReceiptHTML({
+                      id: "PREVIEW-" + Date.now(),
+                      date: new Date().toISOString(),
+                      items: [
+                        {
+                          id: "preview-item-1",
+                          name: "Contoh Produk 1",
+                          price: 15000,
+                          quantity: 2,
+                          subtotal: 30000,
+                        },
+                        {
+                          id: "preview-item-2",
+                          name: "Contoh Produk 2",
+                          price: 25000,
+                          quantity: 1,
+                          subtotal: 25000,
+                        },
+                      ],
+                      totalAmount: 59125,
+                      paymentMethod: "cash",
+                      cashGiven: 60000,
+                      customer: "Customer Preview",
+                      status: "completed",
+                      processedByUserId: currentUser?.id || "preview-user",
+                      shiftId: "preview-shift",
+                    }),
+              }}
+            />
+
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                onClick={() => setShowReceiptModal(false)}
+                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                Tutup
+              </button>
+              {selectedSale ? (
+                <button
+                  onClick={() => printReceiptThermal(selectedSale)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                >
+                  Print
+                </button>
+              ) : (
+                <button
+                  onClick={handleTestPrint}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center gap-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
+                  Test Print
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Custom Modals */}
       <Modals />
     </div>
