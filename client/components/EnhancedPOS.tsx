@@ -1070,6 +1070,123 @@ const EnhancedPOS: React.FC = () => {
     return products.filter((product) => product.stock === 0);
   };
 
+  // Open bill management
+  const holdCurrentBill = () => {
+    if (cart.length === 0) {
+      showAlert("Keranjang Kosong", "Tidak ada item di keranjang untuk disimpan.", "warning");
+      return;
+    }
+
+    if (!currentUser || !currentShift) {
+      showAlert("Session Required", "Anda harus login dan memulai shift untuk menyimpan bill.", "warning");
+      return;
+    }
+
+    setShowHoldBillModal(true);
+  };
+
+  const saveHeldBill = () => {
+    const newOpenBill: OpenBill = {
+      id: generateUniqueId(),
+      customerName: openBillForm.customerName,
+      customerPhone: openBillForm.customerPhone,
+      tableNumber: openBillForm.tableNumber,
+      items: [...cart],
+      discountAmount,
+      discountType,
+      notes: openBillForm.notes,
+      createdAt: new Date().toISOString(),
+      createdBy: currentUser?.id || "",
+      status: "held"
+    };
+
+    setOpenBills([...openBills, newOpenBill]);
+
+    // Clear current cart
+    setCart([]);
+    setDiscountAmount(0);
+    setDiscountType("percentage");
+
+    // Reset form
+    setOpenBillForm({
+      customerName: "",
+      customerPhone: "",
+      tableNumber: "",
+      notes: "",
+    });
+
+    setShowHoldBillModal(false);
+
+    addNotification("success", "Bill Tersimpan", `Bill untuk ${newOpenBill.customerName || 'Customer'} berhasil disimpan`);
+  };
+
+  const resumeOpenBill = (billId: string) => {
+    const bill = openBills.find(b => b.id === billId);
+    if (!bill) {
+      showAlert("Bill Tidak Ditemukan", "Bill yang dipilih tidak ditemukan.", "error");
+      return;
+    }
+
+    // Check if current cart has items
+    if (cart.length > 0) {
+      showAlert(
+        "Keranjang Berisi Item",
+        "Selesaikan atau simpan transaksi saat ini sebelum membuka bill lain.",
+        "warning"
+      );
+      return;
+    }
+
+    // Load bill into current cart
+    setCart([...bill.items]);
+    setDiscountAmount(bill.discountAmount);
+    setDiscountType(bill.discountType);
+
+    // Update bill status
+    setOpenBills(openBills.map(b =>
+      b.id === billId
+        ? { ...b, status: "resumed" as const }
+        : b
+    ));
+
+    setShowOpenBillModal(false);
+    addNotification("info", "Bill Dibuka", `Bill untuk ${bill.customerName || 'Customer'} berhasil dibuka`);
+  };
+
+  const deleteOpenBill = async (billId: string) => {
+    const confirmed = await showConfirm(
+      "Hapus Bill",
+      "Apakah Anda yakin ingin menghapus bill ini? Aksi ini tidak dapat dibatalkan.",
+      "danger"
+    );
+
+    if (confirmed) {
+      setOpenBills(openBills.filter(b => b.id !== billId));
+      addNotification("info", "Bill Dihapus", "Bill berhasil dihapus");
+    }
+  };
+
+  const getOpenBillTotal = (bill: OpenBill) => {
+    const subtotal = bill.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+    let discountValue = 0;
+    if (bill.discountType === "percentage") {
+      discountValue = (subtotal * bill.discountAmount) / 100;
+    } else {
+      discountValue = bill.discountAmount;
+    }
+
+    const maxDiscount = (subtotal * (settings.maxDiscountPercent || 50)) / 100;
+    discountValue = Math.min(discountValue, maxDiscount);
+    discountValue = Math.max(0, discountValue);
+
+    const subtotalAfterDiscount = subtotal - discountValue;
+    const taxAmount = subtotalAfterDiscount * (settings.taxRate / 100);
+    const finalTotal = subtotalAfterDiscount + taxAmount;
+
+    return { subtotal, discountValue, subtotalAfterDiscount, taxAmount, finalTotal };
+  };
+
   // Data persistence
   const saveData = () => {
     try {
