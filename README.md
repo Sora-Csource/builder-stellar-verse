@@ -19,7 +19,8 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 - 💰 Quick money buttons (20k, 50k, 100k, dll) dan "uang pas"
 - 💸 Sistem diskon fleksibel (persentase & nominal)
 - 🧾 Cetak struk otomatis
-- 🖨️ Dukungan thermal printer dengan konfigurasi lengkap
+- 🖨️ Dukungan thermal printer (Network & Bluetooth) dengan konfigurasi lengkap
+- 📱 Bluetooth printer support dengan Web Bluetooth API
 - 🔄 Void/batalkan transaksi
 - 👥 Link transaksi dengan pelanggan
 
@@ -55,7 +56,7 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 - 🖨️ Konfigurasi thermal printer dan receipt settings
 - 📁 Sistem backup/restore data dengan export/import
 - ⌨️ Keyboard shortcuts untuk efisiensi
-- ���� Auto-save dengan localStorage
+- 💾 Auto-save dengan localStorage
 - 🔔 Notification center dengan status online/offline
 - ⚠️ Alert stok rendah dan habis otomatis
 
