@@ -4205,21 +4205,21 @@ const EnhancedPOS: React.FC = () => {
                               );
 
                               return {
-                                tanggal: new Date(
+                                "Tanggal": new Date(
                                   shift.startTime,
                                 ).toLocaleDateString("id-ID"),
-                                kasir: shift.cashierName,
-                                waktu_mulai: new Date(
+                                "Kasir": users.find(u => u.id === shift.userId)?.username || "Unknown",
+                                "Waktu Mulai": new Date(
                                   shift.startTime,
                                 ).toLocaleTimeString("id-ID"),
-                                waktu_selesai: shift.endTime
+                                "Waktu Selesai": shift.endTime
                                   ? new Date(shift.endTime).toLocaleTimeString(
                                       "id-ID",
                                     )
                                   : "-",
-                                total_transaksi: shiftSales.length,
-                                total_pendapatan: `Rp ${shiftRevenue.toLocaleString("id-ID")}`,
-                                status:
+                                "Total Transaksi": shiftSales.length,
+                                "Total Pendapatan": `Rp ${shiftRevenue.toLocaleString("id-ID")}`,
+                                "Status":
                                   shift.status === "open" ? "Aktif" : "Selesai",
                               };
                             });
