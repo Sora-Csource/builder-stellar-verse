@@ -3049,6 +3049,29 @@ const EnhancedPOS: React.FC = () => {
                                 </div>
                               )}
 
+                              {/* Open Bill Actions */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                <button
+                                  onClick={holdCurrentBill}
+                                  disabled={cart.length === 0}
+                                  className="bg-yellow-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-yellow-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200 flex items-center justify-center"
+                                >
+                                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h1.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                  </svg>
+                                  Hold Bill
+                                </button>
+                                <button
+                                  onClick={() => setShowOpenBillModal(true)}
+                                  className="bg-orange-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-700 transition duration-200 flex items-center justify-center"
+                                >
+                                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                  </svg>
+                                  Open Bills ({openBills.filter(b => b.status === "held").length})
+                                </button>
+                              </div>
+
                               <button
                                 onClick={processPayment}
                                 className="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
