@@ -6301,19 +6301,7 @@ const EnhancedPOS: React.FC = () => {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Barcode (Opsional):
-                </label>
-                <input
-                  type="text"
-                  value={productForm.barcode}
-                  onChange={(e) =>
-                    setProductForm({ ...productForm, barcode: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                />
-              </div>
+
               <div>
                 <label className="block text-gray-700 font-bold mb-2">
                   Gambar Produk:
