@@ -1291,11 +1291,12 @@ const EnhancedPOS: React.FC = () => {
       products.length > 0 ||
       customers.length > 0 ||
       sales.length > 0 ||
-      shifts.length > 0
+      shifts.length > 0 ||
+      openBills.length > 0
     ) {
       saveData();
     }
-  }, [users, products, customers, sales, shifts, settings, currentUser]);
+  }, [users, products, customers, sales, shifts, openBills, settings, currentUser]);
 
   useEffect(() => {
     initializeSampleData();
