@@ -84,6 +84,22 @@ interface OpenBill {
   status: "held" | "resumed";
 }
 
+interface Expense {
+  id: string;
+  date: string;
+  category: "inventory" | "operations" | "marketing" | "utilities" | "salaries" | "rent" | "other";
+  description: string;
+  amount: number;
+  supplier?: string;
+  paymentMethod: "cash" | "card" | "transfer" | "check";
+  receiptNumber?: string;
+  notes?: string;
+  createdBy: string;
+  isRecurring?: boolean;
+  recurringPeriod?: "daily" | "weekly" | "monthly" | "yearly";
+  tags?: string[];
+}
+
 interface Settings {
   storeName: string;
   taxRate: number;
