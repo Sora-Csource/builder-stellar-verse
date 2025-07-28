@@ -5686,10 +5686,118 @@ const EnhancedPOS: React.FC = () => {
                         Analytics Dashboard
                       </h3>
 
-                      <div className="text-center py-8">
-                        <p className="text-xl text-gray-600 mb-4">📊 Dashboard Analytics</p>
-                        <p className="text-gray-500">Products: {products.length} | Sales: {sales.length}</p>
+
+                      {/* Key Performance Indicators */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-blue-100 text-sm">Total Sales (30d)</p>
+                              <p className="text-2xl font-bold">
+                                {formatCurrency(
+                                  sales
+                                    .filter(sale => {
+                                      try {
+                                        return new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed";
+                                      } catch (e) {
+                                        return false;
+                                      }
+                                    })
+                                    .reduce((sum, sale) => sum + (sale.totalAmount || 0), 0)
+                                )}
+                              </p>
+                            </div>
+                            <svg className="w-8 h-8 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-green-100 text-sm">Transactions (30d)</p>
+                              <p className="text-2xl font-bold">
+                                {sales.filter(sale => {
+                                  try {
+                                    return new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed";
+                                  } catch (e) {
+                                    return false;
+                                  }
+                                }).length}
+                              </p>
+                            </div>
+                            <svg className="w-8 h-8 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-purple-100 text-sm">Avg Transaction</p>
+                              <p className="text-2xl font-bold">
+                                {(() => {
+                                  try {
+                                    const recentSales = sales.filter(sale => new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed");
+                                    const avgAmount = recentSales.length > 0 ? recentSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0) / recentSales.length : 0;
+                                    return formatCurrency(avgAmount);
+                                  } catch (e) {
+                                    return formatCurrency(0);
+                                  }
+                                })()}
+                              </p>
+                            </div>
+                            <svg className="w-8 h-8 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-orange-100 text-sm">Active Products</p>
+                              <p className="text-2xl font-bold">{products.filter(p => (p.stock || 0) > 0).length}</p>
+                              <p className="text-orange-100 text-xs">of {products.length} total</p>
+                            </div>
+                            <svg className="w-8 h-8 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                          </div>
+                        </div>
                       </div>
+
+                      {/* No Data Message */}
+                      {products.length === 0 && sales.length === 0 && (
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                          <div className="text-yellow-600 mb-2">
+                            <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <h4 className="text-lg font-medium text-yellow-800 mb-2">Belum Ada Data</h4>
+                          <p className="text-yellow-700">
+                            Mulai dengan menambahkan produk dan melakukan transaksi untuk melihat analytics yang lebih detail.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Sample Data Notice */}
+                      {(products.length > 0 || sales.length > 0) && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="flex items-center">
+                            <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p className="text-blue-700 text-sm">
+                              Dashboard menampilkan data dari {products.length} produk dan {sales.length} transaksi.
+                              {sales.length < 5 && " Lakukan lebih banyak transaksi untuk analytics yang lebih akurat."}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Key Performance Indicators */}
