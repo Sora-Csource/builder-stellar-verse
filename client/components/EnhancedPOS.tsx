@@ -214,6 +214,13 @@ const EnhancedPOS: React.FC = () => {
     taxRate: 10,
     currencySymbol: "Rp",
     logo: "",
+    // Financial settings
+    taxType: "exclusive",
+    maxDiscountPercent: 50,
+    quickDiscountAmount: 5000,
+    quickDiscountPresets: [5, 10, 15, 20],
+    serviceChargePercent: 0,
+    enableServiceCharge: false,
   });
 
   // Receipt settings form state
