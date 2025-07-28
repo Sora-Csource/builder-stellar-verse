@@ -2406,29 +2406,151 @@ const EnhancedPOS: React.FC = () => {
         <div className="flex flex-col min-h-screen">
           {/* Top Navigation */}
           <nav className="bg-gray-800 text-gray-300 px-6 py-3 shadow-lg rounded-b-lg">
-            <div className="flex justify-center items-center flex-wrap gap-4">
-              {allModules.map(
-                (module) =>
-                  hasModuleAccess(module.id) && (
-                    <button
-                      key={module.id}
-                      onClick={() => setActiveModule(module.id)}
-                      className={`flex flex-col items-center px-4 py-2 rounded-md text-sm transition-colors ${
-                        activeModule === module.id
-                          ? "bg-gray-700 text-white"
-                          : "hover:bg-gray-700 hover:text-white"
-                      }`}
+            <div className="flex justify-between items-center">
+              {/* Left: Main Navigation */}
+              <div className="flex items-center flex-wrap gap-4">
+                {allModules.map(
+                  (module) =>
+                    hasModuleAccess(module.id) && (
+                      <button
+                        key={module.id}
+                        onClick={() => setActiveModule(module.id)}
+                        className={`flex flex-col items-center px-4 py-2 rounded-md text-sm transition-colors ${
+                          activeModule === module.id
+                            ? "bg-gray-700 text-white"
+                            : "hover:bg-gray-700 hover:text-white"
+                        }`}
+                      >
+                        <span className="text-xs">{module.name}</span>
+                      </button>
+                    ),
+                )}
+              </div>
+
+              {/* Right: Notifications & User Actions */}
+              <div className="flex items-center space-x-4">
+                {/* Notification Icon */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="relative p-2 rounded-full hover:bg-gray-700 transition-colors group"
+                  >
+                    <svg
+                      className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <span className="text-xs">{module.name}</span>
-                    </button>
-                  ),
-              )}
-              <button
-                onClick={handleLogout}
-                className="flex flex-col items-center px-4 py-2 rounded-md text-sm hover:bg-gray-700 hover:text-white transition-colors"
-              >
-                <span className="text-xs">Keluar</span>
-              </button>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z"
+                      />
+                    </svg>
+                    {getUnreadCount() > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-pulse">
+                        {getUnreadCount()}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Modern Notification Dropdown */}
+                  {showNotifications && (
+                    <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 transform transition-all duration-200">
+                      {/* Dropdown Arrow */}
+                      <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-200 transform rotate-45"></div>
+
+                      {/* Header */}
+                      <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-sm font-semibold text-gray-800 flex items-center">
+                            <svg className="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                            </svg>
+                            Notifikasi
+                          </h3>
+                          {notifications.length > 0 && (
+                            <button
+                              onClick={clearAllNotifications}
+                              className="text-xs text-red-500 hover:text-red-700 font-medium transition-colors"
+                            >
+                              Hapus Semua
+                            </button>
+                          )}
+                        </div>
+                        {getUnreadCount() > 0 && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            {getUnreadCount()} notifikasi belum dibaca
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Notifications List */}
+                      <div className="max-h-80 overflow-y-auto">
+                        {notifications.length === 0 ? (
+                          <div className="p-6 text-center">
+                            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                            </svg>
+                            <p className="text-sm text-gray-500">Tidak ada notifikasi</p>
+                          </div>
+                        ) : (
+                          notifications.map((notification) => (
+                            <div
+                              key={notification.id}
+                              onClick={() => markNotificationAsRead(notification.id)}
+                              className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
+                                !notification.read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                              }`}
+                            >
+                              <div className="flex items-start space-x-3">
+                                <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                                  notification.type === 'error' ? 'bg-red-500' :
+                                  notification.type === 'warning' ? 'bg-yellow-500' :
+                                  notification.type === 'success' ? 'bg-green-500' :
+                                  'bg-blue-500'
+                                }`} />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {notification.title}
+                                  </p>
+                                  <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                    {notification.message}
+                                  </p>
+                                  <div className="flex items-center justify-between mt-2">
+                                    <p className="text-xs text-gray-400">
+                                      {notification.timestamp.toLocaleTimeString('id-ID')}
+                                    </p>
+                                    {!notification.read && (
+                                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
+                                        Baru
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* User Menu */}
+                <div className="border-l border-gray-600 pl-4">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm hover:bg-gray-700 hover:text-white transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span className="text-xs">Keluar</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </nav>
 
