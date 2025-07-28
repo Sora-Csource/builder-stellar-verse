@@ -95,6 +95,7 @@ npm --version     # Should show 8.0+ or higher
 ```
 
 **Troubleshooting Node.js:**
+
 - Jika command not found: Tambahkan Node.js ke PATH environment variable
 - Windows: Cek Control Panel → System → Advanced → Environment Variables
 - macOS/Linux: Tambahkan ke ~/.bashrc atau ~/.zshrc
@@ -103,18 +104,20 @@ npm --version     # Should show 8.0+ or higher
 
 **Download & Install:**
 
-- **Windows:** 
+- **Windows:**
   1. Download dari [git-scm.com](https://git-scm.com/download/win)
   2. Install dengan opsi default
   3. Pilih "Git Bash" dan "Git CMD" saat instalasi
-- **macOS:** 
+- **macOS:**
+
   ```bash
   # Using Homebrew (recommended)
   brew install git
-  
+
   # Or download from website
   # Download dari git-scm.com/download/mac
   ```
+
 - **Linux Ubuntu/Debian:**
   ```bash
   sudo apt update
@@ -128,6 +131,7 @@ git --version     # Should show git version 2.30+
 ```
 
 **Setup Git (First Time):**
+
 ```bash
 git config --global user.name "Nama Anda"
 git config --global user.email "email@anda.com"
@@ -138,10 +142,12 @@ git config --global user.email "email@anda.com"
 #### Visual Studio Code (Primary Recommended)
 
 **Download & Install:**
+
 1. Download dari [code.visualstudio.com](https://code.visualstudio.com/)
 2. Install dengan opsi default
 
 **Essential Extensions (Install dari Extension Marketplace):**
+
 ```
 1. ES7+ React/Redux/React-Native snippets
 2. TypeScript Importer
@@ -156,6 +162,7 @@ git config --global user.email "email@anda.com"
 ```
 
 **Setup VS Code (Optional tapi Recommended):**
+
 1. Buka VS Code
 2. Tekan `Ctrl+Shift+P` → ketik "Preferences: Open Settings JSON"
 3. Tambahkan konfigurasi ini:
@@ -185,6 +192,7 @@ git config --global user.email "email@anda.com"
 #### Browser Developer Tools
 
 **Google Chrome DevTools (Recommended):**
+
 1. Install Chrome browser
 2. Install extensions:
    - React Developer Tools
@@ -219,12 +227,14 @@ cd my-pos-projects
 ### Step 2: Clone Repository
 
 **Option A: Jika sudah punya Git repository URL**
+
 ```bash
 git clone [repository-url]
 cd enhanced-pos-system
 ```
 
 **Option B: Jika belum ada repository (untuk development baru)**
+
 ```bash
 # Download source code atau copy dari existing project
 # Ekstrak ke folder enhanced-pos-system
@@ -244,6 +254,7 @@ npm install
 ```
 
 **Troubleshooting npm install:**
+
 ```bash
 # Jika error, clear cache dan install ulang
 npm cache clean --force
@@ -297,6 +308,7 @@ yarn dev
 ```
 
 **Expected Output:**
+
 ```
 > enhanced-pos-system@2.3.0 dev
 > vite
@@ -313,6 +325,7 @@ yarn dev
 1. **Buka Browser** → Navigasi ke `http://localhost:3000`
 
 2. **Login Default:**
+
    - **Username:** `admin`
    - **Password:** `admin`
    - **Role:** Administrator
@@ -320,6 +333,7 @@ yarn dev
 3. **Setup Awal (PENTING - Lakukan setelah login pertama):**
 
    a. **Pengaturan Toko:**
+
    - Klik menu "Pengaturan" (⚙️)
    - Tab "Umum" → Isi informasi toko:
      - Nama Toko
@@ -328,12 +342,14 @@ yarn dev
      - Upload Logo (opsional)
 
    b. **Pengaturan Finansial:**
+
    - Tab "Keuangan" → Set:
      - Persentase Pajak (contoh: 11% untuk PPN)
      - Mata Uang (default: IDR)
      - Service Charge (opsional)
 
    c. **Pengaturan Struk:**
+
    - Tab "Struk" → Kustomisasi:
      - Header dan Footer text
      - Elemen yang ditampilkan
@@ -341,11 +357,13 @@ yarn dev
      - Klik "Test Print" untuk test printer
 
    d. **Setup Printer (jika ada):**
+
    - Tab "Printer" → Pilih jenis koneksi:
      - Network Printer: Masukkan IP address
      - Bluetooth Printer: Pair device terlebih dahulu
 
    e. **Manajemen User:**
+
    - Menu "Akun" → Tambah user lain
    - Set role dan permissions sesuai kebutuhan
    - Klik "Kelola Izin Akses" untuk set permission detail
@@ -353,6 +371,7 @@ yarn dev
 ### Step 7: Test Basic Functionality
 
 1. **Test Input Produk:**
+
    - Menu "Stok" → "Tambah Produk"
    - Isi data produk minimal:
      - Nama: "Test Produk"
@@ -361,6 +380,7 @@ yarn dev
    - Simpan
 
 2. **Test Transaksi:**
+
    - Menu "Pesanan"
    - Tambah produk yang tadi dibuat
    - Proses pembayaran
@@ -446,6 +466,7 @@ enhanced-pos-system/
 ### Login & User Management
 
 #### Login Default
+
 - **Username:** `admin`
 - **Password:** `admin`
 - **Role:** Administrator
@@ -453,12 +474,14 @@ enhanced-pos-system/
 > ⚠️ **PENTING:** Ubah password default setelah instalasi pertama untuk keamanan!
 
 #### Role & Permissions
+
 1. **Admin:** Full access ke semua fitur
 2. **Supervisor:** Access ke operasional + reports (tidak bisa manage user)
 3. **Kasir:** Hanya kasir + laporan basic
 4. **Staff:** Kasir basic saja
 
 #### Mengelola User Baru
+
 1. Login sebagai Admin
 2. Menu "Akun" → "Tambah Pengguna Baru"
 3. Isi data: Username, Password, Role
@@ -467,6 +490,7 @@ enhanced-pos-system/
 ### Keyboard Shortcuts
 
 #### Navigation Shortcuts
+
 - `Ctrl+1` atau `F1` - Buka modul Pesanan
 - `Ctrl+2` atau `F2` - Buka modul Stok
 - `Ctrl+3` atau `F3` - Buka modul Pelanggan
@@ -475,6 +499,7 @@ enhanced-pos-system/
 - `Ctrl+6` atau `F6` - Buka Pengaturan
 
 #### Action Shortcuts
+
 - `Ctrl+Enter` atau `F9` - Proses Pembayaran
 - `Ctrl+N` - Tambah Produk
 - `Ctrl+Shift+N` - Tambah Pelanggan
@@ -483,6 +508,7 @@ enhanced-pos-system/
 - `Esc` - Kosongkan Keranjang
 
 #### Kasir Shortcuts
+
 - `Ctrl+D` - Apply Discount
 - `Ctrl+H` - Hold Bill
 - `Ctrl+R` - Resume Held Bill
@@ -491,6 +517,7 @@ enhanced-pos-system/
 ### Workflow Operasional Harian
 
 #### 1. Workflow Harian Staff/Kasir
+
 ```
 08:00 - Login → Buka Shift → Siap Melayani
 │
@@ -509,6 +536,7 @@ enhanced-pos-system/
 ```
 
 #### 2. Workflow Supervisor/Admin
+
 ```
 Pagi:
 ├── Review Shift Reports kemarin
@@ -532,7 +560,9 @@ Sore:
 ### Manajemen Stok
 
 #### Setup Produk Baru
+
 1. **Basic Info:**
+
    - Nama Produk (wajib)
    - Harga Jual (wajib)
    - Stok Awal (wajib)
@@ -545,6 +575,7 @@ Sore:
    - Supplier Info
 
 #### Monitoring Stok
+
 - **Dashboard:** Lihat overview stok
 - **Alerts:** Notification otomatis untuk stok rendah
 - **Reports:** Generate laporan stok berkala
@@ -552,12 +583,15 @@ Sore:
 ### Manajemen Transaksi
 
 #### Proses Transaksi Normal
+
 1. **Input Items:**
+
    - Ketik nama produk atau scan barcode
    - Adjust quantity jika perlu
    - Apply discount per item atau total
 
 2. **Payment Processing:**
+
    - Pilih metode: Cash/Card/E-Wallet
    - Input amount untuk cash
    - Calculate change otomatis
@@ -567,7 +601,9 @@ Sore:
    - Reset untuk transaksi berikutnya
 
 #### Handle Void/Cancel Transaction
-1. **During Transaction:** 
+
+1. **During Transaction:**
+
    - Tekan `Esc` untuk clear cart
    - Atau delete item satu per satu
 
@@ -577,7 +613,9 @@ Sore:
    - Approval dari supervisor (jika diset)
 
 #### Hold & Resume Bills
+
 1. **Hold Bill:**
+
    - Tengah transaksi → Klik "Hold"
    - Input customer name (opsional)
    - Bill tersimpan untuk dilanjutkan nanti
@@ -592,6 +630,7 @@ Sore:
 ### Versi 2.3.0 - January 2025
 
 #### 🆕 New Features
+
 - 🔐 **NEW:** Enhanced role permissions management dengan submenu granular control
 - 🧾 **NEW:** Receipt preview dan test print functionality di pengaturan struk
 - 📋 **NEW:** Void reason tracking - semua pembatalan transaksi wajib disertai alasan
@@ -599,6 +638,7 @@ Sore:
 - 🔧 **NEW:** Comprehensive setup documentation dengan step-by-step guide
 
 #### 🔧 Improvements
+
 - ⚙️ **IMPROVED:** Role management dengan kontrol akses yang lebih detail
 - 🖨️ **IMPROVED:** Receipt settings dengan live preview dan test print button
 - 📊 **IMPROVED:** User interface untuk manajemen permissions
@@ -606,11 +646,13 @@ Sore:
 - 🛡️ **IMPROVED:** Security dengan tracking semua void transactions
 
 #### 🐛 Bug Fixes
+
 - ✅ **FIXED:** Notification icon positioning yang terpotong
 - ✅ **FIXED:** Receipt modal tidak muncul ketika preview struk
 - ✅ **FIXED:** Permission checking untuk submenu actions
 
 ### Versi 2.2.0 - December 2024
+
 - 📱 **NEW:** Panduan lengkap konversi ke APK & iOS
 - 🔵 **NEW:** Dukungan Bluetooth printer lengkap dengan Web Bluetooth API
 - ⚙️ **IMPROVED:** Settings printer dengan pilihan koneksi Network/Bluetooth
@@ -618,6 +660,7 @@ Sore:
 - 🖨️ **IMPROVED:** ESC/POS commands untuk thermal printer Bluetooth
 
 ### Versi 2.1.0 - December 2024
+
 - ✅ **FIXED:** Masalah "Cannot access 'products' before initialization"
 - 🔔 **NEW:** Notification center dengan konsolidasi semua notifikasi
 - 💰 **NEW:** Quick money buttons untuk pembayaran cepat
@@ -630,6 +673,7 @@ Sore:
 ### Installation Issues
 
 #### 1. Node.js Issues
+
 ```bash
 # Check Node.js version
 node --version
@@ -645,6 +689,7 @@ npm --version
 ```
 
 #### 2. Git Issues
+
 ```bash
 # Git command not found
 # Windows: Install Git from git-scm.com
@@ -657,6 +702,7 @@ git clone https://github.com/user/repo.git
 ```
 
 #### 3. npm install Failures
+
 ```bash
 # Clear npm cache
 npm cache clean --force
@@ -675,6 +721,7 @@ npm install --legacy-peer-deps
 ### Runtime Issues
 
 #### 1. Port Already in Use
+
 ```bash
 # Check what's using port 3000
 lsof -i :3000  # macOS/Linux
@@ -688,6 +735,7 @@ PORT=3001 npm run dev
 ```
 
 #### 2. TypeScript Errors
+
 ```bash
 # Type check manually
 npm run typecheck
@@ -699,6 +747,7 @@ npm update @types/node @types/react @types/react-dom
 ```
 
 #### 3. Build Errors
+
 ```bash
 # Clean build directory
 rm -rf dist
@@ -714,22 +763,26 @@ npm run build
 #### 4. Browser Compatibility Issues
 
 **Chrome/Edge/Firefox:**
+
 - Update to latest version
 - Enable JavaScript
 - Clear browser cache
 
 **Safari:**
+
 - Enable Developer menu
 - Allow camera access for barcode scanning
 - Check localStorage limits
 
 **Mobile Browsers:**
+
 - Use Chrome or Safari for best experience
 - Enable "Add to Home Screen" for PWA features
 
 ### Application Issues
 
 #### 1. Data Loss/Recovery
+
 ```bash
 # Backup localStorage data
 # Open browser DevTools (F12) → Console:
@@ -743,18 +796,21 @@ console.log(localStorage.getItem('posSales'))
 #### 2. Printer Connection Issues
 
 **Network Printer:**
+
 - Check IP address is correct
 - Verify printer is on same network
 - Test ping to printer IP
 - Check firewall settings
 
 **Bluetooth Printer:**
+
 - Pair device with computer/phone first
 - Grant Bluetooth permissions in browser
 - Use Chrome/Edge for best Web Bluetooth support
 - Check printer is in pairing mode
 
 #### 3. Performance Issues
+
 ```bash
 # Check browser memory usage
 # Chrome: chrome://settings/system
@@ -771,11 +827,13 @@ console.log(localStorage.getItem('posSales'))
 ### Network & Sync Issues
 
 #### 1. Offline Mode
+
 - Application works offline with localStorage
 - Sync to cloud when connection restored
 - Check service worker registration in DevTools
 
 #### 2. API Connection Issues
+
 - Check .env configuration
 - Verify API endpoints are accessible
 - Check CORS settings for external APIs
@@ -783,6 +841,7 @@ console.log(localStorage.getItem('posSales'))
 ## 🛡️ Security Features
 
 ### Data Protection
+
 - 🔐 **Encryption:** Sensitive data encrypted in localStorage
 - 🔒 **Access Control:** Role-based permissions with granular control
 - 🔑 **Authentication:** Secure login with session management
@@ -790,6 +849,7 @@ console.log(localStorage.getItem('posSales'))
 - 🚫 **Void Tracking:** Semua pembatalan transaksi tercatat dengan alasan
 
 ### Best Practices
+
 1. **Change Default Password:** Ubah password admin setelah instalasi
 2. **Regular Backup:** Export data secara berkala
 3. **User Training:** Train staff tentang security procedures
@@ -799,12 +859,14 @@ console.log(localStorage.getItem('posSales'))
 ## 📱 Responsiveness & Mobile
 
 ### Supported Devices
+
 - 🖥️ **Desktop:** 1920x1080+ (Optimal experience)
 - 💻 **Laptop:** 1366x768+ (Full features)
 - 📱 **Tablet:** 768x1024+ (Touch-optimized)
 - 📱 **Mobile:** 375x667+ (Essential features)
 
 ### Mobile-Specific Features
+
 - ✅ Touch-friendly interface
 - ✅ Swipe gestures untuk navigation
 - ✅ Mobile-optimized keyboard shortcuts
@@ -814,6 +876,7 @@ console.log(localStorage.getItem('posSales'))
 ## 🔄 Updates & Maintenance
 
 ### Regular Maintenance
+
 ```bash
 # Update dependencies (monthly)
 npm update
@@ -830,12 +893,14 @@ npm install package-name@latest
 ```
 
 ### Data Backup Strategy
+
 1. **Daily:** Automatic localStorage backup
 2. **Weekly:** Export sales data to CSV
 3. **Monthly:** Full system backup including settings
 4. **Quarterly:** Archive old data and clean database
 
 ### Performance Monitoring
+
 - Monitor localStorage usage (limit: ~10MB)
 - Check browser memory consumption
 - Regular cleanup of old data
@@ -844,6 +909,7 @@ npm install package-name@latest
 ## 🚀 Deployment Options
 
 ### 1. Netlify (Recommended for Frontend)
+
 ```bash
 # Build project
 npm run build
@@ -856,6 +922,7 @@ npm run build
 ```
 
 ### 2. Vercel (Alternative)
+
 ```bash
 # Install Vercel CLI
 npm install -g vercel
@@ -867,6 +934,7 @@ vercel
 ```
 
 ### 3. Traditional Web Hosting
+
 ```bash
 # Build project
 npm run build
@@ -885,6 +953,7 @@ location / {
 ```
 
 ### 4. Docker Deployment
+
 ```dockerfile
 # Dockerfile
 FROM node:18-alpine
@@ -902,7 +971,9 @@ CMD ["npm", "start"]
 ### Quick Mobile Options
 
 #### Option 1: PWA (Progressive Web App) - 30 menit
+
 **Paling mudah untuk memulai:**
+
 ```bash
 # 1. Deploy ke hosting (Netlify/Vercel)
 npm run build
@@ -916,6 +987,7 @@ npm run build
 ```
 
 #### Option 2: Android APK dengan Capacitor - 1-2 hari
+
 ```bash
 # 1. Install Capacitor
 npm install @capacitor/core @capacitor/cli @capacitor/android
@@ -936,6 +1008,7 @@ npx cap open android
 ```
 
 #### Option 3: iOS App dengan Capacitor - 2-3 hari + Apple Developer Account
+
 ```bash
 # Prerequisites: macOS + Xcode + Apple Developer Account ($99/year)
 
@@ -951,6 +1024,7 @@ npx cap open ios
 ```
 
 ### Mobile Features Already Available
+
 - ✅ **Responsive Design:** Optimized untuk mobile screens
 - ✅ **Touch Interface:** Touch-friendly buttons dan gestures
 - ✅ **PWA Ready:** Service worker dan manifest sudah configured
@@ -961,6 +1035,7 @@ npx cap open ios
 ## 🤝 Contributing
 
 ### Development Setup
+
 ```bash
 # 1. Fork repository di GitHub
 # 2. Clone your fork
@@ -980,6 +1055,7 @@ git push origin feature/amazing-feature
 ```
 
 ### Coding Standards
+
 - ✅ Use TypeScript untuk type safety
 - ✅ Follow existing code style (Prettier configured)
 - ✅ Add comments untuk complex logic
@@ -987,6 +1063,7 @@ git push origin feature/amazing-feature
 - ✅ Test changes di multiple devices
 
 ### Development Guidelines
+
 1. **Component Structure:** Break large components into smaller ones
 2. **Type Safety:** Always define proper TypeScript interfaces
 3. **Responsive Design:** Test di mobile dan desktop
@@ -998,6 +1075,7 @@ git push origin feature/amazing-feature
 Distributed under the MIT License. See `LICENSE` file for more information.
 
 **MIT License Summary:**
+
 - ✅ Commercial use
 - ✅ Modification
 - ✅ Distribution
@@ -1010,21 +1088,25 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 ### Getting Help
 
 #### 1. Documentation
+
 - 📚 **Primary:** This README file
 - 🔍 **Search:** Gunakan Ctrl+F untuk mencari specific topics
 - 💡 **Tips:** Check troubleshooting section first
 
 #### 2. Community Support
+
 - 💬 **GitHub Discussions:** Ask questions dan share tips
 - 🐛 **Bug Reports:** GitHub Issues untuk bug reports
 - 💡 **Feature Requests:** GitHub Issues dengan label "enhancement"
 
 #### 3. Professional Support
+
 - 📧 **Email:** support@enhancedpos.com
 - 🎫 **Ticketing:** Available untuk enterprise users
 - 📞 **Phone:** Available untuk premium support plans
 
 ### Contact Information
+
 - 🌐 **Website:** [enhancedpos.com](https://enhancedpos.com)
 - 📚 **Documentation:** [docs.enhancedpos.com](https://docs.enhancedpos.com)
 - 💬 **Discord:** EnhancedPOS Community Server
@@ -1032,6 +1114,7 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 - 📺 **YouTube:** Tutorial videos dan walkthroughs
 
 ### Response Times
+
 - 🐛 **Critical Bugs:** 24-48 hours
 - 💡 **Feature Requests:** 1-2 weeks review
 - ❓ **General Questions:** 2-5 business days
@@ -1042,6 +1125,7 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 ## 🎉 Quick Start Checklist
 
 **✅ Installation Checklist:**
+
 - [ ] Install Node.js 18+ dan npm
 - [ ] Install Git
 - [ ] Clone/download project
@@ -1051,6 +1135,7 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 - [ ] Login dengan admin/admin
 
 **✅ Setup Checklist:**
+
 - [ ] Change default password
 - [ ] Configure store information
 - [ ] Setup financial settings (tax rate)
@@ -1061,6 +1146,7 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 - [ ] Setup additional users (if needed)
 
 **✅ Production Checklist:**
+
 - [ ] Create production build (`npm run build`)
 - [ ] Test production build (`npm run preview`)
 - [ ] Setup proper hosting

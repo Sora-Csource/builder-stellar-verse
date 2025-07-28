@@ -87,7 +87,14 @@ interface OpenBill {
 interface Expense {
   id: string;
   date: string;
-  category: "inventory" | "operations" | "marketing" | "utilities" | "salaries" | "rent" | "other";
+  category:
+    | "inventory"
+    | "operations"
+    | "marketing"
+    | "utilities"
+    | "salaries"
+    | "rent"
+    | "other";
   description: string;
   amount: number;
   supplier?: string;
@@ -205,7 +212,9 @@ const EnhancedPOS: React.FC = () => {
   const [selectedUserForPermissions, setSelectedUserForPermissions] =
     useState<User | null>(null);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
-  const [selectedOpenBill, setSelectedOpenBill] = useState<OpenBill | null>(null);
+  const [selectedOpenBill, setSelectedOpenBill] = useState<OpenBill | null>(
+    null,
+  );
 
   // Form states
   const [productSearch, setProductSearch] = useState("");
@@ -241,9 +250,12 @@ const EnhancedPOS: React.FC = () => {
   >([]);
 
   // Bluetooth printer state
-  const [bluetoothDevice, setBluetoothDevice] = useState<BluetoothDevice | null>(null);
-  const [bluetoothCharacteristic, setBluetoothCharacteristic] = useState<BluetoothRemoteGATTCharacteristic | null>(null);
-  const [isBluetoothConnected, setIsBluetoothConnected] = useState<boolean>(false);
+  const [bluetoothDevice, setBluetoothDevice] =
+    useState<BluetoothDevice | null>(null);
+  const [bluetoothCharacteristic, setBluetoothCharacteristic] =
+    useState<BluetoothRemoteGATTCharacteristic | null>(null);
+  const [isBluetoothConnected, setIsBluetoothConnected] =
+    useState<boolean>(false);
 
   // Product form state
   const [productForm, setProductForm] = useState({
@@ -286,7 +298,7 @@ const EnhancedPOS: React.FC = () => {
     notes: "",
     isRecurring: false,
     recurringPeriod: "monthly" as const,
-    tags: [] as string[]
+    tags: [] as string[],
   });
 
   // Settings form state
@@ -349,14 +361,14 @@ const EnhancedPOS: React.FC = () => {
     pointsRedemptionValue: 1000, // 1 point = 1000 rupiah
     tierThresholds: {
       silver: 100000, // 100k spent
-      gold: 500000,   // 500k spent
-      platinum: 1500000 // 1.5M spent
+      gold: 500000, // 500k spent
+      platinum: 1500000, // 1.5M spent
     },
     tierBenefits: {
       bronze: { pointsMultiplier: 1, discountPercent: 0 },
       silver: { pointsMultiplier: 1.2, discountPercent: 2 },
       gold: { pointsMultiplier: 1.5, discountPercent: 5 },
-      platinum: { pointsMultiplier: 2, discountPercent: 10 }
+      platinum: { pointsMultiplier: 2, discountPercent: 10 },
     },
     // Thermal printer defaults
     thermalPrinterEnabled: false,
@@ -432,13 +444,9 @@ const EnhancedPOS: React.FC = () => {
         "expense-management.view",
         "reports",
         "reports.sales",
-        "reports.shifts"
+        "reports.shifts",
       ],
-      staff: [
-        "order-entry",
-        "reports",
-        "reports.sales"
-      ],
+      staff: ["order-entry", "reports", "reports.sales"],
     },
     receiptSettings: {
       showStoreName: true,
@@ -568,14 +576,18 @@ const EnhancedPOS: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      if (showNotifications && !target.closest('.notification-dropdown') && !target.closest('.notification-button')) {
+      if (
+        showNotifications &&
+        !target.closest(".notification-dropdown") &&
+        !target.closest(".notification-button")
+      ) {
         setShowNotifications(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showNotifications]);
 
@@ -709,8 +721,13 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Receipt generation
-  const generateReceiptHTML = (sale: Sale, useFormSettings: boolean = false) => {
-    const receiptSettings = useFormSettings ? receiptSettingsForm : settings.receiptSettings;
+  const generateReceiptHTML = (
+    sale: Sale,
+    useFormSettings: boolean = false,
+  ) => {
+    const receiptSettings = useFormSettings
+      ? receiptSettingsForm
+      : settings.receiptSettings;
     const saleDate = new Date(sale.date).toLocaleString("id-ID");
     const subtotal = sale.items.reduce(
       (sum, item) => sum + item.quantity * item.price,
@@ -886,7 +903,11 @@ const EnhancedPOS: React.FC = () => {
 
   // Print receipt function
   const printReceipt = (sale: Sale) => {
-    if (settings.thermalPrinterEnabled && settings.thermalPrinterConnection === "bluetooth" && isBluetoothConnected) {
+    if (
+      settings.thermalPrinterEnabled &&
+      settings.thermalPrinterConnection === "bluetooth" &&
+      isBluetoothConnected
+    ) {
       printReceiptBluetooth(sale);
     } else {
       const receiptHTML = generateReceiptHTML(sale);
@@ -916,7 +937,7 @@ const EnhancedPOS: React.FC = () => {
         showAlert(
           "Bluetooth Tidak Didukung",
           "Browser Anda tidak mendukung Web Bluetooth API. Gunakan Chrome atau Edge terbaru.",
-          "error"
+          "error",
         );
         return;
       }
@@ -926,18 +947,22 @@ const EnhancedPOS: React.FC = () => {
       // Request Bluetooth device
       const device = await navigator.bluetooth.requestDevice({
         filters: [
-          { services: ['000018f0-0000-1000-8000-00805f9b34fb'] }, // Serial port service
-          { namePrefix: 'POS' },
-          { namePrefix: 'Thermal' },
-          { namePrefix: 'Receipt' }
+          { services: ["000018f0-0000-1000-8000-00805f9b34fb"] }, // Serial port service
+          { namePrefix: "POS" },
+          { namePrefix: "Thermal" },
+          { namePrefix: "Receipt" },
         ],
-        optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb']
+        optionalServices: ["000018f0-0000-1000-8000-00805f9b34fb"],
       });
 
       hideLoading();
 
       if (!device) {
-        showAlert("Tidak Ada Device", "Tidak ada printer Bluetooth ditemukan.", "warning");
+        showAlert(
+          "Tidak Ada Device",
+          "Tidak ada printer Bluetooth ditemukan.",
+          "warning",
+        );
         return;
       }
 
@@ -947,42 +972,57 @@ const EnhancedPOS: React.FC = () => {
       const server = await device.gatt?.connect();
       if (!server) {
         hideLoading();
-        showAlert("Koneksi Gagal", "Tidak dapat terhubung ke GATT server.", "error");
+        showAlert(
+          "Koneksi Gagal",
+          "Tidak dapat terhubung ke GATT server.",
+          "error",
+        );
         return;
       }
 
       // Get service and characteristic
-      const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
-      const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+      const service = await server.getPrimaryService(
+        "000018f0-0000-1000-8000-00805f9b34fb",
+      );
+      const characteristic = await service.getCharacteristic(
+        "00002af1-0000-1000-8000-00805f9b34fb",
+      );
 
       setBluetoothDevice(device);
       setBluetoothCharacteristic(characteristic);
       setIsBluetoothConnected(true);
 
       // Update settings with device name
-      setSettings(prev => ({
+      setSettings((prev) => ({
         ...prev,
-        bluetoothPrinterName: device.name || "Unknown Device"
+        bluetoothPrinterName: device.name || "Unknown Device",
       }));
 
       hideLoading();
-      addNotification("success", "Bluetooth Printer", `Terhubung ke printer: ${device.name || 'Unknown Device'}`);
+      addNotification(
+        "success",
+        "Bluetooth Printer",
+        `Terhubung ke printer: ${device.name || "Unknown Device"}`,
+      );
 
       // Listen for disconnection
-      device.addEventListener('gattserverdisconnected', () => {
+      device.addEventListener("gattserverdisconnected", () => {
         setIsBluetoothConnected(false);
         setBluetoothDevice(null);
         setBluetoothCharacteristic(null);
-        addNotification("warning", "Bluetooth Printer", "Printer terputus dari koneksi");
+        addNotification(
+          "warning",
+          "Bluetooth Printer",
+          "Printer terputus dari koneksi",
+        );
       });
-
     } catch (error) {
       hideLoading();
-      console.error('Bluetooth connection error:', error);
+      console.error("Bluetooth connection error:", error);
       showAlert(
         "Koneksi Bluetooth Gagal",
-        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        "error"
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "error",
       );
     }
   };
@@ -997,7 +1037,7 @@ const EnhancedPOS: React.FC = () => {
       setIsBluetoothConnected(false);
       addNotification("info", "Bluetooth Printer", "Printer berhasil diputus");
     } catch (error) {
-      console.error('Bluetooth disconnection error:', error);
+      console.error("Bluetooth disconnection error:", error);
       showAlert("Error", "Gagal memutus koneksi printer", "error");
     }
   };
@@ -1007,8 +1047,8 @@ const EnhancedPOS: React.FC = () => {
     const encoder = new TextEncoder();
 
     // ESC/POS commands
-    const ESC = 0x1B;
-    const GS = 0x1D;
+    const ESC = 0x1b;
+    const GS = 0x1d;
 
     // Initialize printer
     commands.push(ESC, 0x40);
@@ -1049,47 +1089,80 @@ const EnhancedPOS: React.FC = () => {
     commands.push(...Array.from(encoder.encode("-" + "-".repeat(30) + "\n")));
 
     // Totals
-    const subtotal = sale.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    const subtotal = sale.items.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0,
+    );
     const taxAmount = subtotal * (settings.taxRate / 100);
     const finalTotal = subtotal + taxAmount;
 
     if (settings.receiptSettings.showSubtotal) {
-      commands.push(...Array.from(encoder.encode(`Subtotal: ${formatCurrency(subtotal)}\n`)));
+      commands.push(
+        ...Array.from(
+          encoder.encode(`Subtotal: ${formatCurrency(subtotal)}\n`),
+        ),
+      );
     }
 
     if (settings.receiptSettings.showTax) {
-      commands.push(...Array.from(encoder.encode(`Pajak (${settings.taxRate}%): ${formatCurrency(taxAmount)}\n`)));
+      commands.push(
+        ...Array.from(
+          encoder.encode(
+            `Pajak (${settings.taxRate}%): ${formatCurrency(taxAmount)}\n`,
+          ),
+        ),
+      );
     }
 
     // Bold total
     commands.push(ESC, 0x45, 0x01); // Bold on
-    commands.push(...Array.from(encoder.encode(`TOTAL: ${formatCurrency(finalTotal)}\n`)));
+    commands.push(
+      ...Array.from(encoder.encode(`TOTAL: ${formatCurrency(finalTotal)}\n`)),
+    );
     commands.push(ESC, 0x45, 0x00); // Bold off
 
     // Payment info
     if (settings.receiptSettings.showPaymentMethod) {
-      const paymentText = sale.paymentMethod === "cash" ? "Tunai" :
-                         sale.paymentMethod === "card" ? "Kartu" : "E-Wallet";
-      commands.push(...Array.from(encoder.encode(`Pembayaran: ${paymentText}\n`)));
+      const paymentText =
+        sale.paymentMethod === "cash"
+          ? "Tunai"
+          : sale.paymentMethod === "card"
+            ? "Kartu"
+            : "E-Wallet";
+      commands.push(
+        ...Array.from(encoder.encode(`Pembayaran: ${paymentText}\n`)),
+      );
     }
 
     if (settings.receiptSettings.showChange && sale.paymentMethod === "cash") {
       const change = sale.cashGiven - finalTotal;
-      commands.push(...Array.from(encoder.encode(`Tunai: ${formatCurrency(sale.cashGiven)}\n`)));
-      commands.push(...Array.from(encoder.encode(`Kembalian: ${formatCurrency(change)}\n`)));
+      commands.push(
+        ...Array.from(
+          encoder.encode(`Tunai: ${formatCurrency(sale.cashGiven)}\n`),
+        ),
+      );
+      commands.push(
+        ...Array.from(encoder.encode(`Kembalian: ${formatCurrency(change)}\n`)),
+      );
     }
 
     // Thank you message
     if (settings.receiptSettings.showThankYouMessage) {
       commands.push(ESC, 0x61, 0x01); // Center alignment
-      commands.push(...Array.from(encoder.encode(`\n${settings.receiptSettings.customThankYouMessage}\n`)));
+      commands.push(
+        ...Array.from(
+          encoder.encode(
+            `\n${settings.receiptSettings.customThankYouMessage}\n`,
+          ),
+        ),
+      );
     }
 
     // Cut paper
     commands.push(GS, 0x56, 0x42, 0x00);
 
     // Line feeds
-    commands.push(0x0A, 0x0A, 0x0A);
+    commands.push(0x0a, 0x0a, 0x0a);
 
     return new Uint8Array(commands);
   };
@@ -1097,7 +1170,11 @@ const EnhancedPOS: React.FC = () => {
   const printReceiptBluetooth = async (sale: Sale) => {
     try {
       if (!bluetoothCharacteristic || !isBluetoothConnected) {
-        showAlert("Printer Tidak Terhubung", "Hubungkan printer Bluetooth terlebih dahulu.", "warning");
+        showAlert(
+          "Printer Tidak Terhubung",
+          "Hubungkan printer Bluetooth terlebih dahulu.",
+          "warning",
+        );
         return;
       }
 
@@ -1111,19 +1188,18 @@ const EnhancedPOS: React.FC = () => {
         const chunk = escposData.slice(i, i + chunkSize);
         await bluetoothCharacteristic.writeValue(chunk);
         // Small delay between chunks
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       }
 
       hideLoading();
       showSuccess("Berhasil", "Struk berhasil dicetak via Bluetooth", false);
-
     } catch (error) {
       hideLoading();
-      console.error('Bluetooth printing error:', error);
+      console.error("Bluetooth printing error:", error);
       showAlert(
         "Gagal Mencetak",
-        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        "error"
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "error",
       );
     }
   };
@@ -1131,7 +1207,11 @@ const EnhancedPOS: React.FC = () => {
   const testBluetoothPrint = async () => {
     try {
       if (!bluetoothCharacteristic || !isBluetoothConnected) {
-        showAlert("Printer Tidak Terhubung", "Hubungkan printer Bluetooth terlebih dahulu.", "warning");
+        showAlert(
+          "Printer Tidak Terhubung",
+          "Hubungkan printer Bluetooth terlebih dahulu.",
+          "warning",
+        );
         return;
       }
 
@@ -1139,18 +1219,25 @@ const EnhancedPOS: React.FC = () => {
 
       const encoder = new TextEncoder();
       const testData = encoder.encode(
-        `\n\nTEST PRINT\n${settings.storeName}\n${new Date().toLocaleString('id-ID')}\n\nPrinter Bluetooth OK!\n\n\n`
+        `\n\nTEST PRINT\n${settings.storeName}\n${new Date().toLocaleString("id-ID")}\n\nPrinter Bluetooth OK!\n\n\n`,
       );
 
       await bluetoothCharacteristic.writeValue(testData);
 
       hideLoading();
-      showSuccess("Test Print", "Test print berhasil dikirim ke printer", false);
-
+      showSuccess(
+        "Test Print",
+        "Test print berhasil dikirim ke printer",
+        false,
+      );
     } catch (error) {
       hideLoading();
-      console.error('Test print error:', error);
-      showAlert("Test Print Gagal", `Error: ${error instanceof Error ? error.message : 'Unknown error'}`, "error");
+      console.error("Test print error:", error);
+      showAlert(
+        "Test Print Gagal",
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        "error",
+      );
     }
   };
 
@@ -1204,12 +1291,20 @@ const EnhancedPOS: React.FC = () => {
   // Open bill management
   const holdCurrentBill = () => {
     if (cart.length === 0) {
-      showAlert("Keranjang Kosong", "Tidak ada item di keranjang untuk disimpan.", "warning");
+      showAlert(
+        "Keranjang Kosong",
+        "Tidak ada item di keranjang untuk disimpan.",
+        "warning",
+      );
       return;
     }
 
     if (!currentUser || !currentShift) {
-      showAlert("Session Required", "Anda harus login dan memulai shift untuk menyimpan bill.", "warning");
+      showAlert(
+        "Session Required",
+        "Anda harus login dan memulai shift untuk menyimpan bill.",
+        "warning",
+      );
       return;
     }
 
@@ -1228,7 +1323,7 @@ const EnhancedPOS: React.FC = () => {
       notes: openBillForm.notes,
       createdAt: new Date().toISOString(),
       createdBy: currentUser?.id || "",
-      status: "held"
+      status: "held",
     };
 
     setOpenBills([...openBills, newOpenBill]);
@@ -1248,13 +1343,21 @@ const EnhancedPOS: React.FC = () => {
 
     setShowHoldBillModal(false);
 
-    addNotification("success", "Bill Tersimpan", `Bill untuk ${newOpenBill.customerName || 'Customer'} berhasil disimpan`);
+    addNotification(
+      "success",
+      "Bill Tersimpan",
+      `Bill untuk ${newOpenBill.customerName || "Customer"} berhasil disimpan`,
+    );
   };
 
   const resumeOpenBill = (billId: string) => {
-    const bill = openBills.find(b => b.id === billId);
+    const bill = openBills.find((b) => b.id === billId);
     if (!bill) {
-      showAlert("Bill Tidak Ditemukan", "Bill yang dipilih tidak ditemukan.", "error");
+      showAlert(
+        "Bill Tidak Ditemukan",
+        "Bill yang dipilih tidak ditemukan.",
+        "error",
+      );
       return;
     }
 
@@ -1263,7 +1366,7 @@ const EnhancedPOS: React.FC = () => {
       showAlert(
         "Keranjang Berisi Item",
         "Selesaikan atau simpan transaksi saat ini sebelum membuka bill lain.",
-        "warning"
+        "warning",
       );
       return;
     }
@@ -1274,31 +1377,38 @@ const EnhancedPOS: React.FC = () => {
     setDiscountType(bill.discountType);
 
     // Update bill status
-    setOpenBills(openBills.map(b =>
-      b.id === billId
-        ? { ...b, status: "resumed" as const }
-        : b
-    ));
+    setOpenBills(
+      openBills.map((b) =>
+        b.id === billId ? { ...b, status: "resumed" as const } : b,
+      ),
+    );
 
     setShowOpenBillModal(false);
-    addNotification("info", "Bill Dibuka", `Bill untuk ${bill.customerName || 'Customer'} berhasil dibuka`);
+    addNotification(
+      "info",
+      "Bill Dibuka",
+      `Bill untuk ${bill.customerName || "Customer"} berhasil dibuka`,
+    );
   };
 
   const deleteOpenBill = async (billId: string) => {
     const confirmed = await showConfirm(
       "Hapus Bill",
       "Apakah Anda yakin ingin menghapus bill ini? Aksi ini tidak dapat dibatalkan.",
-      "danger"
+      "danger",
     );
 
     if (confirmed) {
-      setOpenBills(openBills.filter(b => b.id !== billId));
+      setOpenBills(openBills.filter((b) => b.id !== billId));
       addNotification("info", "Bill Dihapus", "Bill berhasil dihapus");
     }
   };
 
   const getOpenBillTotal = (bill: OpenBill) => {
-    const subtotal = bill.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    const subtotal = bill.items.reduce(
+      (sum, item) => sum + item.quantity * item.price,
+      0,
+    );
 
     let discountValue = 0;
     if (bill.discountType === "percentage") {
@@ -1315,7 +1425,13 @@ const EnhancedPOS: React.FC = () => {
     const taxAmount = subtotalAfterDiscount * (settings.taxRate / 100);
     const finalTotal = subtotalAfterDiscount + taxAmount;
 
-    return { subtotal, discountValue, subtotalAfterDiscount, taxAmount, finalTotal };
+    return {
+      subtotal,
+      discountValue,
+      subtotalAfterDiscount,
+      taxAmount,
+      finalTotal,
+    };
   };
 
   // Data persistence
@@ -1427,7 +1543,16 @@ const EnhancedPOS: React.FC = () => {
     ) {
       saveData();
     }
-  }, [users, products, customers, sales, shifts, openBills, settings, currentUser]);
+  }, [
+    users,
+    products,
+    customers,
+    sales,
+    shifts,
+    openBills,
+    settings,
+    currentUser,
+  ]);
 
   useEffect(() => {
     initializeSampleData();
@@ -1553,7 +1678,10 @@ const EnhancedPOS: React.FC = () => {
     const allowedModules = settings.rolePermissions[currentUser.role] || [];
     const fullPermission = `${moduleId}.${submenuId}`;
     // Check if has specific submenu permission or full module access
-    return allowedModules.includes(fullPermission) || allowedModules.includes(moduleId);
+    return (
+      allowedModules.includes(fullPermission) ||
+      allowedModules.includes(moduleId)
+    );
   };
 
   // Cart functions
@@ -1728,12 +1856,15 @@ const EnhancedPOS: React.FC = () => {
       if (selectedCustomer && settings.loyaltyProgramEnabled) {
         updateCustomerLoyalty(selectedCustomer.id, finalTotal);
 
-        const pointsEarned = calculateLoyaltyPoints(finalTotal, selectedCustomer.tier);
+        const pointsEarned = calculateLoyaltyPoints(
+          finalTotal,
+          selectedCustomer.tier,
+        );
         if (pointsEarned > 0) {
           showAlert(
             "Points Earned! 🎯",
             `${selectedCustomer.name} mendapat ${pointsEarned} points!`,
-            "success"
+            "success",
           );
         }
       }
@@ -1789,7 +1920,7 @@ const EnhancedPOS: React.FC = () => {
         "Alasan Pembatalan",
         "Masukkan alasan pembatalan transaksi:",
         "",
-        "text"
+        "text",
       );
 
       if (voidReason === null) {
@@ -1801,7 +1932,7 @@ const EnhancedPOS: React.FC = () => {
         showAlert(
           "Alasan Diperlukan",
           "Anda harus memberikan alasan untuk membatalkan transaksi.",
-          "warning"
+          "warning",
         );
         return;
       }
@@ -1812,13 +1943,15 @@ const EnhancedPOS: React.FC = () => {
 
         // Update sale status with void information
         const updatedSales = sales.map((s) =>
-          s.id === saleId ? {
-            ...s,
-            status: "voided" as const,
-            voidReason: voidReason.trim(),
-            voidedBy: currentUser?.username || "Unknown",
-            voidedAt: new Date().toISOString()
-          } : s,
+          s.id === saleId
+            ? {
+                ...s,
+                status: "voided" as const,
+                voidReason: voidReason.trim(),
+                voidedBy: currentUser?.username || "Unknown",
+                voidedAt: new Date().toISOString(),
+              }
+            : s,
         );
         setSales(updatedSales);
 
@@ -1844,7 +1977,7 @@ const EnhancedPOS: React.FC = () => {
         addNotification(
           "info",
           "Transaksi Dibatalkan",
-          `Transaksi ${saleId} dibatalkan oleh ${currentUser?.username}. Alasan: ${voidReason.trim()}`
+          `Transaksi ${saleId} dibatalkan oleh ${currentUser?.username}. Alasan: ${voidReason.trim()}`,
         );
       } else {
         showAlert(
@@ -1945,7 +2078,7 @@ const EnhancedPOS: React.FC = () => {
         totalSpent: 0,
         joinDate: new Date().toISOString(),
         tier: "Bronze",
-        isActive: true
+        isActive: true,
       };
       setCustomers([...customers, newCustomer]);
       showAlert("Berhasil", "Pelanggan baru berhasil ditambahkan.", "success");
@@ -1957,16 +2090,24 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Loyalty Program Functions
-  const calculateLoyaltyPoints = (amount: number, tier: string = "Bronze"): number => {
+  const calculateLoyaltyPoints = (
+    amount: number,
+    tier: string = "Bronze",
+  ): number => {
     if (!settings.loyaltyProgramEnabled) return 0;
 
-    const basePoints = Math.floor(amount / 1000) * (settings.pointsPerPurchase || 1);
-    const tierMultiplier = settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.pointsMultiplier || 1;
+    const basePoints =
+      Math.floor(amount / 1000) * (settings.pointsPerPurchase || 1);
+    const tierMultiplier =
+      settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]
+        ?.pointsMultiplier || 1;
 
     return Math.floor(basePoints * tierMultiplier);
   };
 
-  const calculateTier = (totalSpent: number): "Bronze" | "Silver" | "Gold" | "Platinum" => {
+  const calculateTier = (
+    totalSpent: number,
+  ): "Bronze" | "Silver" | "Gold" | "Platinum" => {
     if (!settings.tierThresholds) return "Bronze";
 
     if (totalSpent >= settings.tierThresholds.platinum) return "Platinum";
@@ -1976,53 +2117,67 @@ const EnhancedPOS: React.FC = () => {
   };
 
   const getTierDiscount = (tier: string): number => {
-    return settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.discountPercent || 0;
+    return (
+      settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]
+        ?.discountPercent || 0
+    );
   };
 
-  const redeemLoyaltyPoints = (customerId: string, pointsToRedeem: number): number => {
-    const customer = customers.find(c => c.id === customerId);
+  const redeemLoyaltyPoints = (
+    customerId: string,
+    pointsToRedeem: number,
+  ): number => {
+    const customer = customers.find((c) => c.id === customerId);
     if (!customer || customer.loyaltyPoints < pointsToRedeem) return 0;
 
-    const redemptionValue = pointsToRedeem * (settings.pointsRedemptionValue || 1000);
+    const redemptionValue =
+      pointsToRedeem * (settings.pointsRedemptionValue || 1000);
 
     // Update customer points
-    setCustomers(customers.map(c =>
-      c.id === customerId
-        ? { ...c, loyaltyPoints: c.loyaltyPoints - pointsToRedeem }
-        : c
-    ));
+    setCustomers(
+      customers.map((c) =>
+        c.id === customerId
+          ? { ...c, loyaltyPoints: c.loyaltyPoints - pointsToRedeem }
+          : c,
+      ),
+    );
 
     return redemptionValue;
   };
 
-  const updateCustomerLoyalty = (customerId: string, purchaseAmount: number) => {
+  const updateCustomerLoyalty = (
+    customerId: string,
+    purchaseAmount: number,
+  ) => {
     if (!settings.loyaltyProgramEnabled) return;
 
-    const customer = customers.find(c => c.id === customerId);
+    const customer = customers.find((c) => c.id === customerId);
     if (!customer) return;
 
     const newTotalSpent = customer.totalSpent + purchaseAmount;
     const newTier = calculateTier(newTotalSpent);
     const pointsEarned = calculateLoyaltyPoints(purchaseAmount, customer.tier);
 
-    setCustomers(customers.map(c =>
-      c.id === customerId
-        ? {
-            ...c,
-            totalSpent: newTotalSpent,
-            tier: newTier,
-            loyaltyPoints: c.loyaltyPoints + pointsEarned,
-            lastVisit: new Date().toISOString()
-          }
-        : c
-    ));
+    setCustomers(
+      customers.map((c) =>
+        c.id === customerId
+          ? {
+              ...c,
+              totalSpent: newTotalSpent,
+              tier: newTier,
+              loyaltyPoints: c.loyaltyPoints + pointsEarned,
+              lastVisit: new Date().toISOString(),
+            }
+          : c,
+      ),
+    );
 
     // Show tier upgrade notification
     if (newTier !== customer.tier) {
       showAlert(
         "Tier Upgrade! 🎉",
         `${customer.name} naik ke tier ${newTier}! Selamat!`,
-        "success"
+        "success",
       );
     }
   };
@@ -2035,18 +2190,20 @@ const EnhancedPOS: React.FC = () => {
       showAlert(
         "Input Tidak Valid",
         "Deskripsi dan jumlah expense harus diisi dengan benar.",
-        "error"
+        "error",
       );
       return;
     }
 
     if (editingExpense) {
       // Edit existing expense
-      setExpenses(expenses.map(exp =>
-        exp.id === editingExpense.id
-          ? { ...exp, ...expenseForm, date: exp.date } // Preserve original date
-          : exp
-      ));
+      setExpenses(
+        expenses.map((exp) =>
+          exp.id === editingExpense.id
+            ? { ...exp, ...expenseForm, date: exp.date } // Preserve original date
+            : exp,
+        ),
+      );
       showAlert("Berhasil", "Data expense berhasil diperbarui.", "success");
     } else {
       // Add new expense
@@ -2054,7 +2211,7 @@ const EnhancedPOS: React.FC = () => {
         id: generateUniqueId(),
         date: new Date().toISOString(),
         ...expenseForm,
-        createdBy: currentUser?.id || "unknown"
+        createdBy: currentUser?.id || "unknown",
       };
       setExpenses([...expenses, newExpense]);
       showAlert("Berhasil", "Expense baru berhasil ditambahkan.", "success");
@@ -2072,7 +2229,7 @@ const EnhancedPOS: React.FC = () => {
       notes: "",
       isRecurring: false,
       recurringPeriod: "monthly",
-      tags: []
+      tags: [],
     });
   };
 
@@ -2088,7 +2245,7 @@ const EnhancedPOS: React.FC = () => {
       notes: expense.notes || "",
       isRecurring: expense.isRecurring || false,
       recurringPeriod: expense.recurringPeriod || "monthly",
-      tags: expense.tags || []
+      tags: expense.tags || [],
     });
     setShowExpenseModal(true);
   };
@@ -2097,38 +2254,53 @@ const EnhancedPOS: React.FC = () => {
     const confirmed = await showConfirm(
       "Konfirmasi Hapus",
       "Apakah Anda yakin ingin menghapus expense ini?",
-      "danger"
+      "danger",
     );
     if (confirmed) {
-      setExpenses(expenses.filter(exp => exp.id !== expenseId));
+      setExpenses(expenses.filter((exp) => exp.id !== expenseId));
       showAlert("Berhasil", "Expense berhasil dihapus.", "success");
     }
   };
 
   const getExpenseAnalytics = () => {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const recentExpenses = expenses.filter(exp => new Date(exp.date) >= thirtyDaysAgo);
+    const recentExpenses = expenses.filter(
+      (exp) => new Date(exp.date) >= thirtyDaysAgo,
+    );
 
-    const categoryTotals = recentExpenses.reduce((acc, exp) => {
-      acc[exp.category] = (acc[exp.category] || 0) + exp.amount;
-      return acc;
-    }, {} as Record<string, number>);
+    const categoryTotals = recentExpenses.reduce(
+      (acc, exp) => {
+        acc[exp.category] = (acc[exp.category] || 0) + exp.amount;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
-    const totalExpenses = recentExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+    const totalExpenses = recentExpenses.reduce(
+      (sum, exp) => sum + exp.amount,
+      0,
+    );
 
     return {
       totalExpenses,
       categoryTotals,
       expenseCount: recentExpenses.length,
-      avgExpense: recentExpenses.length > 0 ? totalExpenses / recentExpenses.length : 0
+      avgExpense:
+        recentExpenses.length > 0 ? totalExpenses / recentExpenses.length : 0,
     };
   };
 
   const getFilteredExpenses = () => {
-    return expenses.filter(expense =>
-      expense.description.toLowerCase().includes(customerSearch.toLowerCase()) ||
-      expense.category.toLowerCase().includes(customerSearch.toLowerCase()) ||
-      (expense.supplier && expense.supplier.toLowerCase().includes(customerSearch.toLowerCase()))
+    return expenses.filter(
+      (expense) =>
+        expense.description
+          .toLowerCase()
+          .includes(customerSearch.toLowerCase()) ||
+        expense.category.toLowerCase().includes(customerSearch.toLowerCase()) ||
+        (expense.supplier &&
+          expense.supplier
+            .toLowerCase()
+            .includes(customerSearch.toLowerCase())),
     );
   };
 
@@ -2356,10 +2528,18 @@ const EnhancedPOS: React.FC = () => {
         receiptSettings: currentReceiptSettings,
       });
 
-      showAlert("Test Print", "Struk test berhasil dikirim ke printer!", "success");
+      showAlert(
+        "Test Print",
+        "Struk test berhasil dikirim ke printer!",
+        "success",
+      );
     } catch (error) {
       console.error("Test print error:", error);
-      showAlert("Error", "Gagal melakukan test print. Pastikan printer terhubung.", "error");
+      showAlert(
+        "Error",
+        "Gagal melakukan test print. Pastikan printer terhubung.",
+        "error",
+      );
     }
   };
 
@@ -2542,22 +2722,34 @@ const EnhancedPOS: React.FC = () => {
 
   // Print detailed sales report for shift
   const printShiftSalesReport = (shift: Shift) => {
-    const shiftSales = sales.filter(sale =>
-      shift.salesIds.includes(sale.id) && sale.status === "completed"
+    const shiftSales = sales.filter(
+      (sale) => shift.salesIds.includes(sale.id) && sale.status === "completed",
     );
 
     const user = users.find((u) => u.id === shift.userId);
-    const totalSales = shiftSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
-    const totalItems = shiftSales.reduce((sum, sale) =>
-      sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0
+    const totalSales = shiftSales.reduce(
+      (sum, sale) => sum + sale.totalAmount,
+      0,
+    );
+    const totalItems = shiftSales.reduce(
+      (sum, sale) =>
+        sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0),
+      0,
     );
 
     // Product performance analysis
-    const productPerformance: Record<string, {name: string, quantity: number, revenue: number}> = {};
-    shiftSales.forEach(sale => {
-      sale.items.forEach(item => {
+    const productPerformance: Record<
+      string,
+      { name: string; quantity: number; revenue: number }
+    > = {};
+    shiftSales.forEach((sale) => {
+      sale.items.forEach((item) => {
         if (!productPerformance[item.id]) {
-          productPerformance[item.id] = { name: item.name, quantity: 0, revenue: 0 };
+          productPerformance[item.id] = {
+            name: item.name,
+            quantity: 0,
+            revenue: 0,
+          };
         }
         productPerformance[item.id].quantity += item.quantity;
         productPerformance[item.id].revenue += item.subtotal;
@@ -2569,10 +2761,14 @@ const EnhancedPOS: React.FC = () => {
       .slice(0, 10);
 
     // Payment method breakdown
-    const paymentMethods = shiftSales.reduce((acc, sale) => {
-      acc[sale.paymentMethod] = (acc[sale.paymentMethod] || 0) + sale.totalAmount;
-      return acc;
-    }, {} as Record<string, number>);
+    const paymentMethods = shiftSales.reduce(
+      (acc, sale) => {
+        acc[sale.paymentMethod] =
+          (acc[sale.paymentMethod] || 0) + sale.totalAmount;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
     const reportHTML = `
       <!DOCTYPE html>
@@ -2633,14 +2829,18 @@ const EnhancedPOS: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              ${topProducts.map((product, index) => `
+              ${topProducts
+                .map(
+                  (product, index) => `
                 <tr>
                   <td>${index + 1}</td>
                   <td>${product.name}</td>
                   <td class="text-right">${product.quantity}</td>
                   <td class="text-right">${formatCurrency(product.revenue)}</td>
                 </tr>
-              `).join('')}
+              `,
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -2656,13 +2856,17 @@ const EnhancedPOS: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              ${Object.entries(paymentMethods).map(([method, amount]) => `
+              ${Object.entries(paymentMethods)
+                .map(
+                  ([method, amount]) => `
                 <tr>
-                  <td>${method === 'cash' ? 'Tunai' : method === 'card' ? 'Kartu' : 'E-Wallet'}</td>
+                  <td>${method === "cash" ? "Tunai" : method === "card" ? "Kartu" : "E-Wallet"}</td>
                   <td class="text-right">${formatCurrency(amount)}</td>
                   <td class="text-right">${((amount / totalSales) * 100).toFixed(1)}%</td>
                 </tr>
-              `).join('')}
+              `,
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -2681,16 +2885,20 @@ const EnhancedPOS: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              ${shiftSales.map(sale => `
+              ${shiftSales
+                .map(
+                  (sale) => `
                 <tr>
                   <td>${new Date(sale.date).toLocaleTimeString("id-ID")}</td>
                   <td>${sale.id}</td>
-                  <td>${sale.customer || '-'}</td>
+                  <td>${sale.customer || "-"}</td>
                   <td>${sale.items.length} item(s)</td>
-                  <td>${sale.paymentMethod === 'cash' ? 'Tunai' : sale.paymentMethod === 'card' ? 'Kartu' : 'E-Wallet'}</td>
+                  <td>${sale.paymentMethod === "cash" ? "Tunai" : sale.paymentMethod === "card" ? "Kartu" : "E-Wallet"}</td>
                   <td class="text-right">${formatCurrency(sale.totalAmount)}</td>
                 </tr>
-              `).join('')}
+              `,
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -2940,25 +3148,29 @@ const EnhancedPOS: React.FC = () => {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
     // Get sales in the last 30 days
-    const recentSales = sales.filter(sale =>
-      new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+    const recentSales = sales.filter(
+      (sale) =>
+        new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed",
     );
 
     // Calculate product velocity (items sold per day)
-    const productVelocity: Record<string, {
-      name: string;
-      totalSold: number;
-      currentStock: number;
-      dailyAverage: number;
-      weeklyAverage: number;
-      daysUntilStockout: number;
-      reorderPoint: number;
-      status: "healthy" | "low" | "critical" | "stockout";
-      forecast: { days: number; estimatedStock: number }[];
-    }> = {};
+    const productVelocity: Record<
+      string,
+      {
+        name: string;
+        totalSold: number;
+        currentStock: number;
+        dailyAverage: number;
+        weeklyAverage: number;
+        daysUntilStockout: number;
+        reorderPoint: number;
+        status: "healthy" | "low" | "critical" | "stockout";
+        forecast: { days: number; estimatedStock: number }[];
+      }
+    > = {};
 
     // Initialize with current products
-    products.forEach(product => {
+    products.forEach((product) => {
       productVelocity[product.id] = {
         name: product.name,
         totalSold: 0,
@@ -2968,13 +3180,13 @@ const EnhancedPOS: React.FC = () => {
         daysUntilStockout: 0,
         reorderPoint: 0,
         status: "healthy",
-        forecast: []
+        forecast: [],
       };
     });
 
     // Calculate sales velocity
-    recentSales.forEach(sale => {
-      sale.items.forEach(item => {
+    recentSales.forEach((sale) => {
+      sale.items.forEach((item) => {
         if (productVelocity[item.id]) {
           productVelocity[item.id].totalSold += item.quantity;
         }
@@ -2982,14 +3194,16 @@ const EnhancedPOS: React.FC = () => {
     });
 
     // Calculate averages and forecasts
-    Object.keys(productVelocity).forEach(productId => {
+    Object.keys(productVelocity).forEach((productId) => {
       const data = productVelocity[productId];
       data.dailyAverage = data.totalSold / 30; // 30 days average
       data.weeklyAverage = data.totalSold / 4.3; // ~4.3 weeks in 30 days
 
       // Calculate days until stockout
       if (data.dailyAverage > 0) {
-        data.daysUntilStockout = Math.floor(data.currentStock / data.dailyAverage);
+        data.daysUntilStockout = Math.floor(
+          data.currentStock / data.dailyAverage,
+        );
         data.reorderPoint = Math.ceil(data.dailyAverage * 7); // 7 days worth of stock
       } else {
         data.daysUntilStockout = Infinity;
@@ -3009,7 +3223,10 @@ const EnhancedPOS: React.FC = () => {
 
       // Generate 14-day forecast
       for (let i = 1; i <= 14; i++) {
-        const estimatedStock = Math.max(0, data.currentStock - (data.dailyAverage * i));
+        const estimatedStock = Math.max(
+          0,
+          data.currentStock - data.dailyAverage * i,
+        );
         data.forecast.push({ days: i, estimatedStock });
       }
     });
@@ -3038,7 +3255,7 @@ const EnhancedPOS: React.FC = () => {
           priority: "high",
           message: `${data.name} sudah habis!`,
           productName: data.name,
-          actionRequired: "Segera lakukan restocking"
+          actionRequired: "Segera lakukan restocking",
         });
       }
 
@@ -3050,7 +3267,7 @@ const EnhancedPOS: React.FC = () => {
           priority: "high",
           message: `${data.name} stok kritis (${data.currentStock} tersisa)`,
           productName: data.name,
-          actionRequired: `Restock dalam ${data.daysUntilStockout} hari`
+          actionRequired: `Restock dalam ${data.daysUntilStockout} hari`,
         });
       }
 
@@ -3062,7 +3279,7 @@ const EnhancedPOS: React.FC = () => {
           priority: "medium",
           message: `${data.name} stok rendah (${data.currentStock} tersisa)`,
           productName: data.name,
-          actionRequired: `Pertimbangkan restock dalam ${data.daysUntilStockout} hari`
+          actionRequired: `Pertimbangkan restock dalam ${data.daysUntilStockout} hari`,
         });
       }
 
@@ -3074,7 +3291,7 @@ const EnhancedPOS: React.FC = () => {
           priority: "medium",
           message: `${data.name} mencapai reorder point`,
           productName: data.name,
-          actionRequired: `Restock hingga ${Math.ceil(data.reorderPoint * 2)} unit`
+          actionRequired: `Restock hingga ${Math.ceil(data.reorderPoint * 2)} unit`,
         });
       }
 
@@ -3086,14 +3303,16 @@ const EnhancedPOS: React.FC = () => {
           priority: "low",
           message: `${data.name} kemungkinan overstock`,
           productName: data.name,
-          actionRequired: "Pertimbangkan promosi atau diskon"
+          actionRequired: "Pertimbangkan promosi atau diskon",
         });
       }
     });
 
     // Sort by priority
     const priorityOrder = { high: 3, medium: 2, low: 1 };
-    return alerts.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+    return alerts.sort(
+      (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority],
+    );
   };
 
   const getFilteredCustomers = () => {
@@ -3242,8 +3461,18 @@ const EnhancedPOS: React.FC = () => {
                       <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-semibold text-gray-800 flex items-center">
-                            <svg className="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                            <svg
+                              className="w-4 h-4 mr-2 text-gray-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z"
+                              />
                             </svg>
                             Notifikasi
                           </h3>
@@ -3267,27 +3496,48 @@ const EnhancedPOS: React.FC = () => {
                       <div className="max-h-80 max-h-[60vh] overflow-y-auto">
                         {notifications.length === 0 ? (
                           <div className="p-6 text-center">
-                            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z" />
+                            <svg
+                              className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 17h5l-3.5-3.5a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 10-3.6 7.3z"
+                              />
                             </svg>
-                            <p className="text-sm text-gray-500">Tidak ada notifikasi</p>
+                            <p className="text-sm text-gray-500">
+                              Tidak ada notifikasi
+                            </p>
                           </div>
                         ) : (
                           notifications.map((notification) => (
                             <div
                               key={notification.id}
-                              onClick={() => markNotificationAsRead(notification.id)}
+                              onClick={() =>
+                                markNotificationAsRead(notification.id)
+                              }
                               className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
-                                !notification.read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                !notification.read
+                                  ? "bg-blue-50 border-l-4 border-l-blue-500"
+                                  : ""
                               }`}
                             >
                               <div className="flex items-start space-x-3">
-                                <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                                  notification.type === 'error' ? 'bg-red-500' :
-                                  notification.type === 'warning' ? 'bg-yellow-500' :
-                                  notification.type === 'success' ? 'bg-green-500' :
-                                  'bg-blue-500'
-                                }`} />
+                                <div
+                                  className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                                    notification.type === "error"
+                                      ? "bg-red-500"
+                                      : notification.type === "warning"
+                                        ? "bg-yellow-500"
+                                        : notification.type === "success"
+                                          ? "bg-green-500"
+                                          : "bg-blue-500"
+                                  }`}
+                                />
                                 <div className="flex-1 min-w-0">
                                   <p className="text-sm font-medium text-gray-900">
                                     {notification.title}
@@ -3297,7 +3547,9 @@ const EnhancedPOS: React.FC = () => {
                                   </p>
                                   <div className="flex items-center justify-between mt-2">
                                     <p className="text-xs text-gray-400">
-                                      {notification.timestamp.toLocaleTimeString('id-ID')}
+                                      {notification.timestamp.toLocaleTimeString(
+                                        "id-ID",
+                                      )}
                                     </p>
                                     {!notification.read && (
                                       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
@@ -3321,8 +3573,18 @@ const EnhancedPOS: React.FC = () => {
                     onClick={handleLogout}
                     className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm hover:bg-gray-700 hover:text-white transition-colors"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
                     </svg>
                     <span className="text-xs">Keluar</span>
                   </button>
@@ -3342,8 +3604,6 @@ const EnhancedPOS: React.FC = () => {
                 {currentShift && ` | Shift: ${currentShift.id}`}
               </span>
             </div>
-
-
 
             {/* Order Entry Module */}
             {activeModule === "order-entry" &&
@@ -3830,8 +4090,18 @@ const EnhancedPOS: React.FC = () => {
                                   disabled={cart.length === 0}
                                   className="bg-yellow-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-yellow-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200 flex items-center justify-center"
                                 >
-                                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h1.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                  <svg
+                                    className="w-4 h-4 mr-2"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M5 8h14M5 8a2 2 0 110-4h1.586a1 1 0 01.707.293l1.414 1.414a1 1 0 00.707.293H14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                                    />
                                   </svg>
                                   Hold Bill
                                 </button>
@@ -3839,10 +4109,25 @@ const EnhancedPOS: React.FC = () => {
                                   onClick={() => setShowOpenBillModal(true)}
                                   className="bg-orange-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-orange-700 transition duration-200 flex items-center justify-center"
                                 >
-                                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                  <svg
+                                    className="w-4 h-4 mr-2"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                                    />
                                   </svg>
-                                  Open Bills ({openBills.filter(b => b.status === "held").length})
+                                  Open Bills (
+                                  {
+                                    openBills.filter((b) => b.status === "held")
+                                      .length
+                                  }
+                                  )
                                 </button>
                               </div>
 
@@ -3875,25 +4160,49 @@ const EnhancedPOS: React.FC = () => {
                     <div className="lg:col-span-4">
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                          <h3 className="text-sm font-medium text-gray-600">Total Produk</h3>
-                          <p className="text-2xl font-bold text-blue-600">{products.length}</p>
+                          <h3 className="text-sm font-medium text-gray-600">
+                            Total Produk
+                          </h3>
+                          <p className="text-2xl font-bold text-blue-600">
+                            {products.length}
+                          </p>
                         </div>
                         <div className="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
-                          <h3 className="text-sm font-medium text-gray-600">Stok Sehat</h3>
+                          <h3 className="text-sm font-medium text-gray-600">
+                            Stok Sehat
+                          </h3>
                           <p className="text-2xl font-bold text-green-600">
-                            {Object.values(getInventoryAnalytics()).filter(p => p.status === "healthy").length}
+                            {
+                              Object.values(getInventoryAnalytics()).filter(
+                                (p) => p.status === "healthy",
+                              ).length
+                            }
                           </p>
                         </div>
                         <div className="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
-                          <h3 className="text-sm font-medium text-gray-600">Stok Rendah</h3>
+                          <h3 className="text-sm font-medium text-gray-600">
+                            Stok Rendah
+                          </h3>
                           <p className="text-2xl font-bold text-yellow-600">
-                            {Object.values(getInventoryAnalytics()).filter(p => p.status === "low").length}
+                            {
+                              Object.values(getInventoryAnalytics()).filter(
+                                (p) => p.status === "low",
+                              ).length
+                            }
                           </p>
                         </div>
                         <div className="bg-white p-4 rounded-lg shadow border-l-4 border-red-500">
-                          <h3 className="text-sm font-medium text-gray-600">Stok Kritis</h3>
+                          <h3 className="text-sm font-medium text-gray-600">
+                            Stok Kritis
+                          </h3>
                           <p className="text-2xl font-bold text-red-600">
-                            {Object.values(getInventoryAnalytics()).filter(p => p.status === "critical" || p.status === "stockout").length}
+                            {
+                              Object.values(getInventoryAnalytics()).filter(
+                                (p) =>
+                                  p.status === "critical" ||
+                                  p.status === "stockout",
+                              ).length
+                            }
                           </p>
                         </div>
                       </div>
@@ -3903,24 +4212,45 @@ const EnhancedPOS: React.FC = () => {
                     <div className="lg:col-span-2">
                       <div className="bg-white p-4 rounded-lg shadow h-64 overflow-y-auto">
                         <h3 className="text-lg font-semibold mb-3 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-yellow-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                            />
                           </svg>
                           Alert Inventory
                         </h3>
                         <div className="space-y-2">
-                          {getInventoryAlerts().slice(0, 5).map(alert => (
-                            <div key={alert.id} className={`p-2 rounded border-l-4 text-sm ${
-                              alert.priority === "high" ? "border-red-500 bg-red-50" :
-                              alert.priority === "medium" ? "border-yellow-500 bg-yellow-50" :
-                              "border-blue-500 bg-blue-50"
-                            }`}>
-                              <p className="font-medium">{alert.message}</p>
-                              <p className="text-gray-600 text-xs mt-1">{alert.actionRequired}</p>
-                            </div>
-                          ))}
+                          {getInventoryAlerts()
+                            .slice(0, 5)
+                            .map((alert) => (
+                              <div
+                                key={alert.id}
+                                className={`p-2 rounded border-l-4 text-sm ${
+                                  alert.priority === "high"
+                                    ? "border-red-500 bg-red-50"
+                                    : alert.priority === "medium"
+                                      ? "border-yellow-500 bg-yellow-50"
+                                      : "border-blue-500 bg-blue-50"
+                                }`}
+                              >
+                                <p className="font-medium">{alert.message}</p>
+                                <p className="text-gray-600 text-xs mt-1">
+                                  {alert.actionRequired}
+                                </p>
+                              </div>
+                            ))}
                           {getInventoryAlerts().length === 0 && (
-                            <p className="text-gray-500 text-center py-4">✅ Tidak ada alert inventory</p>
+                            <p className="text-gray-500 text-center py-4">
+                              ✅ Tidak ada alert inventory
+                            </p>
                           )}
                         </div>
                       </div>
@@ -3930,8 +4260,18 @@ const EnhancedPOS: React.FC = () => {
                     <div className="lg:col-span-2">
                       <div className="bg-white p-4 rounded-lg shadow h-64 overflow-y-auto">
                         <h3 className="text-lg font-semibold mb-3 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-green-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                            />
                           </svg>
                           Produk Terlaris (30 hari)
                         </h3>
@@ -3940,19 +4280,32 @@ const EnhancedPOS: React.FC = () => {
                             .sort((a, b) => b.totalSold - a.totalSold)
                             .slice(0, 5)
                             .map((product, index) => (
-                            <div key={product.name} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                              <div>
-                                <p className="font-medium text-sm">{index + 1}. {product.name}</p>
-                                <p className="text-xs text-gray-600">{product.totalSold} terjual | {product.dailyAverage.toFixed(1)}/hari</p>
+                              <div
+                                key={product.name}
+                                className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                              >
+                                <div>
+                                  <p className="font-medium text-sm">
+                                    {index + 1}. {product.name}
+                                  </p>
+                                  <p className="text-xs text-gray-600">
+                                    {product.totalSold} terjual |{" "}
+                                    {product.dailyAverage.toFixed(1)}/hari
+                                  </p>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-sm font-medium">
+                                    Stok: {product.currentStock}
+                                  </p>
+                                  <p className="text-xs text-gray-600">
+                                    {product.daysUntilStockout === Infinity
+                                      ? "∞"
+                                      : product.daysUntilStockout}{" "}
+                                    hari lagi
+                                  </p>
+                                </div>
                               </div>
-                              <div className="text-right">
-                                <p className="text-sm font-medium">Stok: {product.currentStock}</p>
-                                <p className="text-xs text-gray-600">
-                                  {product.daysUntilStockout === Infinity ? "∞" : product.daysUntilStockout} hari lagi
-                                </p>
-                              </div>
-                            </div>
-                          ))}
+                            ))}
                         </div>
                       </div>
                     </div>
@@ -4015,102 +4368,132 @@ const EnhancedPOS: React.FC = () => {
                           </tr>
                         ) : (
                           getFilteredProducts().map((product) => {
-                            const analytics = getInventoryAnalytics()[product.id];
+                            const analytics =
+                              getInventoryAnalytics()[product.id];
                             return (
-                            <tr key={product.id} className="even:bg-gray-50">
-                              <td className="border border-gray-200 px-3 py-2">
-                                <img
-                                  src={
-                                    product.imageUrl ||
-                                    "https://placehold.co/40x40/cccccc/333333?text=N/A"
-                                  }
-                                  alt={product.name}
-                                  className="w-10 h-10 object-cover rounded-md"
-                                  onError={(e) => {
-                                    e.currentTarget.src =
-                                      "https://placehold.co/40x40/cccccc/333333?text=N/A";
-                                  }}
-                                />
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
-                                {product.name}
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                {formatCurrency(product.price)}
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm">
-                                <div className="flex items-center gap-2">
-                                  <span
-                                    className={
-                                      analytics?.status === "stockout" ? "text-red-600 font-bold" :
-                                      analytics?.status === "critical" ? "text-red-500 font-bold" :
-                                      analytics?.status === "low" ? "text-yellow-600 font-bold" :
-                                      "text-gray-600"
+                              <tr key={product.id} className="even:bg-gray-50">
+                                <td className="border border-gray-200 px-3 py-2">
+                                  <img
+                                    src={
+                                      product.imageUrl ||
+                                      "https://placehold.co/40x40/cccccc/333333?text=N/A"
                                     }
-                                  >
-                                    {product.stock}
-                                  </span>
-                                  <span
-                                    className={`text-xs px-2 py-1 rounded-full ${
-                                      analytics?.status === "stockout" ? "bg-red-100 text-red-600" :
-                                      analytics?.status === "critical" ? "bg-red-100 text-red-600" :
-                                      analytics?.status === "low" ? "bg-yellow-100 text-yellow-600" :
-                                      "bg-green-100 text-green-600"
-                                    }`}
-                                  >
-                                    {analytics?.status === "stockout" ? "Habis" :
-                                     analytics?.status === "critical" ? "Kritis" :
-                                     analytics?.status === "low" ? "Rendah" :
-                                     "Sehat"}
-                                  </span>
-                                </div>
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                <div>
-                                  <div>Terjual: {analytics?.totalSold || 0}</div>
-                                  <div className="text-xs">
-                                    {analytics?.dailyAverage?.toFixed(1) || 0}/hari
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                <div>
-                                  {analytics?.daysUntilStockout === Infinity ? (
-                                    <span className="text-gray-400">∞ hari</span>
-                                  ) : analytics?.daysUntilStockout === 0 ? (
-                                    <span className="text-red-600 font-bold">Habis</span>
-                                  ) : (
-                                    <span className={
-                                      (analytics?.daysUntilStockout || 0) <= 7 ? "text-red-600 font-bold" :
-                                      (analytics?.daysUntilStockout || 0) <= 14 ? "text-yellow-600" :
-                                      "text-gray-600"
-                                    }>
-                                      {analytics?.daysUntilStockout} hari
+                                    alt={product.name}
+                                    className="w-10 h-10 object-cover rounded-md"
+                                    onError={(e) => {
+                                      e.currentTarget.src =
+                                        "https://placehold.co/40x40/cccccc/333333?text=N/A";
+                                    }}
+                                  />
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
+                                  {product.name}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  {formatCurrency(product.price)}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <span
+                                      className={
+                                        analytics?.status === "stockout"
+                                          ? "text-red-600 font-bold"
+                                          : analytics?.status === "critical"
+                                            ? "text-red-500 font-bold"
+                                            : analytics?.status === "low"
+                                              ? "text-yellow-600 font-bold"
+                                              : "text-gray-600"
+                                      }
+                                    >
+                                      {product.stock}
                                     </span>
+                                    <span
+                                      className={`text-xs px-2 py-1 rounded-full ${
+                                        analytics?.status === "stockout"
+                                          ? "bg-red-100 text-red-600"
+                                          : analytics?.status === "critical"
+                                            ? "bg-red-100 text-red-600"
+                                            : analytics?.status === "low"
+                                              ? "bg-yellow-100 text-yellow-600"
+                                              : "bg-green-100 text-green-600"
+                                      }`}
+                                    >
+                                      {analytics?.status === "stockout"
+                                        ? "Habis"
+                                        : analytics?.status === "critical"
+                                          ? "Kritis"
+                                          : analytics?.status === "low"
+                                            ? "Rendah"
+                                            : "Sehat"}
+                                    </span>
+                                  </div>
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  <div>
+                                    <div>
+                                      Terjual: {analytics?.totalSold || 0}
+                                    </div>
+                                    <div className="text-xs">
+                                      {analytics?.dailyAverage?.toFixed(1) || 0}
+                                      /hari
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  <div>
+                                    {analytics?.daysUntilStockout ===
+                                    Infinity ? (
+                                      <span className="text-gray-400">
+                                        ∞ hari
+                                      </span>
+                                    ) : analytics?.daysUntilStockout === 0 ? (
+                                      <span className="text-red-600 font-bold">
+                                        Habis
+                                      </span>
+                                    ) : (
+                                      <span
+                                        className={
+                                          (analytics?.daysUntilStockout || 0) <=
+                                          7
+                                            ? "text-red-600 font-bold"
+                                            : (analytics?.daysUntilStockout ||
+                                                  0) <= 14
+                                              ? "text-yellow-600"
+                                              : "text-gray-600"
+                                        }
+                                      >
+                                        {analytics?.daysUntilStockout} hari
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm">
+                                  {hasSubmenuAccess(
+                                    "stock-management",
+                                    "edit",
+                                  ) && (
+                                    <button
+                                      onClick={() => handleEditProduct(product)}
+                                      className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                    >
+                                      Edit
+                                    </button>
                                   )}
-                                </div>
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm">
-                                {hasSubmenuAccess("stock-management", "edit") && (
-                                  <button
-                                    onClick={() => handleEditProduct(product)}
-                                    className="text-indigo-600 hover:text-indigo-900 mr-4"
-                                  >
-                                    Edit
-                                  </button>
-                                )}
-                                {hasSubmenuAccess("stock-management", "delete") && (
-                                  <button
-                                    onClick={() =>
-                                      handleDeleteProduct(product.id)
-                                    }
-                                    className="text-red-600 hover:text-red-900"
-                                  >
-                                    Hapus
-                                  </button>
-                                )}
-                              </td>
-                            </tr>
+                                  {hasSubmenuAccess(
+                                    "stock-management",
+                                    "delete",
+                                  ) && (
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteProduct(product.id)
+                                      }
+                                      className="text-red-600 hover:text-red-900"
+                                    >
+                                      Hapus
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
                             );
                           })
                         )}
@@ -4195,10 +4578,13 @@ const EnhancedPOS: React.FC = () => {
                                 <div className="flex items-center space-x-2">
                                   <span
                                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                      customer.tier === "Platinum" ? "bg-purple-100 text-purple-800" :
-                                      customer.tier === "Gold" ? "bg-yellow-100 text-yellow-800" :
-                                      customer.tier === "Silver" ? "bg-gray-100 text-gray-800" :
-                                      "bg-orange-100 text-orange-800"
+                                      customer.tier === "Platinum"
+                                        ? "bg-purple-100 text-purple-800"
+                                        : customer.tier === "Gold"
+                                          ? "bg-yellow-100 text-yellow-800"
+                                          : customer.tier === "Silver"
+                                            ? "bg-gray-100 text-gray-800"
+                                            : "bg-orange-100 text-orange-800"
                                     }`}
                                   >
                                     {customer.tier || "Bronze"}
@@ -4237,171 +4623,219 @@ const EnhancedPOS: React.FC = () => {
               )}
 
             {/* Expense Management Module */}
-            {activeModule === "expense-management" && hasModuleAccess("expense-management") && (
-              <div>
-                <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-                  Manajemen Pengeluaran
-                </h2>
+            {activeModule === "expense-management" &&
+              hasModuleAccess("expense-management") && (
+                <div>
+                  <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+                    Manajemen Pengeluaran
+                  </h2>
 
-                <div className="flex justify-between items-center mb-4">
-                  {hasSubmenuAccess("expense-management", "add") && (
-                    <button
-                      onClick={() => setShowExpenseModal(true)}
-                      className="bg-red-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-red-700 transition duration-200"
-                    >
-                      Tambah Pengeluaran Baru
-                    </button>
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Cari pengeluaran..."
-                    value={customerSearch}
-                    onChange={(e) => setCustomerSearch(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
-                  />
-                </div>
+                  <div className="flex justify-between items-center mb-4">
+                    {hasSubmenuAccess("expense-management", "add") && (
+                      <button
+                        onClick={() => setShowExpenseModal(true)}
+                        className="bg-red-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-red-700 transition duration-200"
+                      >
+                        Tambah Pengeluaran Baru
+                      </button>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Cari pengeluaran..."
+                      value={customerSearch}
+                      onChange={(e) => setCustomerSearch(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                    />
+                  </div>
 
-                {/* Expense Analytics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                  {(() => {
-                    const analytics = getExpenseAnalytics();
-                    return (
-                      <>
-                        <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-                          <h3 className="text-sm font-medium text-red-600">Total Pengeluaran (30d)</h3>
-                          <p className="text-2xl font-bold text-red-700">{formatCurrency(analytics.totalExpenses)}</p>
-                        </div>
-                        <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
-                          <h3 className="text-sm font-medium text-orange-600">Jumlah Transaksi</h3>
-                          <p className="text-2xl font-bold text-orange-700">{analytics.expenseCount}</p>
-                        </div>
-                        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-                          <h3 className="text-sm font-medium text-yellow-600">Rata-rata Pengeluaran</h3>
-                          <p className="text-2xl font-bold text-yellow-700">{formatCurrency(analytics.avgExpense)}</p>
-                        </div>
-                        <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
-                          <h3 className="text-sm font-medium text-purple-600">Kategori Terbanyak</h3>
-                          <p className="text-lg font-bold text-purple-700">
-                            {Object.keys(analytics.categoryTotals).length > 0
-                              ? Object.entries(analytics.categoryTotals)
-                                  .sort(([,a], [,b]) => b - a)[0]?.[0] || "N/A"
-                              : "N/A"
-                            }
-                          </p>
-                        </div>
-                      </>
-                    );
-                  })()}
-                </div>
+                  {/* Expense Analytics Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    {(() => {
+                      const analytics = getExpenseAnalytics();
+                      return (
+                        <>
+                          <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+                            <h3 className="text-sm font-medium text-red-600">
+                              Total Pengeluaran (30d)
+                            </h3>
+                            <p className="text-2xl font-bold text-red-700">
+                              {formatCurrency(analytics.totalExpenses)}
+                            </p>
+                          </div>
+                          <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                            <h3 className="text-sm font-medium text-orange-600">
+                              Jumlah Transaksi
+                            </h3>
+                            <p className="text-2xl font-bold text-orange-700">
+                              {analytics.expenseCount}
+                            </p>
+                          </div>
+                          <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                            <h3 className="text-sm font-medium text-yellow-600">
+                              Rata-rata Pengeluaran
+                            </h3>
+                            <p className="text-2xl font-bold text-yellow-700">
+                              {formatCurrency(analytics.avgExpense)}
+                            </p>
+                          </div>
+                          <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
+                            <h3 className="text-sm font-medium text-purple-600">
+                              Kategori Terbanyak
+                            </h3>
+                            <p className="text-lg font-bold text-purple-700">
+                              {Object.keys(analytics.categoryTotals).length > 0
+                                ? Object.entries(analytics.categoryTotals).sort(
+                                    ([, a], [, b]) => b - a,
+                                  )[0]?.[0] || "N/A"
+                                : "N/A"}
+                            </p>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg shadow-inner overflow-x-auto">
-                  <table className="min-w-full border-collapse">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Tanggal
-                        </th>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Kategori
-                        </th>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Deskripsi
-                        </th>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Supplier
-                        </th>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Jumlah
-                        </th>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Metode Bayar
-                        </th>
-                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                          Aksi
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {getFilteredExpenses().length === 0 ? (
+                  <div className="bg-gray-50 p-4 rounded-lg shadow-inner overflow-x-auto">
+                    <table className="min-w-full border-collapse">
+                      <thead className="bg-gray-50">
                         <tr>
-                          <td
-                            colSpan={7}
-                            className="border border-gray-200 py-4 text-center text-gray-500"
-                          >
-                            Tidak ada data pengeluaran ditemukan.
-                          </td>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Tanggal
+                          </th>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Kategori
+                          </th>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Deskripsi
+                          </th>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Supplier
+                          </th>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Jumlah
+                          </th>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Metode Bayar
+                          </th>
+                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                            Aksi
+                          </th>
                         </tr>
-                      ) : (
-                        getFilteredExpenses()
-                          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                          .map((expense) => (
-                          <tr key={expense.id} className="even:bg-gray-50">
-                            <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                              {new Date(expense.date).toLocaleDateString("id-ID")}
-                            </td>
-                            <td className="border border-gray-200 px-3 py-2 text-sm">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                expense.category === "inventory" ? "bg-blue-100 text-blue-800" :
-                                expense.category === "operations" ? "bg-green-100 text-green-800" :
-                                expense.category === "marketing" ? "bg-purple-100 text-purple-800" :
-                                expense.category === "utilities" ? "bg-yellow-100 text-yellow-800" :
-                                expense.category === "salaries" ? "bg-indigo-100 text-indigo-800" :
-                                expense.category === "rent" ? "bg-red-100 text-red-800" :
-                                "bg-gray-100 text-gray-800"
-                              }`}>
-                                {expense.category === "inventory" ? "Inventori" :
-                                 expense.category === "operations" ? "Operasional" :
-                                 expense.category === "marketing" ? "Marketing" :
-                                 expense.category === "utilities" ? "Utilitas" :
-                                 expense.category === "salaries" ? "Gaji" :
-                                 expense.category === "rent" ? "Sewa" :
-                                 "Lainnya"}
-                              </span>
-                            </td>
-                            <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
-                              {expense.description}
-                              {expense.isRecurring && (
-                                <span className="ml-2 text-xs text-blue-600">🔄 Recurring</span>
-                              )}
-                            </td>
-                            <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                              {expense.supplier || "-"}
-                            </td>
-                            <td className="border border-gray-200 px-3 py-2 text-sm font-bold text-red-600">
-                              {formatCurrency(expense.amount)}
-                            </td>
-                            <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500 capitalize">
-                              {expense.paymentMethod === "cash" ? "Tunai" :
-                               expense.paymentMethod === "card" ? "Kartu" :
-                               expense.paymentMethod === "transfer" ? "Transfer" :
-                               "Cek"}
-                            </td>
-                            <td className="border border-gray-200 px-3 py-2 text-sm">
-                              {hasSubmenuAccess("expense-management", "edit") && (
-                                <button
-                                  onClick={() => handleEditExpense(expense)}
-                                  className="text-indigo-600 hover:text-indigo-900 mr-4"
-                                >
-                                  Edit
-                                </button>
-                              )}
-                              {hasSubmenuAccess("expense-management", "delete") && (
-                                <button
-                                  onClick={() => handleDeleteExpense(expense.id)}
-                                  className="text-red-600 hover:text-red-900"
-                                >
-                                  Hapus
-                                </button>
-                              )}
+                      </thead>
+                      <tbody>
+                        {getFilteredExpenses().length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={7}
+                              className="border border-gray-200 py-4 text-center text-gray-500"
+                            >
+                              Tidak ada data pengeluaran ditemukan.
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                        ) : (
+                          getFilteredExpenses()
+                            .sort(
+                              (a, b) =>
+                                new Date(b.date).getTime() -
+                                new Date(a.date).getTime(),
+                            )
+                            .map((expense) => (
+                              <tr key={expense.id} className="even:bg-gray-50">
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  {new Date(expense.date).toLocaleDateString(
+                                    "id-ID",
+                                  )}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm">
+                                  <span
+                                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                      expense.category === "inventory"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : expense.category === "operations"
+                                          ? "bg-green-100 text-green-800"
+                                          : expense.category === "marketing"
+                                            ? "bg-purple-100 text-purple-800"
+                                            : expense.category === "utilities"
+                                              ? "bg-yellow-100 text-yellow-800"
+                                              : expense.category === "salaries"
+                                                ? "bg-indigo-100 text-indigo-800"
+                                                : expense.category === "rent"
+                                                  ? "bg-red-100 text-red-800"
+                                                  : "bg-gray-100 text-gray-800"
+                                    }`}
+                                  >
+                                    {expense.category === "inventory"
+                                      ? "Inventori"
+                                      : expense.category === "operations"
+                                        ? "Operasional"
+                                        : expense.category === "marketing"
+                                          ? "Marketing"
+                                          : expense.category === "utilities"
+                                            ? "Utilitas"
+                                            : expense.category === "salaries"
+                                              ? "Gaji"
+                                              : expense.category === "rent"
+                                                ? "Sewa"
+                                                : "Lainnya"}
+                                  </span>
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
+                                  {expense.description}
+                                  {expense.isRecurring && (
+                                    <span className="ml-2 text-xs text-blue-600">
+                                      🔄 Recurring
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                  {expense.supplier || "-"}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm font-bold text-red-600">
+                                  {formatCurrency(expense.amount)}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500 capitalize">
+                                  {expense.paymentMethod === "cash"
+                                    ? "Tunai"
+                                    : expense.paymentMethod === "card"
+                                      ? "Kartu"
+                                      : expense.paymentMethod === "transfer"
+                                        ? "Transfer"
+                                        : "Cek"}
+                                </td>
+                                <td className="border border-gray-200 px-3 py-2 text-sm">
+                                  {hasSubmenuAccess(
+                                    "expense-management",
+                                    "edit",
+                                  ) && (
+                                    <button
+                                      onClick={() => handleEditExpense(expense)}
+                                      className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                    >
+                                      Edit
+                                    </button>
+                                  )}
+                                  {hasSubmenuAccess(
+                                    "expense-management",
+                                    "delete",
+                                  ) && (
+                                    <button
+                                      onClick={() =>
+                                        handleDeleteExpense(expense.id)
+                                      }
+                                      className="text-red-600 hover:text-red-900"
+                                    >
+                                      Hapus
+                                    </button>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Reports Module */}
             {activeModule === "reports" && hasModuleAccess("reports") && (
@@ -4509,24 +4943,35 @@ const EnhancedPOS: React.FC = () => {
                             const salesData = getFilteredSales().map(
                               (sale) => ({
                                 "ID Transaksi": sale.id,
-                                "Tanggal": new Date(sale.date).toLocaleDateString(
+                                Tanggal: new Date(sale.date).toLocaleDateString(
                                   "id-ID",
                                 ),
-                                "Waktu": new Date(sale.date).toLocaleTimeString(
+                                Waktu: new Date(sale.date).toLocaleTimeString(
                                   "id-ID",
                                 ),
-                                "Total": `Rp ${sale.totalAmount.toLocaleString("id-ID")}`,
-                                "Metode Pembayaran": sale.paymentMethod === "cash" ? "Tunai" :
-                                                    sale.paymentMethod === "card" ? "Kartu" : "E-Wallet",
-                                "Status": sale.status === "completed" ? "Selesai" :
-                                         sale.status === "voided" ? "Dibatalkan" : sale.status,
-                                "Items": sale.items
+                                Total: `Rp ${sale.totalAmount.toLocaleString("id-ID")}`,
+                                "Metode Pembayaran":
+                                  sale.paymentMethod === "cash"
+                                    ? "Tunai"
+                                    : sale.paymentMethod === "card"
+                                      ? "Kartu"
+                                      : "E-Wallet",
+                                Status:
+                                  sale.status === "completed"
+                                    ? "Selesai"
+                                    : sale.status === "voided"
+                                      ? "Dibatalkan"
+                                      : sale.status,
+                                Items: sale.items
                                   .map(
                                     (item) =>
                                       `${item.name} (${item.quantity}x @ ${formatCurrency(item.price)})`,
                                   )
                                   .join("; "),
-                                "Kasir": users.find(u => u.id === sale.processedByUserId)?.username || "Unknown",
+                                Kasir:
+                                  users.find(
+                                    (u) => u.id === sale.processedByUserId,
+                                  )?.username || "Unknown",
                               }),
                             );
                             if (salesData.length > 0) {
@@ -4596,7 +5041,7 @@ const EnhancedPOS: React.FC = () => {
                               productSales,
                             ).map(([id, data]) => ({
                               "Nama Produk": data.name,
-                              "Kategori": data.category || "Umum",
+                              Kategori: data.category || "Umum",
                               "Jumlah Terjual": data.quantity,
                               "Total Pendapatan": `Rp ${data.revenue.toLocaleString("id-ID")}`,
                             }));
@@ -5094,18 +5539,19 @@ const EnhancedPOS: React.FC = () => {
                                           ? "Selesai"
                                           : "Dibatalkan"}
                                       </span>
-                                      {sale.status === "voided" && sale.voidReason && (
-                                        <div className="mt-1">
-                                          <span className="text-xs text-gray-500">
-                                            Alasan: {sale.voidReason}
-                                          </span>
-                                          {sale.voidedBy && (
-                                            <div className="text-xs text-gray-400">
-                                              Oleh: {sale.voidedBy}
-                                            </div>
-                                          )}
-                                        </div>
-                                      )}
+                                      {sale.status === "voided" &&
+                                        sale.voidReason && (
+                                          <div className="mt-1">
+                                            <span className="text-xs text-gray-500">
+                                              Alasan: {sale.voidReason}
+                                            </span>
+                                            {sale.voidedBy && (
+                                              <div className="text-xs text-gray-400">
+                                                Oleh: {sale.voidedBy}
+                                              </div>
+                                            )}
+                                          </div>
+                                        )}
                                     </div>
                                   </td>
                                   <td className="border border-gray-200 px-3 py-2 text-sm">
@@ -5154,11 +5600,11 @@ const EnhancedPOS: React.FC = () => {
                         onClick={() => {
                           const stockData = products.map((product) => ({
                             "Nama Produk": product.name,
-                            "Kategori": "Umum", // Since product doesn't have category field
+                            Kategori: "Umum", // Since product doesn't have category field
                             "Stok Saat Ini": product.stock,
-                            "Harga": `Rp ${product.price.toLocaleString("id-ID")}`,
+                            Harga: `Rp ${product.price.toLocaleString("id-ID")}`,
                             "Nilai Stok": `Rp ${(product.stock * product.price).toLocaleString("id-ID")}`,
-                            "Status":
+                            Status:
                               product.stock === 0
                                 ? "Habis"
                                 : product.stock <= 5
@@ -5326,10 +5772,12 @@ const EnhancedPOS: React.FC = () => {
                               );
 
                               return {
-                                "Tanggal": new Date(
+                                Tanggal: new Date(
                                   shift.startTime,
                                 ).toLocaleDateString("id-ID"),
-                                "Kasir": users.find(u => u.id === shift.userId)?.username || "Unknown",
+                                Kasir:
+                                  users.find((u) => u.id === shift.userId)
+                                    ?.username || "Unknown",
                                 "Waktu Mulai": new Date(
                                   shift.startTime,
                                 ).toLocaleTimeString("id-ID"),
@@ -5340,7 +5788,7 @@ const EnhancedPOS: React.FC = () => {
                                   : "-",
                                 "Total Transaksi": shiftSales.length,
                                 "Total Pendapatan": `Rp ${shiftRevenue.toLocaleString("id-ID")}`,
-                                "Status":
+                                Status:
                                   shift.status === "open" ? "Aktif" : "Selesai",
                               };
                             });
@@ -5473,10 +5921,12 @@ const EnhancedPOS: React.FC = () => {
                             );
 
                             return {
-                              "Tanggal": new Date(
+                              Tanggal: new Date(
                                 shift.startTime,
                               ).toLocaleDateString("id-ID"),
-                              "Kasir": users.find(u => u.id === shift.userId)?.username || "Unknown",
+                              Kasir:
+                                users.find((u) => u.id === shift.userId)
+                                  ?.username || "Unknown",
                               "Waktu Mulai": new Date(
                                 shift.startTime,
                               ).toLocaleTimeString("id-ID"),
@@ -5487,7 +5937,7 @@ const EnhancedPOS: React.FC = () => {
                                 : "-",
                               "Total Transaksi": shiftSales.length,
                               "Total Pendapatan": `Rp ${shiftRevenue.toLocaleString("id-ID")}`,
-                              "Status":
+                              Status:
                                 shift.status === "open" ? "Aktif" : "Selesai",
                             };
                           });
@@ -5991,40 +6441,292 @@ const EnhancedPOS: React.FC = () => {
                     </table>
                   </div>
 
-                {/* Analytics Dashboard Tab */}
-                {activeReportsTab === "analytics" && (
-                  <div className="mt-6 space-y-6">
-                    <div className="bg-white p-6 rounded-lg shadow">
-                      <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                        <svg className="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        Analytics Dashboard
-                      </h3>
+                  {/* Analytics Dashboard Tab */}
+                  {activeReportsTab === "analytics" && (
+                    <div className="mt-6 space-y-6">
+                      <div className="bg-white p-6 rounded-lg shadow">
+                        <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+                          <svg
+                            className="w-6 h-6 mr-2 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                            />
+                          </svg>
+                          Analytics Dashboard
+                        </h3>
 
+                        {/* Key Performance Indicators */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-blue-100 text-sm">
+                                  Total Sales (30d)
+                                </p>
+                                <p className="text-2xl font-bold">
+                                  {formatCurrency(
+                                    sales
+                                      .filter((sale) => {
+                                        try {
+                                          return (
+                                            new Date(sale.date) >=
+                                              new Date(
+                                                Date.now() -
+                                                  30 * 24 * 60 * 60 * 1000,
+                                              ) && sale.status === "completed"
+                                          );
+                                        } catch (e) {
+                                          return false;
+                                        }
+                                      })
+                                      .reduce(
+                                        (sum, sale) =>
+                                          sum + (sale.totalAmount || 0),
+                                        0,
+                                      ),
+                                  )}
+                                </p>
+                              </div>
+                              <svg
+                                className="w-8 h-8 text-blue-200"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                                />
+                              </svg>
+                            </div>
+                          </div>
 
-                      {/* Key Performance Indicators */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-blue-100 text-sm">Total Sales (30d)</p>
-                              <p className="text-2xl font-bold">
-                                {formatCurrency(
-                                  sales
-                                    .filter(sale => {
+                          <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-green-100 text-sm">
+                                  Transactions (30d)
+                                </p>
+                                <p className="text-2xl font-bold">
+                                  {
+                                    sales.filter((sale) => {
                                       try {
-                                        return new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed";
+                                        return (
+                                          new Date(sale.date) >=
+                                            new Date(
+                                              Date.now() -
+                                                30 * 24 * 60 * 60 * 1000,
+                                            ) && sale.status === "completed"
+                                        );
                                       } catch (e) {
                                         return false;
                                       }
-                                    })
-                                    .reduce((sum, sale) => sum + (sale.totalAmount || 0), 0)
+                                    }).length
+                                  }
+                                </p>
+                              </div>
+                              <svg
+                                className="w-8 h-8 text-green-200"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+
+                          <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-purple-100 text-sm">
+                                  Avg Transaction
+                                </p>
+                                <p className="text-2xl font-bold">
+                                  {(() => {
+                                    try {
+                                      const recentSales = sales.filter(
+                                        (sale) =>
+                                          new Date(sale.date) >=
+                                            new Date(
+                                              Date.now() -
+                                                30 * 24 * 60 * 60 * 1000,
+                                            ) && sale.status === "completed",
+                                      );
+                                      const avgAmount =
+                                        recentSales.length > 0
+                                          ? recentSales.reduce(
+                                              (sum, sale) =>
+                                                sum + (sale.totalAmount || 0),
+                                              0,
+                                            ) / recentSales.length
+                                          : 0;
+                                      return formatCurrency(avgAmount);
+                                    } catch (e) {
+                                      return formatCurrency(0);
+                                    }
+                                  })()}
+                                </p>
+                              </div>
+                              <svg
+                                className="w-8 h-8 text-purple-200"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+
+                          <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="text-orange-100 text-sm">
+                                  Active Products
+                                </p>
+                                <p className="text-2xl font-bold">
+                                  {
+                                    products.filter((p) => (p.stock || 0) > 0)
+                                      .length
+                                  }
+                                </p>
+                                <p className="text-orange-100 text-xs">
+                                  of {products.length} total
+                                </p>
+                              </div>
+                              <svg
+                                className="w-8 h-8 text-orange-200"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* No Data Message */}
+                        {products.length === 0 && sales.length === 0 && (
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+                            <div className="text-yellow-600 mb-2">
+                              <svg
+                                className="w-12 h-12 mx-auto mb-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                            </div>
+                            <h4 className="text-lg font-medium text-yellow-800 mb-2">
+                              Belum Ada Data
+                            </h4>
+                            <p className="text-yellow-700">
+                              Mulai dengan menambahkan produk dan melakukan
+                              transaksi untuk melihat analytics yang lebih
+                              detail.
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Sample Data Notice */}
+                        {(products.length > 0 || sales.length > 0) && (
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div className="flex items-center">
+                              <svg
+                                className="w-5 h-5 text-blue-500 mr-2"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                              <p className="text-blue-700 text-sm">
+                                Dashboard menampilkan data dari{" "}
+                                {products.length} produk dan {sales.length}{" "}
+                                transaksi.
+                                {sales.length < 5 &&
+                                  " Lakukan lebih banyak transaksi untuk analytics yang lebih akurat."}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Key Performance Indicators */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-blue-100 text-sm">
+                                Total Sales (30d)
+                              </p>
+                              <p className="text-2xl font-bold">
+                                {formatCurrency(
+                                  sales
+                                    .filter(
+                                      (sale) =>
+                                        new Date(sale.date) >=
+                                          new Date(
+                                            Date.now() -
+                                              30 * 24 * 60 * 60 * 1000,
+                                          ) && sale.status === "completed",
+                                    )
+                                    .reduce(
+                                      (sum, sale) => sum + sale.totalAmount,
+                                      0,
+                                    ),
                                 )}
                               </p>
                             </div>
-                            <svg className="w-8 h-8 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                            <svg
+                              className="w-8 h-8 text-blue-200"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                              />
                             </svg>
                           </div>
                         </div>
@@ -6032,19 +6734,33 @@ const EnhancedPOS: React.FC = () => {
                         <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-green-100 text-sm">Transactions (30d)</p>
+                              <p className="text-green-100 text-sm">
+                                Transactions (30d)
+                              </p>
                               <p className="text-2xl font-bold">
-                                {sales.filter(sale => {
-                                  try {
-                                    return new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed";
-                                  } catch (e) {
-                                    return false;
-                                  }
-                                }).length}
+                                {
+                                  sales.filter(
+                                    (sale) =>
+                                      new Date(sale.date) >=
+                                        new Date(
+                                          Date.now() - 30 * 24 * 60 * 60 * 1000,
+                                        ) && sale.status === "completed",
+                                  ).length
+                                }
                               </p>
                             </div>
-                            <svg className="w-8 h-8 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            <svg
+                              className="w-8 h-8 text-green-200"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                              />
                             </svg>
                           </div>
                         </div>
@@ -6052,21 +6768,41 @@ const EnhancedPOS: React.FC = () => {
                         <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-purple-100 text-sm">Avg Transaction</p>
+                              <p className="text-purple-100 text-sm">
+                                Avg Transaction
+                              </p>
                               <p className="text-2xl font-bold">
                                 {(() => {
-                                  try {
-                                    const recentSales = sales.filter(sale => new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed");
-                                    const avgAmount = recentSales.length > 0 ? recentSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0) / recentSales.length : 0;
-                                    return formatCurrency(avgAmount);
-                                  } catch (e) {
-                                    return formatCurrency(0);
-                                  }
+                                  const recentSales = sales.filter(
+                                    (sale) =>
+                                      new Date(sale.date) >=
+                                        new Date(
+                                          Date.now() - 30 * 24 * 60 * 60 * 1000,
+                                        ) && sale.status === "completed",
+                                  );
+                                  const avgAmount =
+                                    recentSales.length > 0
+                                      ? recentSales.reduce(
+                                          (sum, sale) => sum + sale.totalAmount,
+                                          0,
+                                        ) / recentSales.length
+                                      : 0;
+                                  return formatCurrency(avgAmount);
                                 })()}
                               </p>
                             </div>
-                            <svg className="w-8 h-8 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            <svg
+                              className="w-8 h-8 text-purple-200"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                              />
                             </svg>
                           </div>
                         </div>
@@ -6074,297 +6810,366 @@ const EnhancedPOS: React.FC = () => {
                         <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
                           <div className="flex items-center justify-between">
                             <div>
-                              <p className="text-orange-100 text-sm">Active Products</p>
-                              <p className="text-2xl font-bold">{products.filter(p => (p.stock || 0) > 0).length}</p>
-                              <p className="text-orange-100 text-xs">of {products.length} total</p>
+                              <p className="text-orange-100 text-sm">
+                                Active Products
+                              </p>
+                              <p className="text-2xl font-bold">
+                                {products.filter((p) => p.stock > 0).length}
+                              </p>
+                              <p className="text-orange-100 text-xs">
+                                of {products.length} total
+                              </p>
                             </div>
-                            <svg className="w-8 h-8 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            <svg
+                              className="w-8 h-8 text-orange-200"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                              />
                             </svg>
                           </div>
                         </div>
                       </div>
 
-                      {/* No Data Message */}
-                      {products.length === 0 && sales.length === 0 && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                          <div className="text-yellow-600 mb-2">
-                            <svg className="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          </div>
-                          <h4 className="text-lg font-medium text-yellow-800 mb-2">Belum Ada Data</h4>
-                          <p className="text-yellow-700">
-                            Mulai dengan menambahkan produk dan melakukan transaksi untuk melihat analytics yang lebih detail.
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Sample Data Notice */}
-                      {(products.length > 0 || sales.length > 0) && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                          <div className="flex items-center">
-                            <svg className="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="text-blue-700 text-sm">
-                              Dashboard menampilkan data dari {products.length} produk dan {sales.length} transaksi.
-                              {sales.length < 5 && " Lakukan lebih banyak transaksi untuk analytics yang lebih akurat."}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Key Performance Indicators */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-blue-100 text-sm">Total Sales (30d)</p>
-                            <p className="text-2xl font-bold">
-                              {formatCurrency(
-                                sales
-                                  .filter(sale => new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed")
-                                  .reduce((sum, sale) => sum + sale.totalAmount, 0)
-                              )}
-                            </p>
-                          </div>
-                          <svg className="w-8 h-8 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                          </svg>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-green-100 text-sm">Transactions (30d)</p>
-                            <p className="text-2xl font-bold">
-                              {sales.filter(sale => new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed").length}
-                            </p>
-                          </div>
-                          <svg className="w-8 h-8 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                          </svg>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-purple-100 text-sm">Avg Transaction</p>
-                            <p className="text-2xl font-bold">
-                              {(() => {
-                                const recentSales = sales.filter(sale => new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && sale.status === "completed");
-                                const avgAmount = recentSales.length > 0 ? recentSales.reduce((sum, sale) => sum + sale.totalAmount, 0) / recentSales.length : 0;
-                                return formatCurrency(avgAmount);
-                              })()}
-                            </p>
-                          </div>
-                          <svg className="w-8 h-8 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                          </svg>
-                        </div>
-                      </div>
-
-                      <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-orange-100 text-sm">Active Products</p>
-                            <p className="text-2xl font-bold">{products.filter(p => p.stock > 0).length}</p>
-                            <p className="text-orange-100 text-xs">of {products.length} total</p>
-                          </div>
-                          <svg className="w-8 h-8 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Sales Trend Chart (Text-based) */}
-                    <div className="bg-white p-6 rounded-lg shadow">
-                      <h4 className="text-lg font-semibold mb-4 flex items-center">
-                        <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        Sales Trend (Last 7 Days)
-                      </h4>
-                      <div className="space-y-3">
-                        {(() => {
-                          const last7Days = Array.from({ length: 7 }, (_, i) => {
-                            const date = new Date();
-                            date.setDate(date.getDate() - (6 - i));
-                            return date;
-                          });
-
-                          const dailySales = last7Days.map(date => {
-                            const dayStart = new Date(date);
-                            dayStart.setHours(0, 0, 0, 0);
-                            const dayEnd = new Date(date);
-                            dayEnd.setHours(23, 59, 59, 999);
-
-                            const daySales = sales.filter(sale => {
-                              const saleDate = new Date(sale.date);
-                              return saleDate >= dayStart && saleDate <= dayEnd && sale.status === "completed";
-                            });
-
-                            return {
-                              date: date.toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" }),
-                              sales: daySales.length,
-                              amount: daySales.reduce((sum, sale) => sum + sale.totalAmount, 0)
-                            };
-                          });
-
-                          const maxAmount = Math.max(...dailySales.map(d => d.amount));
-
-                          return dailySales.map((day, index) => (
-                            <div key={index} className="flex items-center space-x-4">
-                              <div className="w-16 text-sm text-gray-600">{day.date}</div>
-                              <div className="flex-1 bg-gray-100 rounded-full h-6 relative">
-                                <div
-                                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                                  style={{ width: maxAmount > 0 ? `${(day.amount / maxAmount) * 100}%` : "2%" }}
-                                >
-                                  <span className="text-white text-xs font-medium">
-                                    {day.sales > 0 ? `${day.sales}tx` : ""}
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="w-24 text-sm text-gray-700 text-right">
-                                {formatCurrency(day.amount)}
-                              </div>
-                            </div>
-                          ));
-                        })()}
-                      </div>
-                    </div>
-
-                    {/* Top Products & Payment Methods */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {/* Top Products */}
+                      {/* Sales Trend Chart (Text-based) */}
                       <div className="bg-white p-6 rounded-lg shadow">
                         <h4 className="text-lg font-semibold mb-4 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                          <svg
+                            className="w-5 h-5 mr-2 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                            />
                           </svg>
-                          Top Selling Products (30d)
-                        </h4>
-                        <div className="space-y-3">
-                          {Object.values(getInventoryAnalytics())
-                            .sort((a, b) => b.totalSold - a.totalSold)
-                            .slice(0, 5)
-                            .map((product, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded">
-                              <div>
-                                <p className="font-medium text-gray-800">{index + 1}. {product.name}</p>
-                                <p className="text-sm text-gray-600">{product.totalSold} sold • {product.dailyAverage.toFixed(1)}/day avg</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-lg font-bold text-green-600">
-                                  {formatCurrency(product.totalSold * (products.find(p => p.name === product.name)?.price || 0))}
-                                </p>
-                                <p className="text-sm text-gray-500">revenue</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Payment Methods Analysis */}
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h4 className="text-lg font-semibold mb-4 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                          </svg>
-                          Payment Methods (30d)
+                          Sales Trend (Last 7 Days)
                         </h4>
                         <div className="space-y-3">
                           {(() => {
-                            const recentSales = sales.filter(sale =>
-                              new Date(sale.date) >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) &&
-                              sale.status === "completed"
+                            const last7Days = Array.from(
+                              { length: 7 },
+                              (_, i) => {
+                                const date = new Date();
+                                date.setDate(date.getDate() - (6 - i));
+                                return date;
+                              },
                             );
 
-                            const paymentStats = recentSales.reduce((acc, sale) => {
-                              acc[sale.paymentMethod] = (acc[sale.paymentMethod] || 0) + sale.totalAmount;
-                              return acc;
-                            }, {} as Record<string, number>);
+                            const dailySales = last7Days.map((date) => {
+                              const dayStart = new Date(date);
+                              dayStart.setHours(0, 0, 0, 0);
+                              const dayEnd = new Date(date);
+                              dayEnd.setHours(23, 59, 59, 999);
 
-                            const total = Object.values(paymentStats).reduce((sum, amount) => sum + amount, 0);
+                              const daySales = sales.filter((sale) => {
+                                const saleDate = new Date(sale.date);
+                                return (
+                                  saleDate >= dayStart &&
+                                  saleDate <= dayEnd &&
+                                  sale.status === "completed"
+                                );
+                              });
 
-                            const paymentMethods = [
-                              { key: "cash", name: "Tunai", color: "bg-green-500" },
-                              { key: "card", name: "Kartu", color: "bg-blue-500" },
-                              { key: "ewallet", name: "E-Wallet", color: "bg-purple-500" }
-                            ];
+                              return {
+                                date: date.toLocaleDateString("id-ID", {
+                                  weekday: "short",
+                                  day: "numeric",
+                                  month: "short",
+                                }),
+                                sales: daySales.length,
+                                amount: daySales.reduce(
+                                  (sum, sale) => sum + sale.totalAmount,
+                                  0,
+                                ),
+                              };
+                            });
 
-                            return paymentMethods.map(method => {
-                              const amount = paymentStats[method.key] || 0;
-                              const percentage = total > 0 ? (amount / total) * 100 : 0;
+                            const maxAmount = Math.max(
+                              ...dailySales.map((d) => d.amount),
+                            );
 
-                              return (
-                                <div key={method.key}>
-                                  <div className="flex justify-between items-center mb-1">
-                                    <span className="text-sm font-medium text-gray-700">{method.name}</span>
-                                    <span className="text-sm text-gray-600">{percentage.toFixed(1)}%</span>
-                                  </div>
-                                  <div className="flex items-center space-x-3">
-                                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                      <div
-                                        className={`${method.color} h-2 rounded-full`}
-                                        style={{ width: `${percentage}%` }}
-                                      ></div>
-                                    </div>
-                                    <span className="text-sm font-medium text-gray-800 min-w-20">
-                                      {formatCurrency(amount)}
+                            return dailySales.map((day, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center space-x-4"
+                              >
+                                <div className="w-16 text-sm text-gray-600">
+                                  {day.date}
+                                </div>
+                                <div className="flex-1 bg-gray-100 rounded-full h-6 relative">
+                                  <div
+                                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
+                                    style={{
+                                      width:
+                                        maxAmount > 0
+                                          ? `${(day.amount / maxAmount) * 100}%`
+                                          : "2%",
+                                    }}
+                                  >
+                                    <span className="text-white text-xs font-medium">
+                                      {day.sales > 0 ? `${day.sales}tx` : ""}
                                     </span>
                                   </div>
                                 </div>
+                                <div className="w-24 text-sm text-gray-700 text-right">
+                                  {formatCurrency(day.amount)}
+                                </div>
+                              </div>
+                            ));
+                          })()}
+                        </div>
+                      </div>
+
+                      {/* Top Products & Payment Methods */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {/* Top Products */}
+                        <div className="bg-white p-6 rounded-lg shadow">
+                          <h4 className="text-lg font-semibold mb-4 flex items-center">
+                            <svg
+                              className="w-5 h-5 mr-2 text-green-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                              />
+                            </svg>
+                            Top Selling Products (30d)
+                          </h4>
+                          <div className="space-y-3">
+                            {Object.values(getInventoryAnalytics())
+                              .sort((a, b) => b.totalSold - a.totalSold)
+                              .slice(0, 5)
+                              .map((product, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                                >
+                                  <div>
+                                    <p className="font-medium text-gray-800">
+                                      {index + 1}. {product.name}
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      {product.totalSold} sold •{" "}
+                                      {product.dailyAverage.toFixed(1)}/day avg
+                                    </p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="text-lg font-bold text-green-600">
+                                      {formatCurrency(
+                                        product.totalSold *
+                                          (products.find(
+                                            (p) => p.name === product.name,
+                                          )?.price || 0),
+                                      )}
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                      revenue
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+
+                        {/* Payment Methods Analysis */}
+                        <div className="bg-white p-6 rounded-lg shadow">
+                          <h4 className="text-lg font-semibold mb-4 flex items-center">
+                            <svg
+                              className="w-5 h-5 mr-2 text-purple-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                              />
+                            </svg>
+                            Payment Methods (30d)
+                          </h4>
+                          <div className="space-y-3">
+                            {(() => {
+                              const recentSales = sales.filter(
+                                (sale) =>
+                                  new Date(sale.date) >=
+                                    new Date(
+                                      Date.now() - 30 * 24 * 60 * 60 * 1000,
+                                    ) && sale.status === "completed",
                               );
-                            });
+
+                              const paymentStats = recentSales.reduce(
+                                (acc, sale) => {
+                                  acc[sale.paymentMethod] =
+                                    (acc[sale.paymentMethod] || 0) +
+                                    sale.totalAmount;
+                                  return acc;
+                                },
+                                {} as Record<string, number>,
+                              );
+
+                              const total = Object.values(paymentStats).reduce(
+                                (sum, amount) => sum + amount,
+                                0,
+                              );
+
+                              const paymentMethods = [
+                                {
+                                  key: "cash",
+                                  name: "Tunai",
+                                  color: "bg-green-500",
+                                },
+                                {
+                                  key: "card",
+                                  name: "Kartu",
+                                  color: "bg-blue-500",
+                                },
+                                {
+                                  key: "ewallet",
+                                  name: "E-Wallet",
+                                  color: "bg-purple-500",
+                                },
+                              ];
+
+                              return paymentMethods.map((method) => {
+                                const amount = paymentStats[method.key] || 0;
+                                const percentage =
+                                  total > 0 ? (amount / total) * 100 : 0;
+
+                                return (
+                                  <div key={method.key}>
+                                    <div className="flex justify-between items-center mb-1">
+                                      <span className="text-sm font-medium text-gray-700">
+                                        {method.name}
+                                      </span>
+                                      <span className="text-sm text-gray-600">
+                                        {percentage.toFixed(1)}%
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                      <div className="flex-1 bg-gray-200 rounded-full h-2">
+                                        <div
+                                          className={`${method.color} h-2 rounded-full`}
+                                          style={{ width: `${percentage}%` }}
+                                        ></div>
+                                      </div>
+                                      <span className="text-sm font-medium text-gray-800 min-w-20">
+                                        {formatCurrency(amount)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              });
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Inventory Status Overview */}
+                      <div className="bg-white p-6 rounded-lg shadow">
+                        <h4 className="text-lg font-semibold mb-4 flex items-center">
+                          <svg
+                            className="w-5 h-5 mr-2 text-yellow-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                            />
+                          </svg>
+                          Inventory Health Status
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          {(() => {
+                            const analytics = getInventoryAnalytics();
+                            const statusCounts = {
+                              healthy: Object.values(analytics).filter(
+                                (p) => p.status === "healthy",
+                              ).length,
+                              low: Object.values(analytics).filter(
+                                (p) => p.status === "low",
+                              ).length,
+                              critical: Object.values(analytics).filter(
+                                (p) => p.status === "critical",
+                              ).length,
+                              stockout: Object.values(analytics).filter(
+                                (p) => p.status === "stockout",
+                              ).length,
+                            };
+
+                            const statuses = [
+                              {
+                                key: "healthy",
+                                name: "Healthy",
+                                color: "bg-green-500",
+                                icon: "✅",
+                              },
+                              {
+                                key: "low",
+                                name: "Low Stock",
+                                color: "bg-yellow-500",
+                                icon: "⚠️",
+                              },
+                              {
+                                key: "critical",
+                                name: "Critical",
+                                color: "bg-orange-500",
+                                icon: "🔥",
+                              },
+                              {
+                                key: "stockout",
+                                name: "Out of Stock",
+                                color: "bg-red-500",
+                                icon: "❌",
+                              },
+                            ];
+
+                            return statuses.map((status) => (
+                              <div
+                                key={status.key}
+                                className="text-center p-4 bg-gray-50 rounded-lg"
+                              >
+                                <div className="text-2xl mb-2">
+                                  {status.icon}
+                                </div>
+                                <div className="text-2xl font-bold text-gray-800">
+                                  {
+                                    statusCounts[
+                                      status.key as keyof typeof statusCounts
+                                    ]
+                                  }
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  {status.name}
+                                </div>
+                              </div>
+                            ));
                           })()}
                         </div>
                       </div>
                     </div>
-
-                    {/* Inventory Status Overview */}
-                    <div className="bg-white p-6 rounded-lg shadow">
-                      <h4 className="text-lg font-semibold mb-4 flex items-center">
-                        <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                        Inventory Health Status
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        {(() => {
-                          const analytics = getInventoryAnalytics();
-                          const statusCounts = {
-                            healthy: Object.values(analytics).filter(p => p.status === "healthy").length,
-                            low: Object.values(analytics).filter(p => p.status === "low").length,
-                            critical: Object.values(analytics).filter(p => p.status === "critical").length,
-                            stockout: Object.values(analytics).filter(p => p.status === "stockout").length
-                          };
-
-                          const statuses = [
-                            { key: "healthy", name: "Healthy", color: "bg-green-500", icon: "✅" },
-                            { key: "low", name: "Low Stock", color: "bg-yellow-500", icon: "⚠️" },
-                            { key: "critical", name: "Critical", color: "bg-orange-500", icon: "🔥" },
-                            { key: "stockout", name: "Out of Stock", color: "bg-red-500", icon: "❌" }
-                          ];
-
-                          return statuses.map(status => (
-                            <div key={status.key} className="text-center p-4 bg-gray-50 rounded-lg">
-                              <div className="text-2xl mb-2">{status.icon}</div>
-                              <div className="text-2xl font-bold text-gray-800">{statusCounts[status.key as keyof typeof statusCounts]}</div>
-                              <div className="text-sm text-gray-600">{status.name}</div>
-                            </div>
-                          ));
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  )}
                 </div>
               )}
 
@@ -6790,9 +7595,24 @@ const EnhancedPOS: React.FC = () => {
                             onClick={() => setShowReceiptModal(true)}
                             className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-md font-semibold hover:from-purple-700 hover:to-indigo-700 transition duration-200 flex items-center gap-2"
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                              />
                             </svg>
                             Preview Struk
                           </button>
@@ -6803,22 +7623,48 @@ const EnhancedPOS: React.FC = () => {
                     {/* Receipt Preview Section */}
                     <div className="mt-8 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                       <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                        <svg className="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <svg
+                          className="w-5 h-5 mr-2 text-purple-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
                         </svg>
                         Preview & Test Print
                       </h3>
                       <p className="text-gray-600 mb-4">
-                        Lihat bagaimana struk akan terlihat dengan pengaturan saat ini
+                        Lihat bagaimana struk akan terlihat dengan pengaturan
+                        saat ini
                       </p>
                       <div className="flex flex-col sm:flex-row gap-4">
                         <button
                           onClick={() => setShowReceiptModal(true)}
                           className="bg-blue-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200 flex items-center justify-center gap-2"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
                           </svg>
                           Preview Struk
                         </button>
@@ -6826,8 +7672,18 @@ const EnhancedPOS: React.FC = () => {
                           onClick={handleTestPrint}
                           className="bg-green-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200 flex items-center justify-center gap-2"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                            />
                           </svg>
                           Test Print
                         </button>
@@ -7495,11 +8351,15 @@ const EnhancedPOS: React.FC = () => {
                             Jenis Koneksi:
                           </label>
                           <select
-                            value={settings.thermalPrinterConnection || "network"}
+                            value={
+                              settings.thermalPrinterConnection || "network"
+                            }
                             onChange={(e) =>
                               setSettings({
                                 ...settings,
-                                thermalPrinterConnection: e.target.value as "network" | "bluetooth",
+                                thermalPrinterConnection: e.target.value as
+                                  | "network"
+                                  | "bluetooth",
                               })
                             }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
@@ -7563,7 +8423,9 @@ const EnhancedPOS: React.FC = () => {
                                   onChange={(e) =>
                                     setSettings({
                                       ...settings,
-                                      thermalPrinterPort: parseInt(e.target.value),
+                                      thermalPrinterPort: parseInt(
+                                        e.target.value,
+                                      ),
                                     })
                                   }
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
@@ -7586,18 +8448,25 @@ const EnhancedPOS: React.FC = () => {
                                 {/* Connection Status */}
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <span className="font-medium text-gray-700">Status Koneksi:</span>
-                                    <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                                      isBluetoothConnected
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-red-100 text-red-800'
-                                    }`}>
-                                      {isBluetoothConnected ? 'Terhubung' : 'Terputus'}
+                                    <span className="font-medium text-gray-700">
+                                      Status Koneksi:
+                                    </span>
+                                    <span
+                                      className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                                        isBluetoothConnected
+                                          ? "bg-green-100 text-green-800"
+                                          : "bg-red-100 text-red-800"
+                                      }`}
+                                    >
+                                      {isBluetoothConnected
+                                        ? "Terhubung"
+                                        : "Terputus"}
                                     </span>
                                   </div>
                                   {isBluetoothConnected && bluetoothDevice && (
                                     <div className="text-sm text-gray-600">
-                                      Device: {bluetoothDevice.name || 'Unknown'}
+                                      Device:{" "}
+                                      {bluetoothDevice.name || "Unknown"}
                                     </div>
                                   )}
                                 </div>
@@ -7633,12 +8502,25 @@ const EnhancedPOS: React.FC = () => {
 
                                 {/* Instructions */}
                                 <div className="bg-white p-3 rounded border">
-                                  <h5 className="font-medium text-gray-700 mb-2">Petunjuk Koneksi Bluetooth:</h5>
+                                  <h5 className="font-medium text-gray-700 mb-2">
+                                    Petunjuk Koneksi Bluetooth:
+                                  </h5>
                                   <ul className="text-sm text-gray-600 space-y-1">
-                                    <li>��� Pastikan printer Bluetooth sudah dalam mode pairing</li>
-                                    <li>• Gunakan browser Chrome atau Edge terbaru</li>
-                                    <li>• Klik "Hubungkan Bluetooth" dan pilih printer dari daftar</li>
-                                    <li>• Test print untuk memastikan koneksi berhasil</li>
+                                    <li>
+                                      ��� Pastikan printer Bluetooth sudah dalam
+                                      mode pairing
+                                    </li>
+                                    <li>
+                                      • Gunakan browser Chrome atau Edge terbaru
+                                    </li>
+                                    <li>
+                                      • Klik "Hubungkan Bluetooth" dan pilih
+                                      printer dari daftar
+                                    </li>
+                                    <li>
+                                      • Test print untuk memastikan koneksi
+                                      berhasil
+                                    </li>
                                   </ul>
                                 </div>
                               </div>
@@ -7751,7 +8633,8 @@ const EnhancedPOS: React.FC = () => {
                               Aktifkan Program Loyalitas
                             </span>
                             <p className="text-sm text-gray-500">
-                              Customer akan mendapat points dari setiap pembelian
+                              Customer akan mendapat points dari setiap
+                              pembelian
                             </p>
                           </div>
                         </label>
@@ -7777,13 +8660,15 @@ const EnhancedPOS: React.FC = () => {
                                   onChange={(e) =>
                                     setSettings({
                                       ...settings,
-                                      pointsPerPurchase: parseFloat(e.target.value) || 1,
+                                      pointsPerPurchase:
+                                        parseFloat(e.target.value) || 1,
                                     })
                                   }
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                                 />
                                 <p className="text-sm text-gray-500 mt-1">
-                                  Customer mendapat berapa point per 1000 rupiah belanja
+                                  Customer mendapat berapa point per 1000 rupiah
+                                  belanja
                                 </p>
                               </div>
                               <div>
@@ -7798,7 +8683,8 @@ const EnhancedPOS: React.FC = () => {
                                   onChange={(e) =>
                                     setSettings({
                                       ...settings,
-                                      pointsRedemptionValue: parseFloat(e.target.value) || 1000,
+                                      pointsRedemptionValue:
+                                        parseFloat(e.target.value) || 1000,
                                     })
                                   }
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
@@ -7830,15 +8716,23 @@ const EnhancedPOS: React.FC = () => {
                                     type="number"
                                     min="10000"
                                     step="10000"
-                                    value={settings.tierThresholds?.silver || 100000}
+                                    value={
+                                      settings.tierThresholds?.silver || 100000
+                                    }
                                     onChange={(e) =>
                                       setSettings({
                                         ...settings,
                                         tierThresholds: {
                                           ...settings.tierThresholds,
-                                          silver: parseFloat(e.target.value) || 100000,
-                                          gold: settings.tierThresholds?.gold || 500000,
-                                          platinum: settings.tierThresholds?.platinum || 1500000
+                                          silver:
+                                            parseFloat(e.target.value) ||
+                                            100000,
+                                          gold:
+                                            settings.tierThresholds?.gold ||
+                                            500000,
+                                          platinum:
+                                            settings.tierThresholds?.platinum ||
+                                            1500000,
                                         },
                                       })
                                     }
@@ -7853,15 +8747,23 @@ const EnhancedPOS: React.FC = () => {
                                     type="number"
                                     min="100000"
                                     step="10000"
-                                    value={settings.tierThresholds?.gold || 500000}
+                                    value={
+                                      settings.tierThresholds?.gold || 500000
+                                    }
                                     onChange={(e) =>
                                       setSettings({
                                         ...settings,
                                         tierThresholds: {
                                           ...settings.tierThresholds,
-                                          silver: settings.tierThresholds?.silver || 100000,
-                                          gold: parseFloat(e.target.value) || 500000,
-                                          platinum: settings.tierThresholds?.platinum || 1500000
+                                          silver:
+                                            settings.tierThresholds?.silver ||
+                                            100000,
+                                          gold:
+                                            parseFloat(e.target.value) ||
+                                            500000,
+                                          platinum:
+                                            settings.tierThresholds?.platinum ||
+                                            1500000,
                                         },
                                       })
                                     }
@@ -7876,15 +8778,24 @@ const EnhancedPOS: React.FC = () => {
                                     type="number"
                                     min="500000"
                                     step="100000"
-                                    value={settings.tierThresholds?.platinum || 1500000}
+                                    value={
+                                      settings.tierThresholds?.platinum ||
+                                      1500000
+                                    }
                                     onChange={(e) =>
                                       setSettings({
                                         ...settings,
                                         tierThresholds: {
                                           ...settings.tierThresholds,
-                                          silver: settings.tierThresholds?.silver || 100000,
-                                          gold: settings.tierThresholds?.gold || 500000,
-                                          platinum: parseFloat(e.target.value) || 1500000
+                                          silver:
+                                            settings.tierThresholds?.silver ||
+                                            100000,
+                                          gold:
+                                            settings.tierThresholds?.gold ||
+                                            500000,
+                                          platinum:
+                                            parseFloat(e.target.value) ||
+                                            1500000,
                                         },
                                       })
                                     }
@@ -7901,13 +8812,34 @@ const EnhancedPOS: React.FC = () => {
                               </h5>
                               <div className="space-y-4">
                                 {[
-                                  { tier: "bronze", name: "Bronze", color: "bg-orange-100 border-orange-300" },
-                                  { tier: "silver", name: "Silver", color: "bg-gray-100 border-gray-300" },
-                                  { tier: "gold", name: "Gold", color: "bg-yellow-100 border-yellow-300" },
-                                  { tier: "platinum", name: "Platinum", color: "bg-purple-100 border-purple-300" }
+                                  {
+                                    tier: "bronze",
+                                    name: "Bronze",
+                                    color: "bg-orange-100 border-orange-300",
+                                  },
+                                  {
+                                    tier: "silver",
+                                    name: "Silver",
+                                    color: "bg-gray-100 border-gray-300",
+                                  },
+                                  {
+                                    tier: "gold",
+                                    name: "Gold",
+                                    color: "bg-yellow-100 border-yellow-300",
+                                  },
+                                  {
+                                    tier: "platinum",
+                                    name: "Platinum",
+                                    color: "bg-purple-100 border-purple-300",
+                                  },
                                 ].map(({ tier, name, color }) => (
-                                  <div key={tier} className={`p-4 rounded-lg border ${color}`}>
-                                    <h6 className="font-medium text-gray-700 mb-2">{name} Tier</h6>
+                                  <div
+                                    key={tier}
+                                    className={`p-4 rounded-lg border ${color}`}
+                                  >
+                                    <h6 className="font-medium text-gray-700 mb-2">
+                                      {name} Tier
+                                    </h6>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                       <div>
                                         <label className="block text-gray-600 text-sm mb-1">
@@ -7917,17 +8849,29 @@ const EnhancedPOS: React.FC = () => {
                                           type="number"
                                           min="1"
                                           step="0.1"
-                                          value={settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.pointsMultiplier || 1}
+                                          value={
+                                            settings.tierBenefits?.[
+                                              tier as keyof typeof settings.tierBenefits
+                                            ]?.pointsMultiplier || 1
+                                          }
                                           onChange={(e) =>
                                             setSettings({
                                               ...settings,
                                               tierBenefits: {
                                                 ...settings.tierBenefits,
                                                 [tier]: {
-                                                  ...settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits],
-                                                  pointsMultiplier: parseFloat(e.target.value) || 1,
-                                                  discountPercent: settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.discountPercent || 0
-                                                }
+                                                  ...settings.tierBenefits?.[
+                                                    tier as keyof typeof settings.tierBenefits
+                                                  ],
+                                                  pointsMultiplier:
+                                                    parseFloat(
+                                                      e.target.value,
+                                                    ) || 1,
+                                                  discountPercent:
+                                                    settings.tierBenefits?.[
+                                                      tier as keyof typeof settings.tierBenefits
+                                                    ]?.discountPercent || 0,
+                                                },
                                               },
                                             })
                                           }
@@ -7943,17 +8887,29 @@ const EnhancedPOS: React.FC = () => {
                                           min="0"
                                           max="50"
                                           step="1"
-                                          value={settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.discountPercent || 0}
+                                          value={
+                                            settings.tierBenefits?.[
+                                              tier as keyof typeof settings.tierBenefits
+                                            ]?.discountPercent || 0
+                                          }
                                           onChange={(e) =>
                                             setSettings({
                                               ...settings,
                                               tierBenefits: {
                                                 ...settings.tierBenefits,
                                                 [tier]: {
-                                                  ...settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits],
-                                                  pointsMultiplier: settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.pointsMultiplier || 1,
-                                                  discountPercent: parseFloat(e.target.value) || 0
-                                                }
+                                                  ...settings.tierBenefits?.[
+                                                    tier as keyof typeof settings.tierBenefits
+                                                  ],
+                                                  pointsMultiplier:
+                                                    settings.tierBenefits?.[
+                                                      tier as keyof typeof settings.tierBenefits
+                                                    ]?.pointsMultiplier || 1,
+                                                  discountPercent:
+                                                    parseFloat(
+                                                      e.target.value,
+                                                    ) || 0,
+                                                },
                                               },
                                             })
                                           }
@@ -7975,27 +8931,52 @@ const EnhancedPOS: React.FC = () => {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                               <div className="text-center">
                                 <p className="text-2xl font-bold text-blue-600">
-                                  {customers.filter(c => c.loyaltyPoints > 0).length}
+                                  {
+                                    customers.filter((c) => c.loyaltyPoints > 0)
+                                      .length
+                                  }
                                 </p>
-                                <p className="text-sm text-gray-600">Active Members</p>
+                                <p className="text-sm text-gray-600">
+                                  Active Members
+                                </p>
                               </div>
                               <div className="text-center">
                                 <p className="text-2xl font-bold text-green-600">
-                                  {customers.reduce((sum, c) => sum + c.loyaltyPoints, 0).toLocaleString()}
+                                  {customers
+                                    .reduce(
+                                      (sum, c) => sum + c.loyaltyPoints,
+                                      0,
+                                    )
+                                    .toLocaleString()}
                                 </p>
-                                <p className="text-sm text-gray-600">Total Points</p>
+                                <p className="text-sm text-gray-600">
+                                  Total Points
+                                </p>
                               </div>
                               <div className="text-center">
                                 <p className="text-2xl font-bold text-purple-600">
-                                  {customers.filter(c => c.tier === "Platinum").length}
+                                  {
+                                    customers.filter(
+                                      (c) => c.tier === "Platinum",
+                                    ).length
+                                  }
                                 </p>
-                                <p className="text-sm text-gray-600">Platinum Members</p>
+                                <p className="text-sm text-gray-600">
+                                  Platinum Members
+                                </p>
                               </div>
                               <div className="text-center">
                                 <p className="text-2xl font-bold text-yellow-600">
-                                  {formatCurrency(customers.reduce((sum, c) => sum + c.totalSpent, 0))}
+                                  {formatCurrency(
+                                    customers.reduce(
+                                      (sum, c) => sum + c.totalSpent,
+                                      0,
+                                    ),
+                                  )}
                                 </p>
-                                <p className="text-sm text-gray-600">Total Spent</p>
+                                <p className="text-sm text-gray-600">
+                                  Total Spent
+                                </p>
                               </div>
                             </div>
                           </div>
@@ -8193,12 +9174,15 @@ const EnhancedPOS: React.FC = () => {
                         alt="Preview"
                         className="w-full h-full object-cover rounded-lg border border-gray-300"
                         onError={(e) => {
-                          e.currentTarget.src = "https://placehold.co/128x128/cccccc/333333?text=No+Image";
+                          e.currentTarget.src =
+                            "https://placehold.co/128x128/cccccc/333333?text=No+Image";
                         }}
                       />
                       <button
                         type="button"
-                        onClick={() => setProductForm({ ...productForm, imageUrl: "" })}
+                        onClick={() =>
+                          setProductForm({ ...productForm, imageUrl: "" })
+                        }
                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
                       >
                         ×
@@ -8206,8 +9190,18 @@ const EnhancedPOS: React.FC = () => {
                     </div>
                   ) : (
                     <div className="w-32 h-32 mx-auto bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                      <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <svg
+                        className="w-8 h-8 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
                       </svg>
                     </div>
                   )}
@@ -8227,14 +9221,21 @@ const EnhancedPOS: React.FC = () => {
                         const file = e.target.files?.[0];
                         if (file) {
                           if (file.size > 5 * 1024 * 1024) {
-                            showAlert("File Terlalu Besar", "Ukuran file maksimal 5MB.", "error");
+                            showAlert(
+                              "File Terlalu Besar",
+                              "Ukuran file maksimal 5MB.",
+                              "error",
+                            );
                             return;
                           }
 
                           const reader = new FileReader();
                           reader.onload = (event) => {
                             const result = event.target?.result as string;
-                            setProductForm({ ...productForm, imageUrl: result });
+                            setProductForm({
+                              ...productForm,
+                              imageUrl: result,
+                            });
                           };
                           reader.readAsDataURL(file);
                         }
@@ -8254,9 +9255,17 @@ const EnhancedPOS: React.FC = () => {
                     <div className="flex space-x-2">
                       <input
                         type="url"
-                        value={productForm.imageUrl && !productForm.imageUrl.startsWith('data:') ? productForm.imageUrl : ''}
+                        value={
+                          productForm.imageUrl &&
+                          !productForm.imageUrl.startsWith("data:")
+                            ? productForm.imageUrl
+                            : ""
+                        }
                         onChange={(e) =>
-                          setProductForm({ ...productForm, imageUrl: e.target.value })
+                          setProductForm({
+                            ...productForm,
+                            imageUrl: e.target.value,
+                          })
                         }
                         className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 text-sm"
                         placeholder="https://example.com/image.jpg"
@@ -8264,7 +9273,11 @@ const EnhancedPOS: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => {
-                          const url = (document.querySelector('input[type="url"]') as HTMLInputElement)?.value;
+                          const url = (
+                            document.querySelector(
+                              'input[type="url"]',
+                            ) as HTMLInputElement
+                          )?.value;
                           if (url) {
                             setProductForm({ ...productForm, imageUrl: url });
                           }
@@ -8283,15 +9296,32 @@ const EnhancedPOS: React.FC = () => {
                     </label>
                     <div className="grid grid-cols-4 gap-2">
                       {[
-                        { name: "Kopi", url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop" },
-                        { name: "Makanan", url: "https://images.unsplash.com/photo-1555507036-ab794f575e8c?w=300&h=300&fit=crop" },
-                        { name: "Minuman", url: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop" },
-                        { name: "Dessert", url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=300&fit=crop" }
+                        {
+                          name: "Kopi",
+                          url: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop",
+                        },
+                        {
+                          name: "Makanan",
+                          url: "https://images.unsplash.com/photo-1555507036-ab794f575e8c?w=300&h=300&fit=crop",
+                        },
+                        {
+                          name: "Minuman",
+                          url: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop",
+                        },
+                        {
+                          name: "Dessert",
+                          url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=300&fit=crop",
+                        },
                       ].map((item) => (
                         <button
                           key={item.name}
                           type="button"
-                          onClick={() => setProductForm({ ...productForm, imageUrl: item.url })}
+                          onClick={() =>
+                            setProductForm({
+                              ...productForm,
+                              imageUrl: item.url,
+                            })
+                          }
                           className="flex flex-col items-center p-2 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
                         >
                           <img
@@ -8299,7 +9329,9 @@ const EnhancedPOS: React.FC = () => {
                             alt={item.name}
                             className="w-8 h-8 object-cover rounded mb-1"
                           />
-                          <span className="text-xs text-gray-600">{item.name}</span>
+                          <span className="text-xs text-gray-600">
+                            {item.name}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -8592,20 +9624,30 @@ const EnhancedPOS: React.FC = () => {
                   </span>
                 </p>
 
-                {selectedSale.status === "voided" && selectedSale.voidReason && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
-                    <p className="text-sm">
-                      <strong className="text-red-800">Alasan Pembatalan:</strong>
-                    </p>
-                    <p className="text-red-700 mt-1">{selectedSale.voidReason}</p>
-                    {selectedSale.voidedBy && selectedSale.voidedAt && (
-                      <div className="text-xs text-red-600 mt-2">
-                        <p>Dibatalkan oleh: {selectedSale.voidedBy}</p>
-                        <p>Tanggal: {new Date(selectedSale.voidedAt).toLocaleString("id-ID")}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+                {selectedSale.status === "voided" &&
+                  selectedSale.voidReason && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                      <p className="text-sm">
+                        <strong className="text-red-800">
+                          Alasan Pembatalan:
+                        </strong>
+                      </p>
+                      <p className="text-red-700 mt-1">
+                        {selectedSale.voidReason}
+                      </p>
+                      {selectedSale.voidedBy && selectedSale.voidedAt && (
+                        <div className="text-xs text-red-600 mt-2">
+                          <p>Dibatalkan oleh: {selectedSale.voidedBy}</p>
+                          <p>
+                            Tanggal:{" "}
+                            {new Date(selectedSale.voidedAt).toLocaleString(
+                              "id-ID",
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 <h4 className="font-semibold mt-4 mb-2">Item:</h4>
                 <ul className="space-y-1">
@@ -8740,38 +9782,41 @@ const EnhancedPOS: React.FC = () => {
                     ]?.includes(module.id) || false;
 
                   // Define submenu options for each module
-                  const moduleSubmenus: Record<string, Array<{id: string, name: string}>> = {
+                  const moduleSubmenus: Record<
+                    string,
+                    Array<{ id: string; name: string }>
+                  > = {
                     "stock-management": [
                       { id: "add", name: "Tambah Produk" },
                       { id: "edit", name: "Edit Produk" },
-                      { id: "delete", name: "Hapus Produk" }
+                      { id: "delete", name: "Hapus Produk" },
                     ],
                     "customer-management": [
                       { id: "add", name: "Tambah Customer" },
                       { id: "edit", name: "Edit Customer" },
-                      { id: "delete", name: "Hapus Customer" }
+                      { id: "delete", name: "Hapus Customer" },
                     ],
-                    "reports": [
+                    reports: [
                       { id: "sales", name: "Laporan Penjualan" },
                       { id: "shifts", name: "Laporan Shift" },
-                      { id: "stock", name: "Laporan Stok" }
+                      { id: "stock", name: "Laporan Stok" },
                     ],
                     "shift-management": [
                       { id: "start", name: "Mulai Shift" },
-                      { id: "end", name: "Akhiri Shift" }
+                      { id: "end", name: "Akhiri Shift" },
                     ],
                     "user-management": [
                       { id: "add", name: "Tambah User" },
                       { id: "edit", name: "Edit User" },
                       { id: "delete", name: "Hapus User" },
-                      { id: "permissions", name: "Kelola Izin" }
+                      { id: "permissions", name: "Kelola Izin" },
                     ],
-                    "settings": [
+                    settings: [
                       { id: "general", name: "Pengaturan Umum" },
                       { id: "receipt", name: "Pengaturan Struk" },
                       { id: "printer", name: "Pengaturan Printer" },
-                      { id: "backup", name: "Backup & Restore" }
-                    ]
+                      { id: "backup", name: "Backup & Restore" },
+                    ],
                   };
 
                   const submenus = moduleSubmenus[module.id] || [];
@@ -8785,14 +9830,22 @@ const EnhancedPOS: React.FC = () => {
                     }
 
                     if (checked) {
-                      if (!newPermissions[selectedUserForPermissions.role].includes(module.id)) {
-                        newPermissions[selectedUserForPermissions.role].push(module.id);
+                      if (
+                        !newPermissions[
+                          selectedUserForPermissions.role
+                        ].includes(module.id)
+                      ) {
+                        newPermissions[selectedUserForPermissions.role].push(
+                          module.id,
+                        );
                       }
                     } else {
                       // Remove main module and all submenus
-                      newPermissions[selectedUserForPermissions.role] = newPermissions[
-                        selectedUserForPermissions.role
-                      ].filter((id) => id !== module.id && !id.startsWith(`${module.id}.`));
+                      newPermissions[selectedUserForPermissions.role] =
+                        newPermissions[selectedUserForPermissions.role].filter(
+                          (id) =>
+                            id !== module.id && !id.startsWith(`${module.id}.`),
+                        );
                     }
 
                     setSettings({
@@ -8801,7 +9854,10 @@ const EnhancedPOS: React.FC = () => {
                     });
                   };
 
-                  const toggleSubmenuPermission = (submenuId: string, checked: boolean) => {
+                  const toggleSubmenuPermission = (
+                    submenuId: string,
+                    checked: boolean,
+                  ) => {
                     const newPermissions = {
                       ...settings.rolePermissions,
                     };
@@ -8813,18 +9869,31 @@ const EnhancedPOS: React.FC = () => {
 
                     if (checked) {
                       // Add submenu permission
-                      if (!newPermissions[selectedUserForPermissions.role].includes(fullPermission)) {
-                        newPermissions[selectedUserForPermissions.role].push(fullPermission);
+                      if (
+                        !newPermissions[
+                          selectedUserForPermissions.role
+                        ].includes(fullPermission)
+                      ) {
+                        newPermissions[selectedUserForPermissions.role].push(
+                          fullPermission,
+                        );
                       }
                       // Also ensure main module is enabled
-                      if (!newPermissions[selectedUserForPermissions.role].includes(module.id)) {
-                        newPermissions[selectedUserForPermissions.role].push(module.id);
+                      if (
+                        !newPermissions[
+                          selectedUserForPermissions.role
+                        ].includes(module.id)
+                      ) {
+                        newPermissions[selectedUserForPermissions.role].push(
+                          module.id,
+                        );
                       }
                     } else {
                       // Remove submenu permission
-                      newPermissions[selectedUserForPermissions.role] = newPermissions[
-                        selectedUserForPermissions.role
-                      ].filter((id) => id !== fullPermission);
+                      newPermissions[selectedUserForPermissions.role] =
+                        newPermissions[selectedUserForPermissions.role].filter(
+                          (id) => id !== fullPermission,
+                        );
                     }
 
                     setSettings({
@@ -8834,13 +9903,18 @@ const EnhancedPOS: React.FC = () => {
                   };
 
                   return (
-                    <div key={module.id} className="border border-gray-200 rounded-lg p-4">
+                    <div
+                      key={module.id}
+                      className="border border-gray-200 rounded-lg p-4"
+                    >
                       {/* Main Module Checkbox */}
                       <label className="flex items-center space-x-3 mb-3 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={isModuleChecked}
-                          onChange={(e) => toggleModulePermission(e.target.checked)}
+                          onChange={(e) =>
+                            toggleModulePermission(e.target.checked)
+                          }
                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
                         <div className="flex items-center space-x-2">
@@ -8859,9 +9933,10 @@ const EnhancedPOS: React.FC = () => {
                           </p>
                           {submenus.map((submenu) => {
                             const fullPermission = `${module.id}.${submenu.id}`;
-                            const isSubmenuChecked = settings.rolePermissions[
-                              selectedUserForPermissions.role
-                            ]?.includes(fullPermission) || false;
+                            const isSubmenuChecked =
+                              settings.rolePermissions[
+                                selectedUserForPermissions.role
+                              ]?.includes(fullPermission) || false;
 
                             return (
                               <label
@@ -8871,7 +9946,12 @@ const EnhancedPOS: React.FC = () => {
                                 <input
                                   type="checkbox"
                                   checked={isSubmenuChecked}
-                                  onChange={(e) => toggleSubmenuPermission(submenu.id, e.target.checked)}
+                                  onChange={(e) =>
+                                    toggleSubmenuPermission(
+                                      submenu.id,
+                                      e.target.checked,
+                                    )
+                                  }
                                   className="h-3 w-3 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                 />
                                 <span className="text-sm text-gray-700">
@@ -8938,7 +10018,9 @@ const EnhancedPOS: React.FC = () => {
       {showHoldBillModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">Hold Bill</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">
+              Hold Bill
+            </h3>
             <div className="space-y-4">
               <div>
                 <label className="block text-gray-700 font-bold mb-2">
@@ -8948,7 +10030,10 @@ const EnhancedPOS: React.FC = () => {
                   type="text"
                   value={openBillForm.customerName}
                   onChange={(e) =>
-                    setOpenBillForm({ ...openBillForm, customerName: e.target.value })
+                    setOpenBillForm({
+                      ...openBillForm,
+                      customerName: e.target.value,
+                    })
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                   placeholder="Masukkan nama customer"
@@ -8962,7 +10047,10 @@ const EnhancedPOS: React.FC = () => {
                   type="text"
                   value={openBillForm.customerPhone}
                   onChange={(e) =>
-                    setOpenBillForm({ ...openBillForm, customerPhone: e.target.value })
+                    setOpenBillForm({
+                      ...openBillForm,
+                      customerPhone: e.target.value,
+                    })
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                   placeholder="08xxxxxxxxxx"
@@ -8976,7 +10064,10 @@ const EnhancedPOS: React.FC = () => {
                   type="text"
                   value={openBillForm.tableNumber}
                   onChange={(e) =>
-                    setOpenBillForm({ ...openBillForm, tableNumber: e.target.value })
+                    setOpenBillForm({
+                      ...openBillForm,
+                      tableNumber: e.target.value,
+                    })
                   }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                   placeholder="Contoh: Meja 5"
@@ -9030,28 +10121,50 @@ const EnhancedPOS: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-gray-800">Open Bills</h3>
+              <h3 className="text-xl font-semibold text-gray-800">
+                Open Bills
+              </h3>
               <button
                 onClick={() => setShowOpenBillModal(false)}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
-            {openBills.filter(b => b.status === "held").length === 0 ? (
+            {openBills.filter((b) => b.status === "held").length === 0 ? (
               <div className="text-center py-8">
-                <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <svg
+                  className="w-16 h-16 mx-auto text-gray-300 mb-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
                 </svg>
                 <p className="text-gray-500">Tidak ada bill yang disimpan</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {openBills
-                  .filter(b => b.status === "held")
+                  .filter((b) => b.status === "held")
                   .map((bill) => {
                     const { finalTotal } = getOpenBillTotal(bill);
                     const createdDate = new Date(bill.createdAt);
@@ -9067,18 +10180,22 @@ const EnhancedPOS: React.FC = () => {
                               {bill.customerName || "Customer"}
                             </h4>
                             {bill.tableNumber && (
-                              <p className="text-sm text-gray-600">{bill.tableNumber}</p>
+                              <p className="text-sm text-gray-600">
+                                {bill.tableNumber}
+                              </p>
                             )}
                             {bill.customerPhone && (
-                              <p className="text-sm text-gray-600">{bill.customerPhone}</p>
+                              <p className="text-sm text-gray-600">
+                                {bill.customerPhone}
+                              </p>
                             )}
                           </div>
                           <div className="text-right">
                             <p className="text-sm text-gray-500">
-                              {createdDate.toLocaleDateString('id-ID')}
+                              {createdDate.toLocaleDateString("id-ID")}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {createdDate.toLocaleTimeString('id-ID')}
+                              {createdDate.toLocaleTimeString("id-ID")}
                             </p>
                           </div>
                         </div>
@@ -9089,7 +10206,10 @@ const EnhancedPOS: React.FC = () => {
                           </p>
                           <div className="space-y-1">
                             {bill.items.slice(0, 3).map((item, index) => (
-                              <div key={index} className="flex justify-between text-xs">
+                              <div
+                                key={index}
+                                className="flex justify-between text-xs"
+                              >
                                 <span className="text-gray-600">
                                   {item.name} x {item.quantity}
                                 </span>
@@ -9116,7 +10236,9 @@ const EnhancedPOS: React.FC = () => {
 
                         <div className="border-t pt-3">
                           <div className="flex justify-between items-center mb-3">
-                            <span className="font-semibold text-gray-800">Total:</span>
+                            <span className="font-semibold text-gray-800">
+                              Total:
+                            </span>
                             <span className="font-bold text-lg text-indigo-600">
                               {formatCurrency(finalTotal)}
                             </span>
@@ -9179,33 +10301,36 @@ const EnhancedPOS: React.FC = () => {
               dangerouslySetInnerHTML={{
                 __html: selectedSale
                   ? generateReceiptHTML(selectedSale)
-                  : generateReceiptHTML({
-                      id: "PREVIEW-" + Date.now(),
-                      date: new Date().toISOString(),
-                      items: [
-                        {
-                          id: "preview-item-1",
-                          name: "Contoh Produk 1",
-                          price: 15000,
-                          quantity: 2,
-                          subtotal: 30000,
-                        },
-                        {
-                          id: "preview-item-2",
-                          name: "Contoh Produk 2",
-                          price: 25000,
-                          quantity: 1,
-                          subtotal: 25000,
-                        },
-                      ],
-                      totalAmount: 59125,
-                      paymentMethod: "cash",
-                      cashGiven: 60000,
-                      customer: "Customer Preview",
-                      status: "completed",
-                      processedByUserId: currentUser?.id || "preview-user",
-                      shiftId: "preview-shift",
-                    }, true),
+                  : generateReceiptHTML(
+                      {
+                        id: "PREVIEW-" + Date.now(),
+                        date: new Date().toISOString(),
+                        items: [
+                          {
+                            id: "preview-item-1",
+                            name: "Contoh Produk 1",
+                            price: 15000,
+                            quantity: 2,
+                            subtotal: 30000,
+                          },
+                          {
+                            id: "preview-item-2",
+                            name: "Contoh Produk 2",
+                            price: 25000,
+                            quantity: 1,
+                            subtotal: 25000,
+                          },
+                        ],
+                        totalAmount: 59125,
+                        paymentMethod: "cash",
+                        cashGiven: 60000,
+                        customer: "Customer Preview",
+                        status: "completed",
+                        processedByUserId: currentUser?.id || "preview-user",
+                        shiftId: "preview-shift",
+                      },
+                      true,
+                    ),
               }}
             />
 
@@ -9228,8 +10353,18 @@ const EnhancedPOS: React.FC = () => {
                   onClick={handleTestPrint}
                   className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center gap-2"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                    />
                   </svg>
                   Test Print
                 </button>
