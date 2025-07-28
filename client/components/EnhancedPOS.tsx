@@ -2582,14 +2582,14 @@ const EnhancedPOS: React.FC = () => {
                     <div>
                       <div className="mb-4">
                         <label className="block text-gray-700 font-bold mb-2">
-                          Cari Produk (Nama/ID/Barcode):
+                          Cari Produk (Nama/ID):
                         </label>
                         <input
                           type="text"
                           value={productSearch}
                           onChange={(e) => setProductSearch(e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                          placeholder="Ketik nama, ID, atau barcode produk..."
+                          placeholder="Ketik nama atau ID produk..."
                         />
                       </div>
 
