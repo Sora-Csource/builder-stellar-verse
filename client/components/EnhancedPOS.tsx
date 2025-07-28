@@ -722,22 +722,271 @@ const EnhancedPOS: React.FC = () => {
 
   // Print receipt function
   const printReceipt = (sale: Sale) => {
-    const receiptHTML = generateReceiptHTML(sale);
-    const printWindow = window.open("", "_blank");
-    if (printWindow) {
-      printWindow.document.write(receiptHTML);
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-      setTimeout(() => {
-        printWindow.close();
-      }, 100);
+    if (settings.thermalPrinterEnabled && settings.thermalPrinterConnection === "bluetooth" && isBluetoothConnected) {
+      printReceiptBluetooth(sale);
     } else {
+      const receiptHTML = generateReceiptHTML(sale);
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write(receiptHTML);
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        setTimeout(() => {
+          printWindow.close();
+        }, 100);
+      } else {
+        showAlert(
+          "Kesalahan Browser",
+          "Tidak dapat membuka jendela cetak. Pastikan pop-up diizinkan untuk situs ini.",
+          "error",
+        );
+      }
+    }
+  };
+
+  // Bluetooth printer functions
+  const connectBluetoothPrinter = async () => {
+    try {
+      if (!navigator.bluetooth) {
+        showAlert(
+          "Bluetooth Tidak Didukung",
+          "Browser Anda tidak mendukung Web Bluetooth API. Gunakan Chrome atau Edge terbaru.",
+          "error"
+        );
+        return;
+      }
+
+      showLoading("Mencari printer Bluetooth...");
+
+      // Request Bluetooth device
+      const device = await navigator.bluetooth.requestDevice({
+        filters: [
+          { services: ['000018f0-0000-1000-8000-00805f9b34fb'] }, // Serial port service
+          { namePrefix: 'POS' },
+          { namePrefix: 'Thermal' },
+          { namePrefix: 'Receipt' }
+        ],
+        optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb']
+      });
+
+      hideLoading();
+
+      if (!device) {
+        showAlert("Tidak Ada Device", "Tidak ada printer Bluetooth ditemukan.", "warning");
+        return;
+      }
+
+      showLoading("Menghubungkan ke printer...");
+
+      // Connect to GATT server
+      const server = await device.gatt?.connect();
+      if (!server) {
+        hideLoading();
+        showAlert("Koneksi Gagal", "Tidak dapat terhubung ke GATT server.", "error");
+        return;
+      }
+
+      // Get service and characteristic
+      const service = await server.getPrimaryService('000018f0-0000-1000-8000-00805f9b34fb');
+      const characteristic = await service.getCharacteristic('00002af1-0000-1000-8000-00805f9b34fb');
+
+      setBluetoothDevice(device);
+      setBluetoothCharacteristic(characteristic);
+      setIsBluetoothConnected(true);
+
+      // Update settings with device name
+      setSettings(prev => ({
+        ...prev,
+        bluetoothPrinterName: device.name || "Unknown Device"
+      }));
+
+      hideLoading();
+      addNotification("success", "Bluetooth Printer", `Terhubung ke printer: ${device.name || 'Unknown Device'}`);
+
+      // Listen for disconnection
+      device.addEventListener('gattserverdisconnected', () => {
+        setIsBluetoothConnected(false);
+        setBluetoothDevice(null);
+        setBluetoothCharacteristic(null);
+        addNotification("warning", "Bluetooth Printer", "Printer terputus dari koneksi");
+      });
+
+    } catch (error) {
+      hideLoading();
+      console.error('Bluetooth connection error:', error);
       showAlert(
-        "Kesalahan Browser",
-        "Tidak dapat membuka jendela cetak. Pastikan pop-up diizinkan untuk situs ini.",
-        "error",
+        "Koneksi Bluetooth Gagal",
+        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        "error"
       );
+    }
+  };
+
+  const disconnectBluetoothPrinter = async () => {
+    try {
+      if (bluetoothDevice && bluetoothDevice.gatt?.connected) {
+        await bluetoothDevice.gatt.disconnect();
+      }
+      setBluetoothDevice(null);
+      setBluetoothCharacteristic(null);
+      setIsBluetoothConnected(false);
+      addNotification("info", "Bluetooth Printer", "Printer berhasil diputus");
+    } catch (error) {
+      console.error('Bluetooth disconnection error:', error);
+      showAlert("Error", "Gagal memutus koneksi printer", "error");
+    }
+  };
+
+  const generateESCPOSCommands = (sale: Sale): Uint8Array => {
+    const commands: number[] = [];
+    const encoder = new TextEncoder();
+
+    // ESC/POS commands
+    const ESC = 0x1B;
+    const GS = 0x1D;
+
+    // Initialize printer
+    commands.push(ESC, 0x40);
+
+    // Set text alignment to center
+    commands.push(ESC, 0x61, 0x01);
+
+    // Store name and header
+    if (settings.receiptSettings.showStoreName) {
+      commands.push(...Array.from(encoder.encode(`${settings.storeName}\n`)));
+      commands.push(...Array.from(encoder.encode("=" + "=".repeat(30) + "\n")));
+    }
+
+    // Date and transaction ID
+    if (settings.receiptSettings.showDateTime) {
+      const saleDate = new Date(sale.date).toLocaleString("id-ID");
+      commands.push(...Array.from(encoder.encode(`${saleDate}\n`)));
+    }
+
+    if (settings.receiptSettings.showTransactionId) {
+      commands.push(...Array.from(encoder.encode(`ID: ${sale.id}\n`)));
+    }
+
+    commands.push(...Array.from(encoder.encode("=" + "=".repeat(30) + "\n")));
+
+    // Set text alignment to left
+    commands.push(ESC, 0x61, 0x00);
+
+    // Items
+    if (settings.receiptSettings.showItemTotals) {
+      sale.items.forEach((item) => {
+        const itemTotal = item.quantity * item.price;
+        const itemLine = `${item.name} x${item.quantity}\n  ${formatCurrency(itemTotal)}\n`;
+        commands.push(...Array.from(encoder.encode(itemLine)));
+      });
+    }
+
+    commands.push(...Array.from(encoder.encode("-" + "-".repeat(30) + "\n")));
+
+    // Totals
+    const subtotal = sale.items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    const taxAmount = subtotal * (settings.taxRate / 100);
+    const finalTotal = subtotal + taxAmount;
+
+    if (settings.receiptSettings.showSubtotal) {
+      commands.push(...Array.from(encoder.encode(`Subtotal: ${formatCurrency(subtotal)}\n`)));
+    }
+
+    if (settings.receiptSettings.showTax) {
+      commands.push(...Array.from(encoder.encode(`Pajak (${settings.taxRate}%): ${formatCurrency(taxAmount)}\n`)));
+    }
+
+    // Bold total
+    commands.push(ESC, 0x45, 0x01); // Bold on
+    commands.push(...Array.from(encoder.encode(`TOTAL: ${formatCurrency(finalTotal)}\n`)));
+    commands.push(ESC, 0x45, 0x00); // Bold off
+
+    // Payment info
+    if (settings.receiptSettings.showPaymentMethod) {
+      const paymentText = sale.paymentMethod === "cash" ? "Tunai" :
+                         sale.paymentMethod === "card" ? "Kartu" : "E-Wallet";
+      commands.push(...Array.from(encoder.encode(`Pembayaran: ${paymentText}\n`)));
+    }
+
+    if (settings.receiptSettings.showChange && sale.paymentMethod === "cash") {
+      const change = sale.cashGiven - finalTotal;
+      commands.push(...Array.from(encoder.encode(`Tunai: ${formatCurrency(sale.cashGiven)}\n`)));
+      commands.push(...Array.from(encoder.encode(`Kembalian: ${formatCurrency(change)}\n`)));
+    }
+
+    // Thank you message
+    if (settings.receiptSettings.showThankYouMessage) {
+      commands.push(ESC, 0x61, 0x01); // Center alignment
+      commands.push(...Array.from(encoder.encode(`\n${settings.receiptSettings.customThankYouMessage}\n`)));
+    }
+
+    // Cut paper
+    commands.push(GS, 0x56, 0x42, 0x00);
+
+    // Line feeds
+    commands.push(0x0A, 0x0A, 0x0A);
+
+    return new Uint8Array(commands);
+  };
+
+  const printReceiptBluetooth = async (sale: Sale) => {
+    try {
+      if (!bluetoothCharacteristic || !isBluetoothConnected) {
+        showAlert("Printer Tidak Terhubung", "Hubungkan printer Bluetooth terlebih dahulu.", "warning");
+        return;
+      }
+
+      showLoading("Mencetak struk...");
+
+      const escposData = generateESCPOSCommands(sale);
+
+      // Send data in chunks (Bluetooth has size limitations)
+      const chunkSize = 20;
+      for (let i = 0; i < escposData.length; i += chunkSize) {
+        const chunk = escposData.slice(i, i + chunkSize);
+        await bluetoothCharacteristic.writeValue(chunk);
+        // Small delay between chunks
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+
+      hideLoading();
+      showSuccess("Berhasil", "Struk berhasil dicetak via Bluetooth", false);
+
+    } catch (error) {
+      hideLoading();
+      console.error('Bluetooth printing error:', error);
+      showAlert(
+        "Gagal Mencetak",
+        `Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        "error"
+      );
+    }
+  };
+
+  const testBluetoothPrint = async () => {
+    try {
+      if (!bluetoothCharacteristic || !isBluetoothConnected) {
+        showAlert("Printer Tidak Terhubung", "Hubungkan printer Bluetooth terlebih dahulu.", "warning");
+        return;
+      }
+
+      showLoading("Mencetak test page...");
+
+      const encoder = new TextEncoder();
+      const testData = encoder.encode(
+        `\n\nTEST PRINT\n${settings.storeName}\n${new Date().toLocaleString('id-ID')}\n\nPrinter Bluetooth OK!\n\n\n`
+      );
+
+      await bluetoothCharacteristic.writeValue(testData);
+
+      hideLoading();
+      showSuccess("Test Print", "Test print berhasil dikirim ke printer", false);
+
+    } catch (error) {
+      hideLoading();
+      console.error('Test print error:', error);
+      showAlert("Test Print Gagal", `Error: ${error instanceof Error ? error.message : 'Unknown error'}`, "error");
     }
   };
 
@@ -2560,7 +2809,7 @@ const EnhancedPOS: React.FC = () => {
                                         onClick={() => setCashGiven(finalTotal)}
                                         className="bg-green-100 hover:bg-green-200 text-green-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
                                       >
-                                        ���� Uang Pas
+                                        💰 Uang Pas
                                       </button>
                                       <button
                                         type="button"
