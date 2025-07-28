@@ -1976,6 +1976,13 @@ const EnhancedPOS: React.FC = () => {
         taxRate: settings.taxRate,
         currencySymbol: settings.currencySymbol,
         logo: settings.logo || "",
+        // Financial settings
+        taxType: settings.taxType || "exclusive",
+        maxDiscountPercent: settings.maxDiscountPercent || 50,
+        quickDiscountAmount: settings.quickDiscountAmount || 5000,
+        quickDiscountPresets: settings.quickDiscountPresets || [5, 10, 15, 20],
+        serviceChargePercent: settings.serviceChargePercent || 0,
+        enableServiceCharge: settings.enableServiceCharge || false,
       });
 
       setReceiptSettingsForm({
