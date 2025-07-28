@@ -2524,7 +2524,7 @@ const EnhancedPOS: React.FC = () => {
               {/* Right: Notifications & User Actions */}
               <div className="flex items-center space-x-4">
                 {/* Notification Icon */}
-                <div className="relative">
+                <div className="relative p-1">
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
                     className="notification-button relative p-2 rounded-full hover:bg-gray-700 transition-colors group"
@@ -2543,7 +2543,7 @@ const EnhancedPOS: React.FC = () => {
                       />
                     </svg>
                     {getUnreadCount() > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-pulse">
+                      <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-pulse">
                         {getUnreadCount()}
                       </span>
                     )}
