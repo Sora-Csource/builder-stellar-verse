@@ -310,6 +310,21 @@ const EnhancedPOS: React.FC = () => {
     // Backup settings defaults
     autoBackupEnabled: false,
     maxBackupFiles: 7,
+    // Loyalty program defaults
+    loyaltyProgramEnabled: true,
+    pointsPerPurchase: 1, // 1 point per 1000 spent
+    pointsRedemptionValue: 1000, // 1 point = 1000 rupiah
+    tierThresholds: {
+      silver: 100000, // 100k spent
+      gold: 500000,   // 500k spent
+      platinum: 1500000 // 1.5M spent
+    },
+    tierBenefits: {
+      bronze: { pointsMultiplier: 1, discountPercent: 0 },
+      silver: { pointsMultiplier: 1.2, discountPercent: 2 },
+      gold: { pointsMultiplier: 1.5, discountPercent: 5 },
+      platinum: { pointsMultiplier: 2, discountPercent: 10 }
+    },
     // Thermal printer defaults
     thermalPrinterEnabled: false,
     thermalPrinterWidth: 58, // 58mm thermal printer
