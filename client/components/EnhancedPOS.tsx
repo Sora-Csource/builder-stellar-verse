@@ -2033,6 +2033,61 @@ const EnhancedPOS: React.FC = () => {
     showAlert("Berhasil", "Pengaturan struk berhasil disimpan.", "success");
   };
 
+  // Handle test print
+  const handleTestPrint = async () => {
+    // Create a sample sale for testing
+    const testSale: Sale = {
+      id: "TEST-" + Date.now(),
+      date: new Date().toISOString(),
+      items: [
+        {
+          id: "test-item-1",
+          name: "Contoh Produk 1",
+          price: 15000,
+          quantity: 2,
+          subtotal: 30000,
+        },
+        {
+          id: "test-item-2",
+          name: "Contoh Produk 2",
+          price: 25000,
+          quantity: 1,
+          subtotal: 25000,
+        },
+      ],
+      totalAmount: 59125, // Including tax
+      paymentMethod: "cash",
+      cashGiven: 60000,
+      customer: "Customer Test",
+      status: "completed",
+      processedByUserId: currentUser?.id || "test-user",
+      shiftId: "test-shift",
+    };
+
+    try {
+      // Update receipt settings with current form values temporarily
+      const currentReceiptSettings = settings.receiptSettings;
+      setSettings({
+        ...settings,
+        receiptSettings: receiptSettingsForm,
+      });
+
+      // Perform the test print
+      await printReceiptThermal(testSale);
+
+      // Restore original settings
+      setSettings({
+        ...settings,
+        receiptSettings: currentReceiptSettings,
+      });
+
+      showAlert("Test Print", "Struk test berhasil dikirim ke printer!", "success");
+    } catch (error) {
+      console.error("Test print error:", error);
+      showAlert("Error", "Gagal melakukan test print. Pastikan printer terhubung.", "error");
+    }
+  };
+
   // Generate shift report HTML
   const generateShiftReportHTML = (shift: Shift) => {
     const user = users.find((u) => u.id === shift.userId);
