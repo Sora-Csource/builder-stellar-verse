@@ -3161,9 +3161,6 @@ const EnhancedPOS: React.FC = () => {
                                 {product.name}
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
-                                {product.barcode || "-"}
-                              </td>
-                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
                                 {formatCurrency(product.price)}
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
