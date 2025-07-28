@@ -62,6 +62,20 @@ interface Shift {
   status: "open" | "closed";
 }
 
+interface OpenBill {
+  id: string;
+  customerName?: string;
+  customerPhone?: string;
+  tableNumber?: string;
+  items: CartItem[];
+  discountAmount: number;
+  discountType: "percentage" | "amount";
+  notes?: string;
+  createdAt: string;
+  createdBy: string;
+  status: "held" | "resumed";
+}
+
 interface Settings {
   storeName: string;
   taxRate: number;
