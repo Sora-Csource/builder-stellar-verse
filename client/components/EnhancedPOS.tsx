@@ -3739,7 +3739,9 @@ const EnhancedPOS: React.FC = () => {
                             </td>
                           </tr>
                         ) : (
-                          getFilteredProducts().map((product) => (
+                          getFilteredProducts().map((product) => {
+                            const analytics = getInventoryAnalytics()[product.id];
+                            return (
                             <tr key={product.id} className="even:bg-gray-50">
                               <td className="border border-gray-200 px-3 py-2">
                                 <img
@@ -3762,15 +3764,56 @@ const EnhancedPOS: React.FC = () => {
                                 {formatCurrency(product.price)}
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
-                                <span
-                                  className={
-                                    product.stock <= 5
-                                      ? "text-red-500 font-bold"
-                                      : "text-gray-500"
-                                  }
-                                >
-                                  {product.stock}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={
+                                      analytics?.status === "stockout" ? "text-red-600 font-bold" :
+                                      analytics?.status === "critical" ? "text-red-500 font-bold" :
+                                      analytics?.status === "low" ? "text-yellow-600 font-bold" :
+                                      "text-gray-600"
+                                    }
+                                  >
+                                    {product.stock}
+                                  </span>
+                                  <span
+                                    className={`text-xs px-2 py-1 rounded-full ${
+                                      analytics?.status === "stockout" ? "bg-red-100 text-red-600" :
+                                      analytics?.status === "critical" ? "bg-red-100 text-red-600" :
+                                      analytics?.status === "low" ? "bg-yellow-100 text-yellow-600" :
+                                      "bg-green-100 text-green-600"
+                                    }`}
+                                  >
+                                    {analytics?.status === "stockout" ? "Habis" :
+                                     analytics?.status === "critical" ? "Kritis" :
+                                     analytics?.status === "low" ? "Rendah" :
+                                     "Sehat"}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                <div>
+                                  <div>Terjual: {analytics?.totalSold || 0}</div>
+                                  <div className="text-xs">
+                                    {analytics?.dailyAverage?.toFixed(1) || 0}/hari
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                                <div>
+                                  {analytics?.daysUntilStockout === Infinity ? (
+                                    <span className="text-gray-400">∞ hari</span>
+                                  ) : analytics?.daysUntilStockout === 0 ? (
+                                    <span className="text-red-600 font-bold">Habis</span>
+                                  ) : (
+                                    <span className={
+                                      (analytics?.daysUntilStockout || 0) <= 7 ? "text-red-600 font-bold" :
+                                      (analytics?.daysUntilStockout || 0) <= 14 ? "text-yellow-600" :
+                                      "text-gray-600"
+                                    }>
+                                      {analytics?.daysUntilStockout} hari
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
                                 {hasSubmenuAccess("stock-management", "edit") && (
@@ -3793,7 +3836,8 @@ const EnhancedPOS: React.FC = () => {
                                 )}
                               </td>
                             </tr>
-                          ))
+                            );
+                          })
                         )}
                       </tbody>
                     </table>
@@ -6778,7 +6822,7 @@ const EnhancedPOS: React.FC = () => {
                         </h4>
                         <ul className="text-sm text-blue-700 space-y-1">
                           <li>
-                            • Pastikan thermal printer sudah terhubung via USB
+                            �� Pastikan thermal printer sudah terhubung via USB
                             atau jaringan
                           </li>
                           <li>
