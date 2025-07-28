@@ -7266,6 +7266,296 @@ const EnhancedPOS: React.FC = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Loyalty Program Settings Tab */}
+                {activeSettingsTab === "loyalty" && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-6 text-gray-800">
+                      Pengaturan Program Loyalitas
+                    </h3>
+
+                    <form onSubmit={handleSettingsSubmit} className="space-y-6">
+                      {/* Enable/Disable Loyalty Program */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <label className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={settings.loyaltyProgramEnabled || false}
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                loyaltyProgramEnabled: e.target.checked,
+                              })
+                            }
+                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                          />
+                          <div>
+                            <span className="text-lg font-medium text-gray-700">
+                              Aktifkan Program Loyalitas
+                            </span>
+                            <p className="text-sm text-gray-500">
+                              Customer akan mendapat points dari setiap pembelian
+                            </p>
+                          </div>
+                        </label>
+                      </div>
+
+                      {settings.loyaltyProgramEnabled && (
+                        <>
+                          {/* Points Configuration */}
+                          <div className="bg-white p-6 rounded-lg shadow-sm">
+                            <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                              Konfigurasi Points
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                <label className="block text-gray-700 font-bold mb-2">
+                                  Points per 1000 Rupiah:
+                                </label>
+                                <input
+                                  type="number"
+                                  min="0.1"
+                                  step="0.1"
+                                  value={settings.pointsPerPurchase || 1}
+                                  onChange={(e) =>
+                                    setSettings({
+                                      ...settings,
+                                      pointsPerPurchase: parseFloat(e.target.value) || 1,
+                                    })
+                                  }
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                  Customer mendapat berapa point per 1000 rupiah belanja
+                                </p>
+                              </div>
+                              <div>
+                                <label className="block text-gray-700 font-bold mb-2">
+                                  Nilai Tukar Point (Rupiah):
+                                </label>
+                                <input
+                                  type="number"
+                                  min="100"
+                                  step="100"
+                                  value={settings.pointsRedemptionValue || 1000}
+                                  onChange={(e) =>
+                                    setSettings({
+                                      ...settings,
+                                      pointsRedemptionValue: parseFloat(e.target.value) || 1000,
+                                    })
+                                  }
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                  1 point = berapa rupiah saat ditukar
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Tier Configuration */}
+                          <div className="bg-white p-6 rounded-lg shadow-sm">
+                            <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                              Tier Customer & Benefit
+                            </h4>
+
+                            {/* Tier Thresholds */}
+                            <div className="mb-6">
+                              <h5 className="font-medium text-gray-700 mb-3">
+                                Syarat Naik Tier (Total Belanja):
+                              </h5>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                  <label className="block text-gray-600 font-medium mb-1">
+                                    Silver:
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="10000"
+                                    step="10000"
+                                    value={settings.tierThresholds?.silver || 100000}
+                                    onChange={(e) =>
+                                      setSettings({
+                                        ...settings,
+                                        tierThresholds: {
+                                          ...settings.tierThresholds,
+                                          silver: parseFloat(e.target.value) || 100000,
+                                          gold: settings.tierThresholds?.gold || 500000,
+                                          platinum: settings.tierThresholds?.platinum || 1500000
+                                        },
+                                      })
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-gray-600 font-medium mb-1">
+                                    Gold:
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="100000"
+                                    step="10000"
+                                    value={settings.tierThresholds?.gold || 500000}
+                                    onChange={(e) =>
+                                      setSettings({
+                                        ...settings,
+                                        tierThresholds: {
+                                          ...settings.tierThresholds,
+                                          silver: settings.tierThresholds?.silver || 100000,
+                                          gold: parseFloat(e.target.value) || 500000,
+                                          platinum: settings.tierThresholds?.platinum || 1500000
+                                        },
+                                      })
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-gray-600 font-medium mb-1">
+                                    Platinum:
+                                  </label>
+                                  <input
+                                    type="number"
+                                    min="500000"
+                                    step="100000"
+                                    value={settings.tierThresholds?.platinum || 1500000}
+                                    onChange={(e) =>
+                                      setSettings({
+                                        ...settings,
+                                        tierThresholds: {
+                                          ...settings.tierThresholds,
+                                          silver: settings.tierThresholds?.silver || 100000,
+                                          gold: settings.tierThresholds?.gold || 500000,
+                                          platinum: parseFloat(e.target.value) || 1500000
+                                        },
+                                      })
+                                    }
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Tier Benefits */}
+                            <div>
+                              <h5 className="font-medium text-gray-700 mb-3">
+                                Benefit per Tier:
+                              </h5>
+                              <div className="space-y-4">
+                                {[
+                                  { tier: "bronze", name: "Bronze", color: "bg-orange-100 border-orange-300" },
+                                  { tier: "silver", name: "Silver", color: "bg-gray-100 border-gray-300" },
+                                  { tier: "gold", name: "Gold", color: "bg-yellow-100 border-yellow-300" },
+                                  { tier: "platinum", name: "Platinum", color: "bg-purple-100 border-purple-300" }
+                                ].map(({ tier, name, color }) => (
+                                  <div key={tier} className={`p-4 rounded-lg border ${color}`}>
+                                    <h6 className="font-medium text-gray-700 mb-2">{name} Tier</h6>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      <div>
+                                        <label className="block text-gray-600 text-sm mb-1">
+                                          Points Multiplier:
+                                        </label>
+                                        <input
+                                          type="number"
+                                          min="1"
+                                          step="0.1"
+                                          value={settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.pointsMultiplier || 1}
+                                          onChange={(e) =>
+                                            setSettings({
+                                              ...settings,
+                                              tierBenefits: {
+                                                ...settings.tierBenefits,
+                                                [tier]: {
+                                                  ...settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits],
+                                                  pointsMultiplier: parseFloat(e.target.value) || 1,
+                                                  discountPercent: settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.discountPercent || 0
+                                                }
+                                              },
+                                            })
+                                          }
+                                          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 text-sm"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-gray-600 text-sm mb-1">
+                                          Discount (%):
+                                        </label>
+                                        <input
+                                          type="number"
+                                          min="0"
+                                          max="50"
+                                          step="1"
+                                          value={settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.discountPercent || 0}
+                                          onChange={(e) =>
+                                            setSettings({
+                                              ...settings,
+                                              tierBenefits: {
+                                                ...settings.tierBenefits,
+                                                [tier]: {
+                                                  ...settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits],
+                                                  pointsMultiplier: settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.pointsMultiplier || 1,
+                                                  discountPercent: parseFloat(e.target.value) || 0
+                                                }
+                                              },
+                                            })
+                                          }
+                                          className="w-full px-2 py-1 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 text-sm"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Loyalty Program Statistics */}
+                          <div className="bg-white p-6 rounded-lg shadow-sm">
+                            <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                              Statistik Program Loyalitas
+                            </h4>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                              <div className="text-center">
+                                <p className="text-2xl font-bold text-blue-600">
+                                  {customers.filter(c => c.loyaltyPoints > 0).length}
+                                </p>
+                                <p className="text-sm text-gray-600">Active Members</p>
+                              </div>
+                              <div className="text-center">
+                                <p className="text-2xl font-bold text-green-600">
+                                  {customers.reduce((sum, c) => sum + c.loyaltyPoints, 0).toLocaleString()}
+                                </p>
+                                <p className="text-sm text-gray-600">Total Points</p>
+                              </div>
+                              <div className="text-center">
+                                <p className="text-2xl font-bold text-purple-600">
+                                  {customers.filter(c => c.tier === "Platinum").length}
+                                </p>
+                                <p className="text-sm text-gray-600">Platinum Members</p>
+                              </div>
+                              <div className="text-center">
+                                <p className="text-2xl font-bold text-yellow-600">
+                                  {formatCurrency(customers.reduce((sum, c) => sum + c.totalSpent, 0))}
+                                </p>
+                                <p className="text-sm text-gray-600">Total Spent</p>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="pt-4 border-t border-gray-200">
+                        <button
+                          type="submit"
+                          className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-3 rounded-md font-semibold hover:from-green-700 hover:to-blue-700 transition duration-200"
+                        >
+                          Simpan Pengaturan Loyalitas
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             )}
 
