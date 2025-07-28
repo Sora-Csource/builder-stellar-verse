@@ -5677,7 +5677,10 @@ const EnhancedPOS: React.FC = () => {
 
                 {/* Analytics Dashboard Tab */}
                 {activeReportsTab === "analytics" && (
-                  <div className="mt-6 space-y-6">
+                  <div className="mt-6 space-y-6 bg-red-100 p-4">
+                    <div className="text-sm text-red-600 mb-4">
+                      DEBUG: Analytics Dashboard Active - Products: {products.length}, Sales: {sales.length}
+                    </div>
                     <h3 className="text-2xl font-semibold text-gray-800 flex items-center">
                       <svg className="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
