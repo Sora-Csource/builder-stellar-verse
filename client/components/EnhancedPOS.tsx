@@ -2317,9 +2317,7 @@ const EnhancedPOS: React.FC = () => {
     return products.filter(
       (product) =>
         product.name.toLowerCase().includes(productSearch.toLowerCase()) ||
-        product.id.toLowerCase().includes(productSearch.toLowerCase()) ||
-        (product.barcode &&
-          product.barcode.toLowerCase().includes(productSearch.toLowerCase())),
+        product.id.toLowerCase().includes(productSearch.toLowerCase()),
     );
   };
 
