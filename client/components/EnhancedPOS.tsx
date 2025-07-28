@@ -83,6 +83,8 @@ interface Settings {
   thermalPrinterWidth?: number;
   thermalPrinterIP?: string;
   thermalPrinterPort?: number;
+  thermalPrinterConnection?: "network" | "bluetooth";
+  bluetoothPrinterName?: string;
   receiptSettings: {
     showStoreName: boolean;
     showDateTime: boolean;
