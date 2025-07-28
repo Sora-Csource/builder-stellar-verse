@@ -3732,7 +3732,7 @@ const EnhancedPOS: React.FC = () => {
                         {getFilteredProducts().length === 0 ? (
                           <tr>
                             <td
-                              colSpan={6}
+                              colSpan={7}
                               className="border border-gray-200 py-4 text-center text-gray-500"
                             >
                               Tidak ada produk ditemukan.
@@ -6822,7 +6822,7 @@ const EnhancedPOS: React.FC = () => {
                         </h4>
                         <ul className="text-sm text-blue-700 space-y-1">
                           <li>
-                            �� Pastikan thermal printer sudah terhubung via USB
+                            • Pastikan thermal printer sudah terhubung via USB
                             atau jaringan
                           </li>
                           <li>
