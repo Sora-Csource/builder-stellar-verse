@@ -6969,63 +6969,157 @@ const EnhancedPOS: React.FC = () => {
                 role <strong>{selectedUserForPermissions.role}</strong>:
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="space-y-6 mb-6">
                 {allModules.map((module) => {
-                  const isChecked =
+                  const isModuleChecked =
                     settings.rolePermissions[
                       selectedUserForPermissions.role
                     ]?.includes(module.id) || false;
 
+                  // Define submenu options for each module
+                  const moduleSubmenus: Record<string, Array<{id: string, name: string}>> = {
+                    "stock-management": [
+                      { id: "add", name: "Tambah Produk" },
+                      { id: "edit", name: "Edit Produk" },
+                      { id: "delete", name: "Hapus Produk" }
+                    ],
+                    "customer-management": [
+                      { id: "add", name: "Tambah Customer" },
+                      { id: "edit", name: "Edit Customer" },
+                      { id: "delete", name: "Hapus Customer" }
+                    ],
+                    "reports": [
+                      { id: "sales", name: "Laporan Penjualan" },
+                      { id: "shifts", name: "Laporan Shift" },
+                      { id: "stock", name: "Laporan Stok" }
+                    ],
+                    "shift-management": [
+                      { id: "start", name: "Mulai Shift" },
+                      { id: "end", name: "Akhiri Shift" }
+                    ],
+                    "user-management": [
+                      { id: "add", name: "Tambah User" },
+                      { id: "edit", name: "Edit User" },
+                      { id: "delete", name: "Hapus User" },
+                      { id: "permissions", name: "Kelola Izin" }
+                    ],
+                    "settings": [
+                      { id: "general", name: "Pengaturan Umum" },
+                      { id: "receipt", name: "Pengaturan Struk" },
+                      { id: "printer", name: "Pengaturan Printer" },
+                      { id: "backup", name: "Backup & Restore" }
+                    ]
+                  };
+
+                  const submenus = moduleSubmenus[module.id] || [];
+
+                  const toggleModulePermission = (checked: boolean) => {
+                    const newPermissions = {
+                      ...settings.rolePermissions,
+                    };
+                    if (!newPermissions[selectedUserForPermissions.role]) {
+                      newPermissions[selectedUserForPermissions.role] = [];
+                    }
+
+                    if (checked) {
+                      if (!newPermissions[selectedUserForPermissions.role].includes(module.id)) {
+                        newPermissions[selectedUserForPermissions.role].push(module.id);
+                      }
+                    } else {
+                      // Remove main module and all submenus
+                      newPermissions[selectedUserForPermissions.role] = newPermissions[
+                        selectedUserForPermissions.role
+                      ].filter((id) => id !== module.id && !id.startsWith(`${module.id}.`));
+                    }
+
+                    setSettings({
+                      ...settings,
+                      rolePermissions: newPermissions,
+                    });
+                  };
+
+                  const toggleSubmenuPermission = (submenuId: string, checked: boolean) => {
+                    const newPermissions = {
+                      ...settings.rolePermissions,
+                    };
+                    if (!newPermissions[selectedUserForPermissions.role]) {
+                      newPermissions[selectedUserForPermissions.role] = [];
+                    }
+
+                    const fullPermission = `${module.id}.${submenuId}`;
+
+                    if (checked) {
+                      // Add submenu permission
+                      if (!newPermissions[selectedUserForPermissions.role].includes(fullPermission)) {
+                        newPermissions[selectedUserForPermissions.role].push(fullPermission);
+                      }
+                      // Also ensure main module is enabled
+                      if (!newPermissions[selectedUserForPermissions.role].includes(module.id)) {
+                        newPermissions[selectedUserForPermissions.role].push(module.id);
+                      }
+                    } else {
+                      // Remove submenu permission
+                      newPermissions[selectedUserForPermissions.role] = newPermissions[
+                        selectedUserForPermissions.role
+                      ].filter((id) => id !== fullPermission);
+                    }
+
+                    setSettings({
+                      ...settings,
+                      rolePermissions: newPermissions,
+                    });
+                  };
+
                   return (
-                    <label
-                      key={module.id}
-                      className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={(e) => {
-                          const newPermissions = {
-                            ...settings.rolePermissions,
-                          };
-                          if (
-                            !newPermissions[selectedUserForPermissions.role]
-                          ) {
-                            newPermissions[selectedUserForPermissions.role] =
-                              [];
-                          }
+                    <div key={module.id} className="border border-gray-200 rounded-lg p-4">
+                      {/* Main Module Checkbox */}
+                      <label className="flex items-center space-x-3 mb-3 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={isModuleChecked}
+                          onChange={(e) => toggleModulePermission(e.target.checked)}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        />
+                        <div className="flex items-center space-x-2">
+                          <span className="text-lg">{module.icon}</span>
+                          <span className="font-semibold text-gray-800">
+                            {module.name}
+                          </span>
+                        </div>
+                      </label>
 
-                          if (e.target.checked) {
-                            if (
-                              !newPermissions[
-                                selectedUserForPermissions.role
-                              ].includes(module.id)
-                            ) {
-                              newPermissions[
-                                selectedUserForPermissions.role
-                              ].push(module.id);
-                            }
-                          } else {
-                            newPermissions[selectedUserForPermissions.role] =
-                              newPermissions[
-                                selectedUserForPermissions.role
-                              ].filter((id) => id !== module.id);
-                          }
+                      {/* Submenu Options */}
+                      {submenus.length > 0 && isModuleChecked && (
+                        <div className="ml-7 space-y-2 bg-gray-50 p-3 rounded-md">
+                          <p className="text-xs font-medium text-gray-600 uppercase tracking-wider mb-2">
+                            Izin Detail:
+                          </p>
+                          {submenus.map((submenu) => {
+                            const fullPermission = `${module.id}.${submenu.id}`;
+                            const isSubmenuChecked = settings.rolePermissions[
+                              selectedUserForPermissions.role
+                            ]?.includes(fullPermission) || false;
 
-                          setSettings({
-                            ...settings,
-                            rolePermissions: newPermissions,
-                          });
-                        }}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg">{module.icon}</span>
-                        <span className="font-medium text-gray-700">
-                          {module.name}
-                        </span>
-                      </div>
-                    </label>
+                            return (
+                              <label
+                                key={submenu.id}
+                                className="flex items-center space-x-2 cursor-pointer"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={isSubmenuChecked}
+                                  onChange={(e) => toggleSubmenuPermission(submenu.id, e.target.checked)}
+                                  className="h-3 w-3 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                />
+                                <span className="text-sm text-gray-700">
+                                  {submenu.name}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
