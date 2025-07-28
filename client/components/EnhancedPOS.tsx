@@ -460,7 +460,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-001",
           name: "Kopi Americano",
-          barcode: "1234567890",
           price: 25000,
           stock: 50,
           imageUrl:
@@ -469,7 +468,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-002",
           name: "Cappuccino",
-          barcode: "1234567891",
           price: 30000,
           stock: 30,
           imageUrl:
@@ -478,7 +476,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-003",
           name: "Latte",
-          barcode: "1234567892",
           price: 32000,
           stock: 25,
           imageUrl:
@@ -487,7 +484,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-004",
           name: "Croissant",
-          barcode: "1234567893",
           price: 15000,
           stock: 20,
           imageUrl:
@@ -496,7 +492,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-005",
           name: "Sandwich",
-          barcode: "1234567894",
           price: 45000,
           stock: 15,
           imageUrl:
@@ -505,7 +500,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-006",
           name: "Matcha Latte",
-          barcode: "1234567895",
           price: 35000,
           stock: 3, // Low stock for testing alert
           imageUrl:
@@ -514,7 +508,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-007",
           name: "Espresso",
-          barcode: "1234567896",
           price: 20000,
           stock: 2, // Low stock for testing alert
           imageUrl:
@@ -523,7 +516,6 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-008",
           name: "Cake Slice",
-          barcode: "1234567897",
           price: 35000,
           stock: 0, // Out of stock
           imageUrl:
