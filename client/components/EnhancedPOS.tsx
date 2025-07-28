@@ -100,6 +100,21 @@ interface Settings {
   // Backup settings
   autoBackupEnabled?: boolean;
   maxBackupFiles?: number;
+  // Loyalty program settings
+  loyaltyProgramEnabled?: boolean;
+  pointsPerPurchase?: number; // Points per 1000 spent
+  pointsRedemptionValue?: number; // 1 point = X rupiah
+  tierThresholds?: {
+    silver: number;
+    gold: number;
+    platinum: number;
+  };
+  tierBenefits?: {
+    bronze: { pointsMultiplier: number; discountPercent: number };
+    silver: { pointsMultiplier: number; discountPercent: number };
+    gold: { pointsMultiplier: number; discountPercent: number };
+    platinum: { pointsMultiplier: number; discountPercent: number };
+  };
   // Thermal printer settings
   thermalPrinterEnabled?: boolean;
   thermalPrinterWidth?: number;
