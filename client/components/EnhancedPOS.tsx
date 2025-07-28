@@ -6853,6 +6853,218 @@ const EnhancedPOS: React.FC = () => {
         </div>
       )}
 
+      {/* Hold Bill Modal */}
+      {showHoldBillModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">Hold Bill</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Nama Customer (opsional):
+                </label>
+                <input
+                  type="text"
+                  value={openBillForm.customerName}
+                  onChange={(e) =>
+                    setOpenBillForm({ ...openBillForm, customerName: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  placeholder="Masukkan nama customer"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Nomor Telepon (opsional):
+                </label>
+                <input
+                  type="text"
+                  value={openBillForm.customerPhone}
+                  onChange={(e) =>
+                    setOpenBillForm({ ...openBillForm, customerPhone: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  placeholder="08xxxxxxxxxx"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Nomor Meja (opsional):
+                </label>
+                <input
+                  type="text"
+                  value={openBillForm.tableNumber}
+                  onChange={(e) =>
+                    setOpenBillForm({ ...openBillForm, tableNumber: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  placeholder="Contoh: Meja 5"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Catatan (opsional):
+                </label>
+                <textarea
+                  value={openBillForm.notes}
+                  onChange={(e) =>
+                    setOpenBillForm({ ...openBillForm, notes: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500 resize-none"
+                  rows={3}
+                  placeholder="Catatan tambahan..."
+                />
+              </div>
+            </div>
+            <div className="flex space-x-4 mt-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowHoldBillModal(false);
+                  setOpenBillForm({
+                    customerName: "",
+                    customerPhone: "",
+                    tableNumber: "",
+                    notes: "",
+                  });
+                }}
+                className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-md font-semibold hover:bg-gray-600 transition duration-200"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={saveHeldBill}
+                className="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-md font-semibold hover:bg-yellow-700 transition duration-200"
+              >
+                Simpan Bill
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Open Bills Modal */}
+      {showOpenBillModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold text-gray-800">Open Bills</h3>
+              <button
+                onClick={() => setShowOpenBillModal(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {openBills.filter(b => b.status === "held").length === 0 ? (
+              <div className="text-center py-8">
+                <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <p className="text-gray-500">Tidak ada bill yang disimpan</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {openBills
+                  .filter(b => b.status === "held")
+                  .map((bill) => {
+                    const { finalTotal } = getOpenBillTotal(bill);
+                    const createdDate = new Date(bill.createdAt);
+
+                    return (
+                      <div
+                        key={bill.id}
+                        className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                          <div>
+                            <h4 className="font-semibold text-gray-800">
+                              {bill.customerName || "Customer"}
+                            </h4>
+                            {bill.tableNumber && (
+                              <p className="text-sm text-gray-600">{bill.tableNumber}</p>
+                            )}
+                            {bill.customerPhone && (
+                              <p className="text-sm text-gray-600">{bill.customerPhone}</p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm text-gray-500">
+                              {createdDate.toLocaleDateString('id-ID')}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {createdDate.toLocaleTimeString('id-ID')}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mb-3">
+                          <p className="text-sm text-gray-600 mb-2">
+                            {bill.items.length} item(s)
+                          </p>
+                          <div className="space-y-1">
+                            {bill.items.slice(0, 3).map((item, index) => (
+                              <div key={index} className="flex justify-between text-xs">
+                                <span className="text-gray-600">
+                                  {item.name} x {item.quantity}
+                                </span>
+                                <span className="text-gray-800">
+                                  {formatCurrency(item.price * item.quantity)}
+                                </span>
+                              </div>
+                            ))}
+                            {bill.items.length > 3 && (
+                              <p className="text-xs text-gray-500">
+                                +{bill.items.length - 3} item lainnya
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {bill.notes && (
+                          <div className="mb-3">
+                            <p className="text-xs text-gray-500 italic">
+                              "{bill.notes}"
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="border-t pt-3">
+                          <div className="flex justify-between items-center mb-3">
+                            <span className="font-semibold text-gray-800">Total:</span>
+                            <span className="font-bold text-lg text-indigo-600">
+                              {formatCurrency(finalTotal)}
+                            </span>
+                          </div>
+
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => resumeOpenBill(bill.id)}
+                              className="flex-1 bg-indigo-600 text-white py-2 px-3 rounded-md text-sm font-semibold hover:bg-indigo-700 transition duration-200"
+                            >
+                              Buka
+                            </button>
+                            <button
+                              onClick={() => deleteOpenBill(bill.id)}
+                              className="bg-red-600 text-white py-2 px-3 rounded-md text-sm font-semibold hover:bg-red-700 transition duration-200"
+                            >
+                              Hapus
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Custom Modals */}
       <Modals />
     </div>
