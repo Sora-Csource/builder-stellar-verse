@@ -1219,6 +1219,7 @@ const EnhancedPOS: React.FC = () => {
         setCustomers(parsedData.customers || []);
         setSales(parsedData.sales || []);
         setShifts(parsedData.shifts || []);
+        setOpenBills(parsedData.openBills || []);
         setSettings({ ...settings, ...(parsedData.settings || {}) });
 
         if (parsedData.currentUser) {
