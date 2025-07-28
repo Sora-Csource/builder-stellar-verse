@@ -6769,6 +6769,21 @@ const EnhancedPOS: React.FC = () => {
                   </span>
                 </p>
 
+                {selectedSale.status === "voided" && selectedSale.voidReason && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                    <p className="text-sm">
+                      <strong className="text-red-800">Alasan Pembatalan:</strong>
+                    </p>
+                    <p className="text-red-700 mt-1">{selectedSale.voidReason}</p>
+                    {selectedSale.voidedBy && selectedSale.voidedAt && (
+                      <div className="text-xs text-red-600 mt-2">
+                        <p>Dibatalkan oleh: {selectedSale.voidedBy}</p>
+                        <p>Tanggal: {new Date(selectedSale.voidedAt).toLocaleString("id-ID")}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <h4 className="font-semibold mt-4 mb-2">Item:</h4>
                 <ul className="space-y-1">
                   {selectedSale.items.map((item, index) => (
