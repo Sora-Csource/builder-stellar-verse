@@ -5717,6 +5717,26 @@ const EnhancedPOS: React.FC = () => {
                           </p>
                         </div>
 
+                        {/* Connection Type */}
+                        <div>
+                          <label className="block text-gray-700 font-bold mb-2">
+                            Jenis Koneksi:
+                          </label>
+                          <select
+                            value={settings.thermalPrinterConnection || "network"}
+                            onChange={(e) =>
+                              setSettings({
+                                ...settings,
+                                thermalPrinterConnection: e.target.value as "network" | "bluetooth",
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                          >
+                            <option value="network">Network/USB</option>
+                            <option value="bluetooth">Bluetooth</option>
+                          </select>
+                        </div>
+
                         {/* Printer Width */}
                         <div>
                           <label className="block text-gray-700 font-bold mb-2">
@@ -5737,27 +5757,122 @@ const EnhancedPOS: React.FC = () => {
                           </select>
                         </div>
 
-                        {/* Printer IP */}
-                        <div>
-                          <label className="block text-gray-700 font-bold mb-2">
-                            IP Address Printer:
-                          </label>
-                          <input
-                            type="text"
-                            value={settings.thermalPrinterIP || ""}
-                            onChange={(e) =>
-                              setSettings({
-                                ...settings,
-                                thermalPrinterIP: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                            placeholder="192.168.1.100"
-                          />
-                          <p className="text-sm text-gray-500 mt-1">
-                            IP address printer thermal di jaringan (opsional)
-                          </p>
-                        </div>
+                        {/* Network Printer Settings */}
+                        {settings.thermalPrinterConnection === "network" && (
+                          <div className="md:col-span-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-gray-700 font-bold mb-2">
+                                  IP Address Printer:
+                                </label>
+                                <input
+                                  type="text"
+                                  value={settings.thermalPrinterIP || ""}
+                                  onChange={(e) =>
+                                    setSettings({
+                                      ...settings,
+                                      thermalPrinterIP: e.target.value,
+                                    })
+                                  }
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                  placeholder="192.168.1.100"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                  IP address printer thermal di jaringan
+                                </p>
+                              </div>
+                              <div>
+                                <label className="block text-gray-700 font-bold mb-2">
+                                  Port:
+                                </label>
+                                <input
+                                  type="number"
+                                  value={settings.thermalPrinterPort || 9100}
+                                  onChange={(e) =>
+                                    setSettings({
+                                      ...settings,
+                                      thermalPrinterPort: parseInt(e.target.value),
+                                    })
+                                  }
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                  placeholder="9100"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Bluetooth Printer Settings */}
+                        {settings.thermalPrinterConnection === "bluetooth" && (
+                          <div className="md:col-span-2">
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                              <h4 className="text-lg font-semibold mb-3 text-blue-800">
+                                Pengaturan Bluetooth Printer
+                              </h4>
+
+                              <div className="space-y-4">
+                                {/* Connection Status */}
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <span className="font-medium text-gray-700">Status Koneksi:</span>
+                                    <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                                      isBluetoothConnected
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-red-100 text-red-800'
+                                    }`}>
+                                      {isBluetoothConnected ? 'Terhubung' : 'Terputus'}
+                                    </span>
+                                  </div>
+                                  {isBluetoothConnected && bluetoothDevice && (
+                                    <div className="text-sm text-gray-600">
+                                      Device: {bluetoothDevice.name || 'Unknown'}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Connection Buttons */}
+                                <div className="flex space-x-3">
+                                  {!isBluetoothConnected ? (
+                                    <button
+                                      onClick={connectBluetoothPrinter}
+                                      disabled={!settings.thermalPrinterEnabled}
+                                      className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+                                    >
+                                      Hubungkan Bluetooth
+                                    </button>
+                                  ) : (
+                                    <button
+                                      onClick={disconnectBluetoothPrinter}
+                                      className="bg-red-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-red-700 transition duration-200"
+                                    >
+                                      Putuskan Koneksi
+                                    </button>
+                                  )}
+
+                                  {isBluetoothConnected && (
+                                    <button
+                                      onClick={testBluetoothPrint}
+                                      className="bg-green-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-green-700 transition duration-200"
+                                    >
+                                      Test Print
+                                    </button>
+                                  )}
+                                </div>
+
+                                {/* Instructions */}
+                                <div className="bg-white p-3 rounded border">
+                                  <h5 className="font-medium text-gray-700 mb-2">Petunjuk Koneksi Bluetooth:</h5>
+                                  <ul className="text-sm text-gray-600 space-y-1">
+                                    <li>• Pastikan printer Bluetooth sudah dalam mode pairing</li>
+                                    <li>• Gunakan browser Chrome atau Edge terbaru</li>
+                                    <li>• Klik "Hubungkan Bluetooth" dan pilih printer dari daftar</li>
+                                    <li>• Test print untuk memastikan koneksi berhasil</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Test Print Button */}
                         <div className="md:col-span-2">
