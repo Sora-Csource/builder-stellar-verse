@@ -3996,17 +3996,31 @@ const EnhancedPOS: React.FC = () => {
                                         : "E-Wallet"}
                                   </td>
                                   <td className="border border-gray-200 px-3 py-2 text-sm">
-                                    <span
-                                      className={
-                                        sale.status === "completed"
-                                          ? "text-green-600 font-semibold"
-                                          : "text-red-600 font-semibold"
-                                      }
-                                    >
-                                      {sale.status === "completed"
-                                        ? "Selesai"
-                                        : "Dibatalkan"}
-                                    </span>
+                                    <div className="flex flex-col">
+                                      <span
+                                        className={
+                                          sale.status === "completed"
+                                            ? "text-green-600 font-semibold"
+                                            : "text-red-600 font-semibold"
+                                        }
+                                      >
+                                        {sale.status === "completed"
+                                          ? "Selesai"
+                                          : "Dibatalkan"}
+                                      </span>
+                                      {sale.status === "voided" && sale.voidReason && (
+                                        <div className="mt-1">
+                                          <span className="text-xs text-gray-500">
+                                            Alasan: {sale.voidReason}
+                                          </span>
+                                          {sale.voidedBy && (
+                                            <div className="text-xs text-gray-400">
+                                              Oleh: {sale.voidedBy}
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
                                   </td>
                                   <td className="border border-gray-200 px-3 py-2 text-sm">
                                     <button
