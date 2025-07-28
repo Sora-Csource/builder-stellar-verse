@@ -226,6 +226,14 @@ const EnhancedPOS: React.FC = () => {
     role: "kasir" as "admin" | "supervisor" | "kasir" | "staff",
   });
 
+  // Open bill form state
+  const [openBillForm, setOpenBillForm] = useState({
+    customerName: "",
+    customerPhone: "",
+    tableNumber: "",
+    notes: "",
+  });
+
   // Settings form state
   const [settingsForm, setSettingsForm] = useState({
     storeName: "Crema POS",
