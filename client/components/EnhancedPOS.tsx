@@ -3593,6 +3593,96 @@ const EnhancedPOS: React.FC = () => {
                   <h2 className="text-2xl font-semibold mb-4 text-gray-800">
                     Manajemen Stok
                   </h2>
+
+                  {/* Inventory Insights Dashboard */}
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+                    {/* Quick Stats */}
+                    <div className="lg:col-span-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                          <h3 className="text-sm font-medium text-gray-600">Total Produk</h3>
+                          <p className="text-2xl font-bold text-blue-600">{products.length}</p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
+                          <h3 className="text-sm font-medium text-gray-600">Stok Sehat</h3>
+                          <p className="text-2xl font-bold text-green-600">
+                            {Object.values(getInventoryAnalytics()).filter(p => p.status === "healthy").length}
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
+                          <h3 className="text-sm font-medium text-gray-600">Stok Rendah</h3>
+                          <p className="text-2xl font-bold text-yellow-600">
+                            {Object.values(getInventoryAnalytics()).filter(p => p.status === "low").length}
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow border-l-4 border-red-500">
+                          <h3 className="text-sm font-medium text-gray-600">Stok Kritis</h3>
+                          <p className="text-2xl font-bold text-red-600">
+                            {Object.values(getInventoryAnalytics()).filter(p => p.status === "critical" || p.status === "stockout").length}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Inventory Alerts */}
+                    <div className="lg:col-span-2">
+                      <div className="bg-white p-4 rounded-lg shadow h-64 overflow-y-auto">
+                        <h3 className="text-lg font-semibold mb-3 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                          </svg>
+                          Alert Inventory
+                        </h3>
+                        <div className="space-y-2">
+                          {getInventoryAlerts().slice(0, 5).map(alert => (
+                            <div key={alert.id} className={`p-2 rounded border-l-4 text-sm ${
+                              alert.priority === "high" ? "border-red-500 bg-red-50" :
+                              alert.priority === "medium" ? "border-yellow-500 bg-yellow-50" :
+                              "border-blue-500 bg-blue-50"
+                            }`}>
+                              <p className="font-medium">{alert.message}</p>
+                              <p className="text-gray-600 text-xs mt-1">{alert.actionRequired}</p>
+                            </div>
+                          ))}
+                          {getInventoryAlerts().length === 0 && (
+                            <p className="text-gray-500 text-center py-4">✅ Tidak ada alert inventory</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Top Moving Products */}
+                    <div className="lg:col-span-2">
+                      <div className="bg-white p-4 rounded-lg shadow h-64 overflow-y-auto">
+                        <h3 className="text-lg font-semibold mb-3 flex items-center">
+                          <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                          </svg>
+                          Produk Terlaris (30 hari)
+                        </h3>
+                        <div className="space-y-2">
+                          {Object.values(getInventoryAnalytics())
+                            .sort((a, b) => b.totalSold - a.totalSold)
+                            .slice(0, 5)
+                            .map((product, index) => (
+                            <div key={product.name} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                              <div>
+                                <p className="font-medium text-sm">{index + 1}. {product.name}</p>
+                                <p className="text-xs text-gray-600">{product.totalSold} terjual | {product.dailyAverage.toFixed(1)}/hari</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-sm font-medium">Stok: {product.currentStock}</p>
+                                <p className="text-xs text-gray-600">
+                                  {product.daysUntilStockout === Infinity ? "∞" : product.daysUntilStockout} hari lagi
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex justify-between items-center mb-4">
                     {hasSubmenuAccess("stock-management", "add") && (
                       <button
