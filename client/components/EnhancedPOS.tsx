@@ -3488,10 +3488,10 @@ const EnhancedPOS: React.FC = () => {
                             const productData = Object.entries(
                               productSales,
                             ).map(([id, data]) => ({
-                              produk: data.name,
-                              kategori: data.category,
-                              terjual: data.quantity,
-                              pendapatan: `Rp ${data.revenue.toLocaleString("id-ID")}`,
+                              "Nama Produk": data.name,
+                              "Kategori": data.category || "Umum",
+                              "Jumlah Terjual": data.quantity,
+                              "Total Pendapatan": `Rp ${data.revenue.toLocaleString("id-ID")}`,
                             }));
 
                             if (productData.length > 0) {
