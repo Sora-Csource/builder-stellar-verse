@@ -6856,7 +6856,7 @@ const EnhancedPOS: React.FC = () => {
       {/* Permissions Management Modal */}
       {showPermissionsModal && selectedUserForPermissions && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all border border-gray-100">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
             <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">🔐</div>
