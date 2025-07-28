@@ -4236,6 +4236,173 @@ const EnhancedPOS: React.FC = () => {
                 </div>
               )}
 
+            {/* Expense Management Module */}
+            {activeModule === "expense-management" && hasModuleAccess("expense-management") && (
+              <div>
+                <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+                  Manajemen Pengeluaran
+                </h2>
+
+                <div className="flex justify-between items-center mb-4">
+                  {hasSubmenuAccess("expense-management", "add") && (
+                    <button
+                      onClick={() => setShowExpenseModal(true)}
+                      className="bg-red-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-red-700 transition duration-200"
+                    >
+                      Tambah Pengeluaran Baru
+                    </button>
+                  )}
+                  <input
+                    type="text"
+                    placeholder="Cari pengeluaran..."
+                    value={customerSearch}
+                    onChange={(e) => setCustomerSearch(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                  />
+                </div>
+
+                {/* Expense Analytics Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  {(() => {
+                    const analytics = getExpenseAnalytics();
+                    return (
+                      <>
+                        <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+                          <h3 className="text-sm font-medium text-red-600">Total Pengeluaran (30d)</h3>
+                          <p className="text-2xl font-bold text-red-700">{formatCurrency(analytics.totalExpenses)}</p>
+                        </div>
+                        <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                          <h3 className="text-sm font-medium text-orange-600">Jumlah Transaksi</h3>
+                          <p className="text-2xl font-bold text-orange-700">{analytics.expenseCount}</p>
+                        </div>
+                        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+                          <h3 className="text-sm font-medium text-yellow-600">Rata-rata Pengeluaran</h3>
+                          <p className="text-2xl font-bold text-yellow-700">{formatCurrency(analytics.avgExpense)}</p>
+                        </div>
+                        <div className="bg-purple-50 border border-purple-200 p-4 rounded-lg">
+                          <h3 className="text-sm font-medium text-purple-600">Kategori Terbanyak</h3>
+                          <p className="text-lg font-bold text-purple-700">
+                            {Object.keys(analytics.categoryTotals).length > 0
+                              ? Object.entries(analytics.categoryTotals)
+                                  .sort(([,a], [,b]) => b - a)[0]?.[0] || "N/A"
+                              : "N/A"
+                            }
+                          </p>
+                        </div>
+                      </>
+                    );
+                  })()}
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-lg shadow-inner overflow-x-auto">
+                  <table className="min-w-full border-collapse">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Tanggal
+                        </th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Kategori
+                        </th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Deskripsi
+                        </th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Supplier
+                        </th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Jumlah
+                        </th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Metode Bayar
+                        </th>
+                        <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                          Aksi
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getFilteredExpenses().length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            className="border border-gray-200 py-4 text-center text-gray-500"
+                          >
+                            Tidak ada data pengeluaran ditemukan.
+                          </td>
+                        </tr>
+                      ) : (
+                        getFilteredExpenses()
+                          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                          .map((expense) => (
+                          <tr key={expense.id} className="even:bg-gray-50">
+                            <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                              {new Date(expense.date).toLocaleDateString("id-ID")}
+                            </td>
+                            <td className="border border-gray-200 px-3 py-2 text-sm">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                expense.category === "inventory" ? "bg-blue-100 text-blue-800" :
+                                expense.category === "operations" ? "bg-green-100 text-green-800" :
+                                expense.category === "marketing" ? "bg-purple-100 text-purple-800" :
+                                expense.category === "utilities" ? "bg-yellow-100 text-yellow-800" :
+                                expense.category === "salaries" ? "bg-indigo-100 text-indigo-800" :
+                                expense.category === "rent" ? "bg-red-100 text-red-800" :
+                                "bg-gray-100 text-gray-800"
+                              }`}>
+                                {expense.category === "inventory" ? "Inventori" :
+                                 expense.category === "operations" ? "Operasional" :
+                                 expense.category === "marketing" ? "Marketing" :
+                                 expense.category === "utilities" ? "Utilitas" :
+                                 expense.category === "salaries" ? "Gaji" :
+                                 expense.category === "rent" ? "Sewa" :
+                                 "Lainnya"}
+                              </span>
+                            </td>
+                            <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">
+                              {expense.description}
+                              {expense.isRecurring && (
+                                <span className="ml-2 text-xs text-blue-600">🔄 Recurring</span>
+                              )}
+                            </td>
+                            <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
+                              {expense.supplier || "-"}
+                            </td>
+                            <td className="border border-gray-200 px-3 py-2 text-sm font-bold text-red-600">
+                              {formatCurrency(expense.amount)}
+                            </td>
+                            <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500 capitalize">
+                              {expense.paymentMethod === "cash" ? "Tunai" :
+                               expense.paymentMethod === "card" ? "Kartu" :
+                               expense.paymentMethod === "transfer" ? "Transfer" :
+                               "Cek"}
+                            </td>
+                            <td className="border border-gray-200 px-3 py-2 text-sm">
+                              {hasSubmenuAccess("expense-management", "edit") && (
+                                <button
+                                  onClick={() => handleEditExpense(expense)}
+                                  className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                >
+                                  Edit
+                                </button>
+                              )}
+                              {hasSubmenuAccess("expense-management", "delete") && (
+                                <button
+                                  onClick={() => handleDeleteExpense(expense.id)}
+                                  className="text-red-600 hover:text-red-900"
+                                >
+                                  Hapus
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {/* Reports Module */}
             {activeModule === "reports" && hasModuleAccess("reports") && (
               <div>
