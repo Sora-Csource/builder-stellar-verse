@@ -2016,6 +2016,111 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
+  // Expense Management Functions
+  const handleExpenseSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!expenseForm.description || expenseForm.amount <= 0) {
+      showAlert(
+        "Input Tidak Valid",
+        "Deskripsi dan jumlah expense harus diisi dengan benar.",
+        "error"
+      );
+      return;
+    }
+
+    if (editingExpense) {
+      // Edit existing expense
+      setExpenses(expenses.map(exp =>
+        exp.id === editingExpense.id
+          ? { ...exp, ...expenseForm, date: exp.date } // Preserve original date
+          : exp
+      ));
+      showAlert("Berhasil", "Data expense berhasil diperbarui.", "success");
+    } else {
+      // Add new expense
+      const newExpense: Expense = {
+        id: generateUniqueId(),
+        date: new Date().toISOString(),
+        ...expenseForm,
+        createdBy: currentUser?.id || "unknown"
+      };
+      setExpenses([...expenses, newExpense]);
+      showAlert("Berhasil", "Expense baru berhasil ditambahkan.", "success");
+    }
+
+    setShowExpenseModal(false);
+    setEditingExpense(null);
+    setExpenseForm({
+      category: "other",
+      description: "",
+      amount: 0,
+      supplier: "",
+      paymentMethod: "cash",
+      receiptNumber: "",
+      notes: "",
+      isRecurring: false,
+      recurringPeriod: "monthly",
+      tags: []
+    });
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+    setExpenseForm({
+      category: expense.category,
+      description: expense.description,
+      amount: expense.amount,
+      supplier: expense.supplier || "",
+      paymentMethod: expense.paymentMethod,
+      receiptNumber: expense.receiptNumber || "",
+      notes: expense.notes || "",
+      isRecurring: expense.isRecurring || false,
+      recurringPeriod: expense.recurringPeriod || "monthly",
+      tags: expense.tags || []
+    });
+    setShowExpenseModal(true);
+  };
+
+  const handleDeleteExpense = async (expenseId: string) => {
+    const confirmed = await showConfirm(
+      "Konfirmasi Hapus",
+      "Apakah Anda yakin ingin menghapus expense ini?",
+      "danger"
+    );
+    if (confirmed) {
+      setExpenses(expenses.filter(exp => exp.id !== expenseId));
+      showAlert("Berhasil", "Expense berhasil dihapus.", "success");
+    }
+  };
+
+  const getExpenseAnalytics = () => {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const recentExpenses = expenses.filter(exp => new Date(exp.date) >= thirtyDaysAgo);
+
+    const categoryTotals = recentExpenses.reduce((acc, exp) => {
+      acc[exp.category] = (acc[exp.category] || 0) + exp.amount;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const totalExpenses = recentExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+
+    return {
+      totalExpenses,
+      categoryTotals,
+      expenseCount: recentExpenses.length,
+      avgExpense: recentExpenses.length > 0 ? totalExpenses / recentExpenses.length : 0
+    };
+  };
+
+  const getFilteredExpenses = () => {
+    return expenses.filter(expense =>
+      expense.description.toLowerCase().includes(customerSearch.toLowerCase()) ||
+      expense.category.toLowerCase().includes(customerSearch.toLowerCase()) ||
+      (expense.supplier && expense.supplier.toLowerCase().includes(customerSearch.toLowerCase()))
+    );
+  };
+
   const handleEditCustomer = (customer: Customer) => {
     setEditingCustomer(customer);
     setCustomerForm({
