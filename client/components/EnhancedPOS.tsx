@@ -6474,7 +6474,6 @@ const EnhancedPOS: React.FC = () => {
                     setEditingProduct(null);
                     setProductForm({
                       name: "",
-                      barcode: "",
                       price: 0,
                       stock: 0,
                       imageUrl: "",
