@@ -4032,12 +4032,12 @@ const EnhancedPOS: React.FC = () => {
                       <button
                         onClick={() => {
                           const stockData = products.map((product) => ({
-                            nama_produk: product.name,
-                            kategori: product.category,
-                            stok_saat_ini: product.stock,
-                            harga: `Rp ${product.price.toLocaleString("id-ID")}`,
-                            nilai_stok: `Rp ${(product.stock * product.price).toLocaleString("id-ID")}`,
-                            status:
+                            "Nama Produk": product.name,
+                            "Kategori": "Umum", // Since product doesn't have category field
+                            "Stok Saat Ini": product.stock,
+                            "Harga": `Rp ${product.price.toLocaleString("id-ID")}`,
+                            "Nilai Stok": `Rp ${(product.stock * product.price).toLocaleString("id-ID")}`,
+                            "Status":
                               product.stock === 0
                                 ? "Habis"
                                 : product.stock <= 5
