@@ -205,7 +205,6 @@ const EnhancedPOS: React.FC = () => {
   // Product form state
   const [productForm, setProductForm] = useState({
     name: "",
-    barcode: "",
     price: 0,
     stock: 0,
     imageUrl: "",
