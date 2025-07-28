@@ -28,6 +28,12 @@ interface Customer {
   name: string;
   email?: string;
   phone?: string;
+  loyaltyPoints: number;
+  totalSpent: number;
+  joinDate: string;
+  tier: "Bronze" | "Silver" | "Gold" | "Platinum";
+  isActive: boolean;
+  lastVisit?: string;
 }
 
 interface CartItem {
