@@ -252,6 +252,13 @@ enhanced-pos-system/
 
 ## 🆕 Update Terbaru
 
+### Versi 2.2.0 - December 2024
+- 📱 **NEW:** Panduan lengkap konversi ke APK & iOS
+- 🔵 **NEW:** Dukungan Bluetooth printer lengkap dengan Web Bluetooth API
+- ⚙️ **IMPROVED:** Settings printer dengan pilihan koneksi Network/Bluetooth
+- 📱 **IMPROVED:** PWA configuration untuk mobile app readiness
+- 🖨️ **IMPROVED:** ESC/POS commands untuk thermal printer Bluetooth
+
 ### Versi 2.1.0 - December 2024
 
 - ✅ **FIXED:** Masalah "Cannot access 'products' before initialization"
