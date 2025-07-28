@@ -3305,12 +3305,14 @@ const EnhancedPOS: React.FC = () => {
                     Manajemen Pelanggan
                   </h2>
                   <div className="flex justify-between items-center mb-4">
-                    <button
-                      onClick={() => setShowCustomerModal(true)}
-                      className="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
-                    >
-                      Tambah Pelanggan Baru
-                    </button>
+                    {hasSubmenuAccess("customer-management", "add") && (
+                      <button
+                        onClick={() => setShowCustomerModal(true)}
+                        className="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
+                      >
+                        Tambah Pelanggan Baru
+                      </button>
+                    )}
                     <input
                       type="text"
                       placeholder="Cari pelanggan..."
