@@ -4024,7 +4024,7 @@ const EnhancedPOS: React.FC = () => {
                         {getFilteredCustomers().length === 0 ? (
                           <tr>
                             <td
-                              colSpan={4}
+                              colSpan={6}
                               className="border border-gray-200 py-4 text-center text-gray-500"
                             >
                               Tidak ada pelanggan ditemukan.
