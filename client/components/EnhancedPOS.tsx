@@ -138,6 +138,7 @@ const EnhancedPOS: React.FC = () => {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [shifts, setShifts] = useState<Shift[]>([]);
+  const [openBills, setOpenBills] = useState<OpenBill[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentShift, setCurrentShift] = useState<Shift | null>(null);
