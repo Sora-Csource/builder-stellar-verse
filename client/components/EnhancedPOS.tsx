@@ -1198,6 +1198,7 @@ const EnhancedPOS: React.FC = () => {
           customers,
           sales,
           shifts,
+          openBills,
           settings,
           currentUser: currentUser ? currentUser.id : null,
         }),
