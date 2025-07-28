@@ -2432,11 +2432,28 @@ const EnhancedPOS: React.FC = () => {
       }
 
       const discrepancy = finalCash - expectedCash;
-      showAlert(
-        "Shift Berakhir",
-        `Kas Awal: ${formatCurrency(currentShift.startCash)}\nTotal Penjualan: ${formatCurrency(salesTotal)}\nKas Diharapkan: ${formatCurrency(expectedCash)}\nKas Akhir: ${formatCurrency(finalCash)}\nSelisih: ${formatCurrency(discrepancy)}`,
-        "info",
-      );
+
+      // Automatically print shift report and sales summary
+      try {
+        // Print shift report
+        printShiftReport(updatedShift);
+
+        // Print sales summary for the shift
+        printShiftSalesReport(updatedShift);
+
+        showAlert(
+          "Shift Berakhir",
+          `Shift berhasil diakhiri dan laporan telah dicetak!\n\nKas Awal: ${formatCurrency(currentShift.startCash)}\nTotal Penjualan: ${formatCurrency(salesTotal)}\nKas Diharapkan: ${formatCurrency(expectedCash)}\nKas Akhir: ${formatCurrency(finalCash)}\nSelisih: ${formatCurrency(discrepancy)}`,
+          "success",
+        );
+      } catch (error) {
+        console.error("Error printing shift reports:", error);
+        showAlert(
+          "Shift Berakhir",
+          `Shift berhasil diakhiri namun gagal mencetak laporan.\n\nKas Awal: ${formatCurrency(currentShift.startCash)}\nTotal Penjualan: ${formatCurrency(salesTotal)}\nKas Diharapkan: ${formatCurrency(expectedCash)}\nKas Akhir: ${formatCurrency(finalCash)}\nSelisih: ${formatCurrency(discrepancy)}\n\nSilakan cetak laporan manual dari menu Laporan.`,
+          "warning",
+        );
+      }
     }
   };
 
