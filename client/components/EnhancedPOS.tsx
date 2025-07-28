@@ -629,8 +629,8 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Receipt generation
-  const generateReceiptHTML = (sale: Sale) => {
-    const receiptSettings = settings.receiptSettings;
+  const generateReceiptHTML = (sale: Sale, useFormSettings: boolean = false) => {
+    const receiptSettings = useFormSettings ? receiptSettingsForm : settings.receiptSettings;
     const saleDate = new Date(sale.date).toLocaleString("id-ID");
     const subtotal = sale.items.reduce(
       (sum, item) => sum + item.quantity * item.price,
