@@ -1883,6 +1883,11 @@ const EnhancedPOS: React.FC = () => {
       const newCustomer: Customer = {
         id: generateUniqueId(),
         ...customerForm,
+        loyaltyPoints: 0,
+        totalSpent: 0,
+        joinDate: new Date().toISOString(),
+        tier: "Bronze",
+        isActive: true
       };
       setCustomers([...customers, newCustomer]);
       showAlert("Berhasil", "Pelanggan baru berhasil ditambahkan.", "success");
