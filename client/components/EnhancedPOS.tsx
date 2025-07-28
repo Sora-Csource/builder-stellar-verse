@@ -255,6 +255,8 @@ const EnhancedPOS: React.FC = () => {
     thermalPrinterWidth: 58, // 58mm thermal printer
     thermalPrinterIP: "192.168.1.100",
     thermalPrinterPort: 9100,
+    thermalPrinterConnection: "network",
+    bluetoothPrinterName: "",
     rolePermissions: {
       admin: [
         "order-entry",
