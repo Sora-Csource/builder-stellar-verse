@@ -55,7 +55,7 @@ Sistem Point of Sale (POS) modern dan lengkap yang dibangun dengan React, TypeSc
 - 🖨️ Konfigurasi thermal printer dan receipt settings
 - 📁 Sistem backup/restore data dengan export/import
 - ⌨️ Keyboard shortcuts untuk efisiensi
-- 💾 Auto-save dengan localStorage
+- ���� Auto-save dengan localStorage
 - 🔔 Notification center dengan status online/offline
 - ⚠️ Alert stok rendah dan habis otomatis
 
@@ -403,6 +403,205 @@ Jika mengalami masalah atau butuh bantuan:
 1. Run `npm run build`
 2. Upload `dist` folder to web server
 3. Configure web server for SPA routing
+
+## 📱 Mobile App Development (APK & iOS)
+
+### 🎯 Method 1: Capacitor (Recommended)
+
+**Capacitor** adalah platform native runtime yang memungkinkan web app menjadi mobile app native.
+
+#### Setup Capacitor
+
+```bash
+# Install Capacitor
+npm install @capacitor/core @capacitor/cli
+
+# Initialize Capacitor
+npx cap init
+
+# Install platform packages
+npm install @capacitor/android @capacitor/ios
+
+# Add platforms
+npx cap add android
+npx cap add ios
+```
+
+#### Configure capacitor.config.ts
+
+```typescript
+import { CapacitorConfig } from '@capacitor/cli';
+
+const config: CapacitorConfig = {
+  appId: 'com.yourcompany.enhancedpos',
+  appName: 'Enhanced POS',
+  webDir: 'dist',
+  server: {
+    androidScheme: 'https'
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      backgroundColor: "#4F46E5",
+      showSpinner: true,
+      spinnerColor: "#ffffff"
+    },
+    Bluetooth: {
+      displayStrings: {
+        scanning: "Mencari perangkat...",
+        cancel: "Batal",
+        availableDevices: "Perangkat Tersedia",
+        noDeviceFound: "Tidak ada perangkat ditemukan"
+      }
+    }
+  }
+};
+
+export default config;
+```
+
+#### Android APK Development
+
+1. **Install Android Studio**
+   - Download dari [developer.android.com/studio](https://developer.android.com/studio)
+   - Install Android SDK dan emulator
+
+2. **Build untuk Android**
+   ```bash
+   # Build web app
+   npm run build
+
+   # Copy to native project
+   npx cap copy android
+
+   # Update native dependencies
+   npx cap update android
+
+   # Open in Android Studio
+   npx cap open android
+   ```
+
+3. **Generate APK**
+   - Di Android Studio: Build → Generate Signed Bundle/APK
+   - Pilih APK → Create new keystore atau gunakan existing
+   - Pilih release build type
+   - APK akan tersimpan di `android/app/build/outputs/apk/release/`
+
+#### iOS App Development
+
+1. **Prerequisites**
+   - macOS dengan Xcode installed
+   - Apple Developer Account ($99/year)
+   - iOS device untuk testing
+
+2. **Build untuk iOS**
+   ```bash
+   # Build web app
+   npm run build
+
+   # Copy to iOS project
+   npx cap copy ios
+
+   # Update dependencies
+   npx cap update ios
+
+   # Open in Xcode
+   npx cap open ios
+   ```
+
+3. **Configure iOS Project**
+   - Di Xcode, set Bundle Identifier (com.yourcompany.enhancedpos)
+   - Set Development Team dari Apple Developer Account
+   - Configure signing certificates
+
+### 🎯 Method 2: PWA (Progressive Web App)
+
+**PWA** memberikan pengalaman native-like tanpa perlu app store.
+
+#### PWA Features Sudah Tersedia
+- ✅ Service Worker untuk offline functionality
+- ✅ Web App Manifest untuk installability
+- ✅ Responsive design untuk mobile
+- ✅ Cache strategy untuk performance
+
+#### Install PWA di Mobile
+1. **Android (Chrome):**
+   - Buka website di Chrome
+   - Tap menu (3 dots) → "Add to Home screen"
+   - App akan muncul di home screen seperti native app
+
+2. **iOS (Safari):**
+   - Buka website di Safari
+   - Tap Share button → "Add to Home Screen"
+   - App akan tersimpan di home screen
+
+### 📱 Mobile-Specific Features
+
+#### Bluetooth Printer Support
+- ✅ Web Bluetooth API sudah terintegrasi
+- ✅ ESC/POS commands untuk thermal printer
+- ✅ Auto-detect printer devices
+- ✅ Real-time connection status
+
+#### Offline Functionality
+- ✅ Local storage untuk data persistence
+- ✅ Offline mode dengan sync ketika online
+- ✅ Cached resources untuk performance
+
+### 🚀 Quick Start Mobile Development
+
+#### Option A: PWA (Termudah - 30 menit)
+```bash
+# 1. Deploy ke hosting (Netlify/Vercel)
+npm run build
+
+# 2. Akses dari mobile browser
+# 3. Install as PWA dari browser menu
+```
+
+#### Option B: Android APK (1-2 hari)
+```bash
+# 1. Install Capacitor
+npm install @capacitor/core @capacitor/cli @capacitor/android
+
+# 2. Initialize project
+npx cap init "Enhanced POS" "com.yourcompany.enhancedpos"
+
+# 3. Build and add Android
+npm run build
+npx cap add android
+npx cap copy android
+
+# 4. Open in Android Studio
+npx cap open android
+
+# 5. Build APK di Android Studio
+```
+
+#### Option C: iOS App (2-3 hari + Apple Developer Account)
+```bash
+# 1. Setup sama seperti Android
+npm install @capacitor/ios
+npx cap add ios
+npx cap copy ios
+
+# 2. Open in Xcode (macOS only)
+npx cap open ios
+
+# 3. Configure signing & build
+```
+
+### 💡 Recommendations
+
+**Untuk memulai cepat:**
+1. **Deploy PWA dulu** - Testing di mobile browser
+2. **Buat Android APK** - Distribusi lebih mudah
+3. **iOS App** - Jika diperlukan untuk App Store
+
+**Estimasi waktu:**
+- PWA: 30 menit - 1 jam
+- Android APK: 1-2 hari
+- iOS App: 2-3 hari + review process
 
 ---
 
