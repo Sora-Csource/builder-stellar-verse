@@ -2265,6 +2265,181 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
+  // Print detailed sales report for shift
+  const printShiftSalesReport = (shift: Shift) => {
+    const shiftSales = sales.filter(sale =>
+      shift.salesIds.includes(sale.id) && sale.status === "completed"
+    );
+
+    const user = users.find((u) => u.id === shift.userId);
+    const totalSales = shiftSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+    const totalItems = shiftSales.reduce((sum, sale) =>
+      sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0
+    );
+
+    // Product performance analysis
+    const productPerformance: Record<string, {name: string, quantity: number, revenue: number}> = {};
+    shiftSales.forEach(sale => {
+      sale.items.forEach(item => {
+        if (!productPerformance[item.id]) {
+          productPerformance[item.id] = { name: item.name, quantity: 0, revenue: 0 };
+        }
+        productPerformance[item.id].quantity += item.quantity;
+        productPerformance[item.id].revenue += item.subtotal;
+      });
+    });
+
+    const topProducts = Object.values(productPerformance)
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 10);
+
+    // Payment method breakdown
+    const paymentMethods = shiftSales.reduce((acc, sale) => {
+      acc[sale.paymentMethod] = (acc[sale.paymentMethod] || 0) + sale.totalAmount;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const reportHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Laporan Penjualan Shift ${shift.id}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+          .section { margin-bottom: 20px; }
+          .section h3 { background: #f0f0f0; padding: 8px; margin: 0 0 10px 0; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          th { background-color: #f2f2f2; }
+          .text-right { text-align: right; }
+          .summary-box { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin: 10px 0; }
+          .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+          @media print {
+            body { margin: 0; }
+            .section { page-break-inside: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${settings.storeName}</h1>
+          <h2>Laporan Penjualan Shift</h2>
+          <p>Shift ID: ${shift.id} | Kasir: ${user?.username || "Unknown"}</p>
+          <p>Periode: ${new Date(shift.startTime).toLocaleString("id-ID")} - ${shift.endTime ? new Date(shift.endTime).toLocaleString("id-ID") : "Ongoing"}</p>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-grid">
+            <div>
+              <strong>Ringkasan Transaksi:</strong><br>
+              Total Transaksi: ${shiftSales.length}<br>
+              Total Item Terjual: ${totalItems}<br>
+              Total Penjualan: ${formatCurrency(totalSales)}
+            </div>
+            <div>
+              <strong>Kas Shift:</strong><br>
+              Kas Awal: ${formatCurrency(shift.startCash)}<br>
+              Kas Akhir: ${formatCurrency(shift.endCash || 0)}<br>
+              Selisih: ${formatCurrency((shift.endCash || 0) - shift.startCash - totalSales)}
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>📊 Top 10 Produk Terlaris</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Produk</th>
+                <th class="text-right">Qty Terjual</th>
+                <th class="text-right">Total Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${topProducts.map((product, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${product.name}</td>
+                  <td class="text-right">${product.quantity}</td>
+                  <td class="text-right">${formatCurrency(product.revenue)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h3>💳 Breakdown Metode Pembayaran</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Metode Pembayaran</th>
+                <th class="text-right">Jumlah</th>
+                <th class="text-right">Persentase</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${Object.entries(paymentMethods).map(([method, amount]) => `
+                <tr>
+                  <td>${method === 'cash' ? 'Tunai' : method === 'card' ? 'Kartu' : 'E-Wallet'}</td>
+                  <td class="text-right">${formatCurrency(amount)}</td>
+                  <td class="text-right">${((amount / totalSales) * 100).toFixed(1)}%</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h3>📋 Detail Semua Transaksi</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>ID Transaksi</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Metode Bayar</th>
+                <th class="text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${shiftSales.map(sale => `
+                <tr>
+                  <td>${new Date(sale.date).toLocaleTimeString("id-ID")}</td>
+                  <td>${sale.id}</td>
+                  <td>${sale.customer || '-'}</td>
+                  <td>${sale.items.length} item(s)</td>
+                  <td>${sale.paymentMethod === 'cash' ? 'Tunai' : sale.paymentMethod === 'card' ? 'Kartu' : 'E-Wallet'}</td>
+                  <td class="text-right">${formatCurrency(sale.totalAmount)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; color: #666;">
+          <p>Laporan dicetak pada: ${new Date().toLocaleString("id-ID")}</p>
+          <p>Sistem POS - ${settings.storeName}</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(reportHTML);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      setTimeout(() => {
+        printWindow.close();
+      }, 100);
+    }
+  };
+
   // Initialize settings form when accessing settings
   useEffect(() => {
     if (activeModule === "settings") {
