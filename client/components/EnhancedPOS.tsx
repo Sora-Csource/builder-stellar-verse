@@ -1630,19 +1630,49 @@ const EnhancedPOS: React.FC = () => {
 
   // Void sale function
   const voidSale = async (saleId: string) => {
+    // First ask for confirmation
     const confirmed = await showConfirm(
       "Batalkan Transaksi",
       "Apakah Anda yakin ingin membatalkan transaksi ini? Stok produk akan dikembalikan.",
       "danger",
     );
+
     if (confirmed) {
+      // Ask for void reason
+      const voidReason = await showPrompt(
+        "Alasan Pembatalan",
+        "Masukkan alasan pembatalan transaksi:",
+        "",
+        "text"
+      );
+
+      if (voidReason === null) {
+        // User cancelled the void reason prompt
+        return;
+      }
+
+      if (!voidReason.trim()) {
+        showAlert(
+          "Alasan Diperlukan",
+          "Anda harus memberikan alasan untuk membatalkan transaksi.",
+          "warning"
+        );
+        return;
+      }
+
       const saleIndex = sales.findIndex((s) => s.id === saleId);
       if (saleIndex !== -1 && sales[saleIndex].status === "completed") {
         const voidedSale = sales[saleIndex];
 
-        // Update sale status
+        // Update sale status with void information
         const updatedSales = sales.map((s) =>
-          s.id === saleId ? { ...s, status: "voided" as const } : s,
+          s.id === saleId ? {
+            ...s,
+            status: "voided" as const,
+            voidReason: voidReason.trim(),
+            voidedBy: currentUser?.username || "Unknown",
+            voidedAt: new Date().toISOString()
+          } : s,
         );
         setSales(updatedSales);
 
@@ -1660,8 +1690,15 @@ const EnhancedPOS: React.FC = () => {
 
         showAlert(
           "Berhasil",
-          `Transaksi ${saleId} berhasil dibatalkan dan stok dikembalikan.`,
+          `Transaksi ${saleId} berhasil dibatalkan dan stok dikembalikan. Alasan: ${voidReason.trim()}`,
           "success",
+        );
+
+        // Add notification
+        addNotification(
+          "info",
+          "Transaksi Dibatalkan",
+          `Transaksi ${saleId} dibatalkan oleh ${currentUser?.username}. Alasan: ${voidReason.trim()}`
         );
       } else {
         showAlert(
