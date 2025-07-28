@@ -2073,7 +2073,7 @@ const EnhancedPOS: React.FC = () => {
       });
 
       // Perform the test print
-      await printReceipt(testSale);
+      printReceipt(testSale);
 
       // Restore original settings
       setSettings({
