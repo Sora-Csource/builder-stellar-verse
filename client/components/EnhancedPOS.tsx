@@ -1898,6 +1898,77 @@ const EnhancedPOS: React.FC = () => {
     setCustomerForm({ name: "", email: "", phone: "" });
   };
 
+  // Loyalty Program Functions
+  const calculateLoyaltyPoints = (amount: number, tier: string = "Bronze"): number => {
+    if (!settings.loyaltyProgramEnabled) return 0;
+
+    const basePoints = Math.floor(amount / 1000) * (settings.pointsPerPurchase || 1);
+    const tierMultiplier = settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.pointsMultiplier || 1;
+
+    return Math.floor(basePoints * tierMultiplier);
+  };
+
+  const calculateTier = (totalSpent: number): "Bronze" | "Silver" | "Gold" | "Platinum" => {
+    if (!settings.tierThresholds) return "Bronze";
+
+    if (totalSpent >= settings.tierThresholds.platinum) return "Platinum";
+    if (totalSpent >= settings.tierThresholds.gold) return "Gold";
+    if (totalSpent >= settings.tierThresholds.silver) return "Silver";
+    return "Bronze";
+  };
+
+  const getTierDiscount = (tier: string): number => {
+    return settings.tierBenefits?.[tier as keyof typeof settings.tierBenefits]?.discountPercent || 0;
+  };
+
+  const redeemLoyaltyPoints = (customerId: string, pointsToRedeem: number): number => {
+    const customer = customers.find(c => c.id === customerId);
+    if (!customer || customer.loyaltyPoints < pointsToRedeem) return 0;
+
+    const redemptionValue = pointsToRedeem * (settings.pointsRedemptionValue || 1000);
+
+    // Update customer points
+    setCustomers(customers.map(c =>
+      c.id === customerId
+        ? { ...c, loyaltyPoints: c.loyaltyPoints - pointsToRedeem }
+        : c
+    ));
+
+    return redemptionValue;
+  };
+
+  const updateCustomerLoyalty = (customerId: string, purchaseAmount: number) => {
+    if (!settings.loyaltyProgramEnabled) return;
+
+    const customer = customers.find(c => c.id === customerId);
+    if (!customer) return;
+
+    const newTotalSpent = customer.totalSpent + purchaseAmount;
+    const newTier = calculateTier(newTotalSpent);
+    const pointsEarned = calculateLoyaltyPoints(purchaseAmount, customer.tier);
+
+    setCustomers(customers.map(c =>
+      c.id === customerId
+        ? {
+            ...c,
+            totalSpent: newTotalSpent,
+            tier: newTier,
+            loyaltyPoints: c.loyaltyPoints + pointsEarned,
+            lastVisit: new Date().toISOString()
+          }
+        : c
+    ));
+
+    // Show tier upgrade notification
+    if (newTier !== customer.tier) {
+      showAlert(
+        "Tier Upgrade! 🎉",
+        `${customer.name} naik ke tier ${newTier}! Selamat!`,
+        "success"
+      );
+    }
+  };
+
   const handleEditCustomer = (customer: Customer) => {
     setEditingCustomer(customer);
     setCustomerForm({
