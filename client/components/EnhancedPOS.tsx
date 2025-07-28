@@ -197,6 +197,7 @@ const EnhancedPOS: React.FC = () => {
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
   const [showOpenBillModal, setShowOpenBillModal] = useState(false);
   const [showHoldBillModal, setShowHoldBillModal] = useState(false);
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
