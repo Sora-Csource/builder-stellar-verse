@@ -201,6 +201,7 @@ const EnhancedPOS: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [selectedUserForPermissions, setSelectedUserForPermissions] =
     useState<User | null>(null);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
