@@ -48,6 +48,9 @@ interface Sale {
   status: "completed" | "voided";
   processedByUserId: string;
   shiftId: string;
+  voidReason?: string;
+  voidedBy?: string;
+  voidedAt?: string;
 }
 
 interface Shift {
