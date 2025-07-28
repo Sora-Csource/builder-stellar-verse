@@ -3269,20 +3269,24 @@ const EnhancedPOS: React.FC = () => {
                                 </span>
                               </td>
                               <td className="border border-gray-200 px-3 py-2 text-sm">
-                                <button
-                                  onClick={() => handleEditProduct(product)}
-                                  className="text-indigo-600 hover:text-indigo-900 mr-4"
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    handleDeleteProduct(product.id)
-                                  }
-                                  className="text-red-600 hover:text-red-900"
-                                >
-                                  Hapus
-                                </button>
+                                {hasSubmenuAccess("stock-management", "edit") && (
+                                  <button
+                                    onClick={() => handleEditProduct(product)}
+                                    className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                  >
+                                    Edit
+                                  </button>
+                                )}
+                                {hasSubmenuAccess("stock-management", "delete") && (
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteProduct(product.id)
+                                    }
+                                    className="text-red-600 hover:text-red-900"
+                                  >
+                                    Hapus
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           ))
