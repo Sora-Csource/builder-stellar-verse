@@ -3120,9 +3120,6 @@ const EnhancedPOS: React.FC = () => {
                             Nama Produk
                           </th>
                           <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
-                            Barcode
-                          </th>
-                          <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                             Harga
                           </th>
                           <th className="border border-gray-200 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
