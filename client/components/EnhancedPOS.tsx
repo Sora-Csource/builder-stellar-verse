@@ -180,6 +180,11 @@ const EnhancedPOS: React.FC = () => {
     }>
   >([]);
 
+  // Bluetooth printer state
+  const [bluetoothDevice, setBluetoothDevice] = useState<BluetoothDevice | null>(null);
+  const [bluetoothCharacteristic, setBluetoothCharacteristic] = useState<BluetoothRemoteGATTCharacteristic | null>(null);
+  const [isBluetoothConnected, setIsBluetoothConnected] = useState<boolean>(false);
+
   // Product form state
   const [productForm, setProductForm] = useState({
     name: "",
@@ -2555,7 +2560,7 @@ const EnhancedPOS: React.FC = () => {
                                         onClick={() => setCashGiven(finalTotal)}
                                         className="bg-green-100 hover:bg-green-200 text-green-800 px-3 py-2 rounded-md font-medium text-sm transition-colors"
                                       >
-                                        💰 Uang Pas
+                                        ���� Uang Pas
                                       </button>
                                       <button
                                         type="button"
