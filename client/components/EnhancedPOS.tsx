@@ -1467,6 +1467,15 @@ const EnhancedPOS: React.FC = () => {
     return allowedModules.includes(moduleId);
   };
 
+  // Submenu permission checker
+  const hasSubmenuAccess = (moduleId: string, submenuId: string) => {
+    if (!currentUser) return false;
+    const allowedModules = settings.rolePermissions[currentUser.role] || [];
+    const fullPermission = `${moduleId}.${submenuId}`;
+    // Check if has specific submenu permission or full module access
+    return allowedModules.includes(fullPermission) || allowedModules.includes(moduleId);
+  };
+
   // Cart functions
   const addToCart = (productId: string) => {
     const product = products.find((p) => p.id === productId);
