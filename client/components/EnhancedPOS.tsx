@@ -5874,49 +5874,51 @@ const EnhancedPOS: React.FC = () => {
                           </div>
                         )}
 
-                        {/* Test Print Button */}
-                        <div className="md:col-span-2">
-                          <h4 className="text-lg font-semibold mb-3 text-gray-700">
-                            Test Printer
-                          </h4>
-                          <button
-                            onClick={() => {
-                              // Create a test sale
-                              const testSale: Sale = {
-                                id: "TEST-" + Date.now(),
-                                date: new Date().toISOString(),
-                                items: [
-                                  {
-                                    productId: "test",
-                                    name: "Test Item",
-                                    price: 10000,
-                                    quantity: 1,
-                                  },
-                                ],
-                                totalAmount: 10000,
-                                paymentMethod: "cash",
-                                cashGiven: 15000,
-                                customer: null,
-                                status: "completed",
-                                processedByUserId: currentUser?.id || "test",
-                                shiftId: currentShift?.id || "test",
-                              };
+                        {/* Test Print Button for Network Printers */}
+                        {settings.thermalPrinterConnection === "network" && (
+                          <div className="md:col-span-2">
+                            <h4 className="text-lg font-semibold mb-3 text-gray-700">
+                              Test Printer
+                            </h4>
+                            <button
+                              onClick={() => {
+                                // Create a test sale
+                                const testSale: Sale = {
+                                  id: "TEST-" + Date.now(),
+                                  date: new Date().toISOString(),
+                                  items: [
+                                    {
+                                      productId: "test",
+                                      name: "Test Item",
+                                      price: 10000,
+                                      quantity: 1,
+                                    },
+                                  ],
+                                  totalAmount: 10000,
+                                  paymentMethod: "cash",
+                                  cashGiven: 15000,
+                                  customer: null,
+                                  status: "completed",
+                                  processedByUserId: currentUser?.id || "test",
+                                  shiftId: currentShift?.id || "test",
+                                };
 
-                              // Print test receipt
-                              printReceipt(testSale);
+                                // Print test receipt
+                                printReceipt(testSale);
 
-                              addNotification(
-                                "info",
-                                "Test Print",
-                                "Test receipt telah dikirim untuk dicetak",
-                              );
-                            }}
-                            disabled={!settings.thermalPrinterEnabled}
-                            className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
-                          >
-                            🖨️ Test Print Struk
-                          </button>
-                        </div>
+                                addNotification(
+                                  "info",
+                                  "Test Print",
+                                  "Test receipt telah dikirim untuk dicetak",
+                                );
+                              }}
+                              disabled={!settings.thermalPrinterEnabled}
+                              className="bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+                            >
+                              🖨️ Test Print Struk
+                            </button>
+                          </div>
+                        )}
                       </div>
 
                       {/* Instructions */}
