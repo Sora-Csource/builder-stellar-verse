@@ -2660,6 +2660,167 @@ const EnhancedPOS: React.FC = () => {
     );
   };
 
+  // Advanced inventory analytics and forecasting
+  const getInventoryAnalytics = () => {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    // Get sales in the last 30 days
+    const recentSales = sales.filter(sale =>
+      new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+    );
+
+    // Calculate product velocity (items sold per day)
+    const productVelocity: Record<string, {
+      name: string;
+      totalSold: number;
+      currentStock: number;
+      dailyAverage: number;
+      weeklyAverage: number;
+      daysUntilStockout: number;
+      reorderPoint: number;
+      status: "healthy" | "low" | "critical" | "stockout";
+      forecast: { days: number; estimatedStock: number }[];
+    }> = {};
+
+    // Initialize with current products
+    products.forEach(product => {
+      productVelocity[product.id] = {
+        name: product.name,
+        totalSold: 0,
+        currentStock: product.stock,
+        dailyAverage: 0,
+        weeklyAverage: 0,
+        daysUntilStockout: 0,
+        reorderPoint: 0,
+        status: "healthy",
+        forecast: []
+      };
+    });
+
+    // Calculate sales velocity
+    recentSales.forEach(sale => {
+      sale.items.forEach(item => {
+        if (productVelocity[item.id]) {
+          productVelocity[item.id].totalSold += item.quantity;
+        }
+      });
+    });
+
+    // Calculate averages and forecasts
+    Object.keys(productVelocity).forEach(productId => {
+      const data = productVelocity[productId];
+      data.dailyAverage = data.totalSold / 30; // 30 days average
+      data.weeklyAverage = data.totalSold / 4.3; // ~4.3 weeks in 30 days
+
+      // Calculate days until stockout
+      if (data.dailyAverage > 0) {
+        data.daysUntilStockout = Math.floor(data.currentStock / data.dailyAverage);
+        data.reorderPoint = Math.ceil(data.dailyAverage * 7); // 7 days worth of stock
+      } else {
+        data.daysUntilStockout = Infinity;
+        data.reorderPoint = 5; // Default minimum stock
+      }
+
+      // Determine status
+      if (data.currentStock === 0) {
+        data.status = "stockout";
+      } else if (data.currentStock <= data.reorderPoint * 0.5) {
+        data.status = "critical";
+      } else if (data.currentStock <= data.reorderPoint) {
+        data.status = "low";
+      } else {
+        data.status = "healthy";
+      }
+
+      // Generate 14-day forecast
+      for (let i = 1; i <= 14; i++) {
+        const estimatedStock = Math.max(0, data.currentStock - (data.dailyAverage * i));
+        data.forecast.push({ days: i, estimatedStock });
+      }
+    });
+
+    return productVelocity;
+  };
+
+  // Get inventory alerts
+  const getInventoryAlerts = () => {
+    const analytics = getInventoryAnalytics();
+    const alerts: Array<{
+      id: string;
+      type: "stockout" | "critical" | "low" | "reorder" | "overstock";
+      priority: "high" | "medium" | "low";
+      message: string;
+      productName: string;
+      actionRequired: string;
+    }> = [];
+
+    Object.entries(analytics).forEach(([productId, data]) => {
+      // Stockout alert
+      if (data.status === "stockout") {
+        alerts.push({
+          id: `stockout-${productId}`,
+          type: "stockout",
+          priority: "high",
+          message: `${data.name} sudah habis!`,
+          productName: data.name,
+          actionRequired: "Segera lakukan restocking"
+        });
+      }
+
+      // Critical stock alert
+      else if (data.status === "critical") {
+        alerts.push({
+          id: `critical-${productId}`,
+          type: "critical",
+          priority: "high",
+          message: `${data.name} stok kritis (${data.currentStock} tersisa)`,
+          productName: data.name,
+          actionRequired: `Restock dalam ${data.daysUntilStockout} hari`
+        });
+      }
+
+      // Low stock alert
+      else if (data.status === "low") {
+        alerts.push({
+          id: `low-${productId}`,
+          type: "low",
+          priority: "medium",
+          message: `${data.name} stok rendah (${data.currentStock} tersisa)`,
+          productName: data.name,
+          actionRequired: `Pertimbangkan restock dalam ${data.daysUntilStockout} hari`
+        });
+      }
+
+      // Reorder point reached
+      if (data.currentStock <= data.reorderPoint && data.currentStock > 0) {
+        alerts.push({
+          id: `reorder-${productId}`,
+          type: "reorder",
+          priority: "medium",
+          message: `${data.name} mencapai reorder point`,
+          productName: data.name,
+          actionRequired: `Restock hingga ${Math.ceil(data.reorderPoint * 2)} unit`
+        });
+      }
+
+      // Overstock detection (more than 60 days of inventory)
+      if (data.dailyAverage > 0 && data.currentStock > data.dailyAverage * 60) {
+        alerts.push({
+          id: `overstock-${productId}`,
+          type: "overstock",
+          priority: "low",
+          message: `${data.name} kemungkinan overstock`,
+          productName: data.name,
+          actionRequired: "Pertimbangkan promosi atau diskon"
+        });
+      }
+    });
+
+    // Sort by priority
+    const priorityOrder = { high: 3, medium: 2, low: 1 };
+    return alerts.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+  };
+
   const getFilteredCustomers = () => {
     return customers.filter(
       (customer) =>
