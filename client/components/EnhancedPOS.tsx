@@ -429,6 +429,7 @@ const EnhancedPOS: React.FC = () => {
         "shift-management",
         "shift-management.start",
         "shift-management.end",
+        "expense-management.view",
         "reports",
         "reports.sales",
         "reports.shifts"
