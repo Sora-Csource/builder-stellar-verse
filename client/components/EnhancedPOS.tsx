@@ -3186,12 +3186,14 @@ const EnhancedPOS: React.FC = () => {
                     Manajemen Stok
                   </h2>
                   <div className="flex justify-between items-center mb-4">
-                    <button
-                      onClick={() => setShowProductModal(true)}
-                      className="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
-                    >
-                      Tambah Produk Baru
-                    </button>
+                    {hasSubmenuAccess("stock-management", "add") && (
+                      <button
+                        onClick={() => setShowProductModal(true)}
+                        className="bg-indigo-600 text-white px-6 py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
+                      >
+                        Tambah Produk Baru
+                      </button>
+                    )}
                     <input
                       type="text"
                       placeholder="Cari produk..."
