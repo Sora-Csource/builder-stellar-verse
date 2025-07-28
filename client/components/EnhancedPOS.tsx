@@ -155,12 +155,15 @@ const EnhancedPOS: React.FC = () => {
   const [showSaleDetailModal, setShowSaleDetailModal] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [showPermissionsModal, setShowPermissionsModal] = useState(false);
+  const [showOpenBillModal, setShowOpenBillModal] = useState(false);
+  const [showHoldBillModal, setShowHoldBillModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUserForPermissions, setSelectedUserForPermissions] =
     useState<User | null>(null);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+  const [selectedOpenBill, setSelectedOpenBill] = useState<OpenBill | null>(null);
 
   // Form states
   const [productSearch, setProductSearch] = useState("");
