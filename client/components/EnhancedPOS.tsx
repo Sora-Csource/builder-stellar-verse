@@ -1680,6 +1680,20 @@ const EnhancedPOS: React.FC = () => {
       setSales([...sales, newSale]);
       setLastCompletedSaleId(saleId);
 
+      // Process loyalty points if customer is selected
+      if (selectedCustomer && settings.loyaltyProgramEnabled) {
+        updateCustomerLoyalty(selectedCustomer.id, finalTotal);
+
+        const pointsEarned = calculateLoyaltyPoints(finalTotal, selectedCustomer.tier);
+        if (pointsEarned > 0) {
+          showAlert(
+            "Points Earned! 🎯",
+            `${selectedCustomer.name} mendapat ${pointsEarned} points!`,
+            "success"
+          );
+        }
+      }
+
       // Save offline data if not online
       if (!isOnline) {
         addOfflineSale(newSale);
