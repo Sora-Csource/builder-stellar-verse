@@ -452,6 +452,7 @@ const EnhancedPOS: React.FC = () => {
     { id: "order-entry", name: "Pesanan" },
     { id: "stock-management", name: "Stok" },
     { id: "customer-management", name: "Pelanggan" },
+    { id: "expense-management", name: "Pengeluaran" },
     { id: "reports", name: "Laporan" },
     { id: "shift-management", name: "Shift" },
     { id: "settings", name: "Pengaturan" },
@@ -7457,7 +7458,7 @@ const EnhancedPOS: React.FC = () => {
                                 <div className="bg-white p-3 rounded border">
                                   <h5 className="font-medium text-gray-700 mb-2">Petunjuk Koneksi Bluetooth:</h5>
                                   <ul className="text-sm text-gray-600 space-y-1">
-                                    <li>• Pastikan printer Bluetooth sudah dalam mode pairing</li>
+                                    <li>��� Pastikan printer Bluetooth sudah dalam mode pairing</li>
                                     <li>• Gunakan browser Chrome atau Edge terbaru</li>
                                     <li>• Klik "Hubungkan Bluetooth" dan pilih printer dari daftar</li>
                                     <li>• Test print untuk memastikan koneksi berhasil</li>
