@@ -7544,7 +7544,7 @@ const EnhancedPOS: React.FC = () => {
                       status: "completed",
                       processedByUserId: currentUser?.id || "preview-user",
                       shiftId: "preview-shift",
-                    }),
+                    }, true),
               }}
             />
 
