@@ -1735,6 +1735,13 @@ const EnhancedPOS: React.FC = () => {
       taxRate: settingsForm.taxRate,
       currencySymbol: settingsForm.currencySymbol,
       logo: settingsForm.logo,
+      // Financial settings
+      taxType: settingsForm.taxType,
+      maxDiscountPercent: settingsForm.maxDiscountPercent,
+      quickDiscountAmount: settingsForm.quickDiscountAmount,
+      quickDiscountPresets: settingsForm.quickDiscountPresets,
+      serviceChargePercent: settingsForm.serviceChargePercent,
+      enableServiceCharge: settingsForm.enableServiceCharge,
     });
 
     showAlert("Berhasil", "Pengaturan umum berhasil disimpan.", "success");
