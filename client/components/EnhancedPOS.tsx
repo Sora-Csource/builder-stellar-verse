@@ -275,6 +275,20 @@ const EnhancedPOS: React.FC = () => {
     notes: "",
   });
 
+  // Expense form state
+  const [expenseForm, setExpenseForm] = useState({
+    category: "other" as const,
+    description: "",
+    amount: 0,
+    supplier: "",
+    paymentMethod: "cash" as const,
+    receiptNumber: "",
+    notes: "",
+    isRecurring: false,
+    recurringPeriod: "monthly" as const,
+    tags: [] as string[]
+  });
+
   // Settings form state
   const [settingsForm, setSettingsForm] = useState({
     storeName: "Crema POS",
