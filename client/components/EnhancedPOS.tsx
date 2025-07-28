@@ -2472,7 +2472,7 @@ const EnhancedPOS: React.FC = () => {
 
                   {/* Modern Notification Dropdown */}
                   {showNotifications && (
-                    <div className="notification-dropdown absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 transform transition-all duration-200">
+                    <div className="notification-dropdown absolute top-full right-0 mt-2 w-80 sm:w-96 max-w-[90vw] bg-white rounded-lg shadow-xl border border-gray-200 z-50 transform transition-all duration-200">
                       {/* Dropdown Arrow */}
                       <div className="absolute -top-2 right-4 w-4 h-4 bg-white border-l border-t border-gray-200 transform rotate-45"></div>
 
