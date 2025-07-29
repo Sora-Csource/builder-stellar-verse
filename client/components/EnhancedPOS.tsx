@@ -2280,7 +2280,6 @@ const EnhancedPOS: React.FC = () => {
           return product;
         });
         setProducts(updatedProducts);
-        console.log("Stock updated");
 
         // Create sale record with custom ID format
         const saleId = generateSaleId();
