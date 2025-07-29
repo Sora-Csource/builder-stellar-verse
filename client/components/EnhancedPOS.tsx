@@ -6680,9 +6680,148 @@ const EnhancedPOS: React.FC = () => {
                           </div>
                         )}
 
-                        {/* Sample Data Notice */}
+                        {/* Enhanced Analytics Charts */}
+                        {sales.length > 0 && (
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                            {/* Sales Trend */}
+                            <div className="bg-white p-6 rounded-lg shadow">
+                              <h4 className="text-lg font-semibold text-gray-800 mb-4">
+                                📈 Tren Penjualan (7 Hari Terakhir)
+                              </h4>
+                              {(() => {
+                                try {
+                                  const last7Days = Array.from({ length: 7 }, (_, i) => {
+                                    const date = new Date();
+                                    date.setDate(date.getDate() - i);
+                                    return date.toISOString().split('T')[0];
+                                  }).reverse();
+
+                                  const dailySales = last7Days.map(date => {
+                                    const dayStart = new Date(date + 'T00:00:00');
+                                    const dayEnd = new Date(date + 'T23:59:59');
+                                    const daySales = sales.filter(sale => {
+                                      const saleDate = new Date(sale.date);
+                                      return saleDate >= dayStart && saleDate <= dayEnd && sale.status === 'completed';
+                                    });
+                                    const total = daySales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
+                                    return {
+                                      date: new Date(date).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric' }),
+                                      total,
+                                      count: daySales.length
+                                    };
+                                  });
+
+                                  const maxTotal = Math.max(...dailySales.map(d => d.total));
+
+                                  return (
+                                    <div className="space-y-3">
+                                      {dailySales.map((day, index) => (
+                                        <div key={index} className="flex items-center space-x-3">
+                                          <div className="w-12 text-xs text-gray-600">{day.date}</div>
+                                          <div className="flex-1 bg-gray-200 rounded-full h-6 relative">
+                                            <div
+                                              className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
+                                              style={{ width: maxTotal > 0 ? `${(day.total / maxTotal) * 100}%` : '0%' }}
+                                            >
+                                              {day.total > 0 && (
+                                                <span className="text-xs text-white font-medium">
+                                                  {formatCurrency(day.total)}
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div className="w-8 text-xs text-gray-600">{day.count}</div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                } catch (error) {
+                                  return (
+                                    <div className="text-center text-gray-500 py-8">
+                                      <p>Error memuat data tren penjualan</p>
+                                    </div>
+                                  );
+                                }
+                              })()}
+                            </div>
+
+                            {/* Top Products */}
+                            <div className="bg-white p-6 rounded-lg shadow">
+                              <h4 className="text-lg font-semibold text-gray-800 mb-4">
+                                🏆 Produk Terlaris (30 Hari)
+                              </h4>
+                              {(() => {
+                                try {
+                                  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+                                  const recentSales = sales.filter(sale =>
+                                    new Date(sale.date) >= thirtyDaysAgo && sale.status === 'completed'
+                                  );
+
+                                  const productSales: { [key: string]: { name: string; quantity: number; revenue: number } } = {};
+
+                                  recentSales.forEach(sale => {
+                                    sale.items.forEach(item => {
+                                      if (!productSales[item.productId]) {
+                                        productSales[item.productId] = {
+                                          name: item.name,
+                                          quantity: 0,
+                                          revenue: 0
+                                        };
+                                      }
+                                      productSales[item.productId].quantity += item.quantity;
+                                      productSales[item.productId].revenue += item.price * item.quantity;
+                                    });
+                                  });
+
+                                  const topProducts = Object.values(productSales)
+                                    .sort((a, b) => b.quantity - a.quantity)
+                                    .slice(0, 5);
+
+                                  const maxQuantity = Math.max(...topProducts.map(p => p.quantity));
+
+                                  return topProducts.length > 0 ? (
+                                    <div className="space-y-3">
+                                      {topProducts.map((product, index) => (
+                                        <div key={index} className="flex items-center space-x-3">
+                                          <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                            {index + 1}
+                                          </div>
+                                          <div className="flex-1">
+                                            <div className="font-medium text-gray-800 text-sm">{product.name}</div>
+                                            <div className="bg-gray-200 rounded-full h-3 mt-1">
+                                              <div
+                                                className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full"
+                                                style={{ width: `${(product.quantity / maxQuantity) * 100}%` }}
+                                              />
+                                            </div>
+                                          </div>
+                                          <div className="text-right">
+                                            <div className="text-sm font-bold text-gray-800">{product.quantity}</div>
+                                            <div className="text-xs text-gray-500">{formatCurrency(product.revenue)}</div>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <div className="text-center text-gray-500 py-8">
+                                      <p>Belum ada data penjualan produk</p>
+                                    </div>
+                                  );
+                                } catch (error) {
+                                  return (
+                                    <div className="text-center text-gray-500 py-8">
+                                      <p>Error memuat data produk terlaris</p>
+                                    </div>
+                                  );
+                                }
+                              })()}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Data Notice */}
                         {(products.length > 0 || sales.length > 0) && (
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
                             <div className="flex items-center">
                               <svg
                                 className="w-5 h-5 text-blue-500 mr-2"
