@@ -536,6 +536,177 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
   );
 };
 
+// Enhanced Payment Confirmation Modal
+interface PaymentConfirmModalProps {
+  isOpen: boolean;
+  title: string;
+  cartItems: Array<{name: string; quantity: number; price: number}>;
+  totalAmount: number;
+  paymentMethod: string;
+  cashGiven?: number;
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+export const PaymentConfirmModal: React.FC<PaymentConfirmModalProps> = ({
+  isOpen,
+  title,
+  cartItems,
+  totalAmount,
+  paymentMethod,
+  cashGiven = 0,
+  onConfirm,
+  onCancel
+}) => {
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isOpen && confirmButtonRef.current) {
+      confirmButtonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      } else if (event.key === 'Enter') {
+        onConfirm();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onCancel, onConfirm]);
+
+  if (!isOpen) return null;
+
+  const formatCurrency = (amount: number) => {
+    return `Rp ${amount.toLocaleString('id-ID')}`;
+  };
+
+  const change = paymentMethod === 'cash' ? cashGiven - totalAmount : 0;
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="payment-confirm-title"
+    >
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-xl">
+          <div className="flex items-center space-x-3">
+            <div className="flex-shrink-0">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 id="payment-confirm-title" className="text-xl font-bold truncate">{title}</h3>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {/* Items Summary */}
+          <div className="mb-4">
+            <h4 className="font-semibold text-gray-800 mb-2">Ringkasan Pesanan:</h4>
+            <div className="bg-gray-50 rounded-lg p-3 max-h-32 overflow-y-auto">
+              {cartItems.slice(0, 3).map((item, index) => (
+                <div key={index} className="flex justify-between text-sm py-1">
+                  <span className="text-gray-700">{item.name} x{item.quantity}</span>
+                  <span className="font-medium">{formatCurrency(item.quantity * item.price)}</span>
+                </div>
+              ))}
+              {cartItems.length > 3 && (
+                <div className="text-xs text-gray-500 text-center pt-2">
+                  +{cartItems.length - 3} item lainnya
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Payment Details */}
+          <div className="border-t pt-4 space-y-2">
+            <div className="flex justify-between text-lg font-bold">
+              <span>Total Pembayaran:</span>
+              <span className="text-green-600">{formatCurrency(totalAmount)}</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Metode Pembayaran:</span>
+              <span className="font-medium">
+                {paymentMethod === 'cash' ? '💵 Tunai' :
+                 paymentMethod === 'card' ? '💳 Kartu' :
+                 '📱 E-Wallet'}
+              </span>
+            </div>
+
+            {paymentMethod === 'cash' && (
+              <>
+                <div className="flex justify-between">
+                  <span>Uang Diterima:</span>
+                  <span className="font-medium">{formatCurrency(cashGiven)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Kembalian:</span>
+                  <span className="font-medium text-blue-600">{formatCurrency(change)}</span>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Confirmation Message */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
+            <p className="text-sm text-yellow-800">
+              ⚠️ Pastikan semua detail sudah benar sebelum melanjutkan. Transaksi yang sudah diproses tidak dapat dibatalkan.
+            </p>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="px-6 py-4 bg-gray-50 rounded-b-xl">
+          <div className="flex space-x-3">
+            <button
+              onClick={onCancel}
+              className="flex-1 py-3 px-4 rounded-lg font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+              Batal
+            </button>
+            <button
+              ref={confirmButtonRef}
+              onClick={onConfirm}
+              className="flex-1 py-3 px-4 rounded-lg font-semibold bg-green-600 hover:bg-green-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Proses Pembayaran</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Modal Hook for managing modals
 export const useModals = () => {
   const [alert, setAlert] = useState<{
