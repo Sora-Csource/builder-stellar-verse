@@ -376,6 +376,12 @@ const EnhancedPOS: React.FC = () => {
       gold: { pointsMultiplier: 1.5, discountPercent: 5 },
       platinum: { pointsMultiplier: 2, discountPercent: 10 },
     },
+    // Sale ID format defaults
+    saleIdPrefix: "TRX",
+    saleIdSuffix: "",
+    saleIdCounterLength: 4,
+    saleIdUseDate: true,
+    saleIdDateFormat: "YYYYMMDD",
     // Thermal printer defaults
     thermalPrinterEnabled: false,
     thermalPrinterWidth: 58, // 58mm thermal printer
