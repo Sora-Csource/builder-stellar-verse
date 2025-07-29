@@ -983,8 +983,10 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-001",
           name: "Kopi Americano",
+          category: "Minuman",
           price: 25000,
           stock: 50,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop",
         },
