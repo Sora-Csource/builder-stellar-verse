@@ -2258,9 +2258,11 @@ const EnhancedPOS: React.FC = () => {
       return;
     }
 
-    // Temporary fix: use native confirm for debugging
-    const confirmed = window.confirm(
-      `Konfirmasi Pembayaran\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nLanjutkan pembayaran?`,
+    // Enhanced payment confirmation dialog
+    const confirmed = await showConfirm(
+      "Konfirmasi Pembayaran",
+      `Apakah Anda yakin ingin memproses pembayaran?\n\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nMetode Pembayaran: ${paymentMethod === "cash" ? "Tunai" : paymentMethod === "card" ? "Kartu" : "E-Wallet"}${paymentMethod === "cash" ? `\nUang Diterima: ${formatCurrency(cashGiven)}\nKembalian: ${formatCurrency(cashGiven - finalTotal)}` : ""}`,
+      "info",
     );
     if (confirmed) {
       try {
