@@ -2298,7 +2298,6 @@ const EnhancedPOS: React.FC = () => {
         };
         setSales([...sales, newSale]);
         setLastCompletedSaleId(saleId);
-        console.log("Sale record created");
 
         // Process loyalty points if customer is selected
         if (selectedCustomer && settings.loyaltyProgramEnabled) {
