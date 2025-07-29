@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 // Enhanced Alert Modal
 interface AlertModalProps {
@@ -16,18 +16,60 @@ export const AlertModal: React.FC<AlertModalProps> = ({
   type = 'info',
   onClose
 }) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      buttonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' || event.key === 'Enter') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const getIcon = () => {
     switch (type) {
       case 'success':
-        return '✅';
+        return (
+          <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        );
       case 'error':
-        return '❌';
+        return (
+          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        );
       case 'warning':
-        return '⚠️';
+        return (
+          <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        );
       default:
-        return 'ℹ️';
+        return (
+          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
     }
   };
 
@@ -44,26 +86,40 @@ export const AlertModal: React.FC<AlertModalProps> = ({
     }
   };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="alert-title"
+      aria-describedby="alert-message"
+    >
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
         <div className={`p-6 rounded-t-xl border-l-4 ${getColors()}`}>
           <div className="flex items-center space-x-3">
-            <div className="text-2xl">{getIcon()}</div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold">{title}</h3>
-              <p className="text-sm mt-1">{message}</p>
+            <div className="flex-shrink-0">{getIcon()}</div>
+            <div className="flex-1 min-w-0">
+              <h3 id="alert-title" className="text-lg font-bold truncate">{title}</h3>
+              <p id="alert-message" className="text-sm mt-1 break-words">{message}</p>
             </div>
           </div>
         </div>
         <div className="px-6 py-4 bg-gray-50 rounded-b-xl">
           <button
+            ref={buttonRef}
             onClick={onClose}
-            className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
-              type === 'success' ? 'bg-green-600 hover:bg-green-700 text-white' :
-              type === 'error' ? 'bg-red-600 hover:bg-red-700 text-white' :
-              type === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 text-white' :
-              'bg-blue-600 hover:bg-blue-700 text-white'
+            className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              type === 'success' ? 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500' :
+              type === 'error' ? 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500' :
+              type === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-yellow-500' :
+              'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500'
             }`}
           >
             OK
@@ -96,51 +152,114 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   onConfirm,
   onCancel
 }) => {
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isOpen && cancelButtonRef.current) {
+      cancelButtonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      } else if (event.key === 'Enter') {
+        onConfirm();
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        if (document.activeElement === cancelButtonRef.current) {
+          confirmButtonRef.current?.focus();
+        } else {
+          cancelButtonRef.current?.focus();
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onCancel, onConfirm]);
+
   if (!isOpen) return null;
 
   const getIcon = () => {
     switch (type) {
       case 'danger':
-        return '🗑️';
+        return (
+          <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        );
       case 'warning':
-        return '⚠️';
+        return (
+          <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        );
       default:
-        return '❓';
+        return (
+          <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
     }
   };
 
   const getConfirmButtonColors = () => {
     switch (type) {
       case 'danger':
-        return 'bg-red-600 hover:bg-red-700 text-white';
+        return 'bg-red-600 hover:bg-red-700 text-white focus:ring-red-500';
       case 'warning':
-        return 'bg-yellow-600 hover:bg-yellow-700 text-white';
+        return 'bg-yellow-600 hover:bg-yellow-700 text-white focus:ring-yellow-500';
       default:
-        return 'bg-blue-600 hover:bg-blue-700 text-white';
+        return 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500';
+    }
+  };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="confirm-title"
+      aria-describedby="confirm-message"
+    >
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
         <div className="p-6">
           <div className="flex items-center space-x-3 mb-4">
-            <div className="text-3xl">{getIcon()}</div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+            <div className="flex-shrink-0">{getIcon()}</div>
+            <div className="flex-1 min-w-0">
+              <h3 id="confirm-title" className="text-xl font-bold text-gray-900 truncate">{title}</h3>
             </div>
           </div>
-          <p className="text-gray-600 mb-6">{message}</p>
+          <p id="confirm-message" className="text-gray-600 mb-6 break-words">{message}</p>
           <div className="flex space-x-3">
             <button
+              ref={cancelButtonRef}
               onClick={onCancel}
-              className="flex-1 py-2 px-4 rounded-lg font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors"
+              className="flex-1 py-2 px-4 rounded-lg font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
               {cancelText}
             </button>
             <button
+              ref={confirmButtonRef}
               onClick={onConfirm}
-              className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors ${getConfirmButtonColors()}`}
+              className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${getConfirmButtonColors()}`}
             >
               {confirmText}
             </button>
@@ -174,10 +293,36 @@ export const PromptModal: React.FC<PromptModalProps> = ({
   onCancel
 }) => {
   const [value, setValue] = useState(defaultValue);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setValue(defaultValue);
   }, [defaultValue, isOpen]);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onCancel]);
 
   if (!isOpen) return null;
 
@@ -186,25 +331,43 @@ export const PromptModal: React.FC<PromptModalProps> = ({
     onConfirm(value);
   };
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="prompt-title"
+      aria-describedby="prompt-message"
+    >
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
         <form onSubmit={handleSubmit}>
           <div className="p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="text-3xl">💬</div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+              <div className="flex-shrink-0">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 id="prompt-title" className="text-xl font-bold text-gray-900 truncate">{title}</h3>
               </div>
             </div>
-            <p className="text-gray-600 mb-4">{message}</p>
+            <p id="prompt-message" className="text-gray-600 mb-4 break-words">{message}</p>
             <input
+              ref={inputRef}
               type={inputType}
               value={value}
               onChange={(e) => setValue(e.target.value)}
               placeholder={placeholder}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              autoFocus
+              aria-label={placeholder || 'Masukkan nilai'}
             />
           </div>
           <div className="px-6 py-4 bg-gray-50 rounded-b-xl">
@@ -212,13 +375,13 @@ export const PromptModal: React.FC<PromptModalProps> = ({
               <button
                 type="button"
                 onClick={onCancel}
-                className="flex-1 py-2 px-4 rounded-lg font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors"
+                className="flex-1 py-2 px-4 rounded-lg font-semibold bg-gray-200 hover:bg-gray-300 text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="flex-1 py-2 px-4 rounded-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                className="flex-1 py-2 px-4 rounded-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 OK
               </button>
@@ -248,34 +411,83 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
   showPrintOption = false,
   onPrint
 }) => {
+  const primaryButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isOpen && primaryButtonRef.current) {
+      primaryButtonRef.current.focus();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' || event.key === 'Enter') {
+        if (showPrintOption && onPrint && event.key === 'Enter') {
+          onPrint();
+        } else {
+          onClose();
+        }
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose, onPrint, showPrintOption]);
+
   if (!isOpen) return null;
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+      onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="success-title"
+      aria-describedby="success-message"
+    >
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
         <div className="p-6 text-center">
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
-            <div className="text-3xl">🎉</div>
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-600 mb-6">{message}</p>
-          
+          <h3 id="success-title" className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+          <p id="success-message" className="text-gray-600 mb-6 break-words">{message}</p>
+
           <div className="space-y-3">
             {showPrintOption && onPrint && (
               <button
+                ref={primaryButtonRef}
                 onClick={onPrint}
-                className="w-full py-3 px-4 rounded-lg font-semibold bg-green-600 hover:bg-green-700 text-white transition-colors flex items-center justify-center space-x-2"
+                className="w-full py-3 px-4 rounded-lg font-semibold bg-green-600 hover:bg-green-700 text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center justify-center space-x-2"
               >
-                <span>🖨️</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
                 <span>Cetak Struk</span>
               </button>
             )}
             <button
+              ref={!showPrintOption ? primaryButtonRef : undefined}
               onClick={onClose}
-              className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${
-                showPrintOption 
-                  ? 'bg-gray-200 hover:bg-gray-300 text-gray-800' 
-                  : 'bg-green-600 hover:bg-green-700 text-white'
+              className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                showPrintOption
+                  ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500'
+                  : 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500'
               }`}
             >
               {showPrintOption ? 'Tutup' : 'OK'}
@@ -297,13 +509,28 @@ export const LoadingModal: React.FC<LoadingModalProps> = ({
   isOpen,
   message
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl p-8 text-center">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4 animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="loading-message"
+    >
+      <div className="bg-white rounded-xl shadow-2xl p-8 text-center transform transition-all animate-scaleIn">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-        <p className="text-gray-700 font-medium">{message}</p>
+        <p id="loading-message" className="text-gray-700 font-medium break-words">{message}</p>
       </div>
     </div>
   );
