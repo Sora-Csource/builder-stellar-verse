@@ -2134,6 +2134,11 @@ const EnhancedPOS: React.FC = () => {
 
   // Process payment
   const processPayment = async () => {
+    // Prevent duplicate processing
+    if (isProcessingPayment) {
+      return;
+    }
+
     if (cart.length === 0) {
       showAlert(
         "Keranjang Kosong",
