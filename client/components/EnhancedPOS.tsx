@@ -279,8 +279,10 @@ const EnhancedPOS: React.FC = () => {
   // Product form state
   const [productForm, setProductForm] = useState({
     name: "",
+    category: "Umum",
     price: 0,
     stock: 0,
+    unit: "pcs",
     imageUrl: "",
   });
 
