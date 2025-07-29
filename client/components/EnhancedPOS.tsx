@@ -4708,9 +4708,14 @@ const EnhancedPOS: React.FC = () => {
 
                               <button
                                 onClick={processPayment}
-                                className="w-full bg-indigo-600 text-white py-2 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
+                                disabled={isProcessingPayment}
+                                className={`w-full py-2 rounded-md font-semibold transition duration-200 ${
+                                  isProcessingPayment
+                                    ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                                    : "bg-indigo-600 text-white hover:bg-indigo-700"
+                                }`}
                               >
-                                Proses Pembayaran
+                                {isProcessingPayment ? "Memproses..." : "Proses Pembayaran"}
                               </button>
                             </>
                           );
