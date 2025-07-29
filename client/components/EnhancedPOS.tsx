@@ -1859,6 +1859,28 @@ const EnhancedPOS: React.FC = () => {
         setCurrentUser(adminUser);
         setIsLoginVisible(false);
         setActiveModule("order-entry");
+
+        // Auto-start shift for immediate use
+        setTimeout(() => {
+          const shiftId = generateShiftId();
+          const newShift: Shift = {
+            id: shiftId,
+            userId: adminUser.id,
+            startTime: new Date().toISOString(),
+            endTime: null,
+            startCash: 100000, // Start with 100k cash
+            endCash: null,
+            status: "open",
+            salesIds: [],
+          };
+          setShifts([newShift]);
+          setCurrentShift(newShift);
+
+          // Update user with shift ID
+          const updatedUser = { ...adminUser, currentShiftId: shiftId };
+          setCurrentUser(updatedUser);
+          setUsers([updatedUser]);
+        }, 100);
       }
     } catch (error) {
       console.error("Error loading data:", error);
@@ -5700,7 +5722,7 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        📊 Laporan Penjualan
+                        ���� Laporan Penjualan
                       </button>
                       <button
                         onClick={() => setActiveReportsTab("shifts")}
