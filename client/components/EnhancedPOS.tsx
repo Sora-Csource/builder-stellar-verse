@@ -2772,6 +2772,12 @@ const EnhancedPOS: React.FC = () => {
       quickDiscountPresets: settingsForm.quickDiscountPresets,
       serviceChargePercent: settingsForm.serviceChargePercent,
       enableServiceCharge: settingsForm.enableServiceCharge,
+      // Sale ID settings
+      saleIdPrefix: settingsForm.saleIdPrefix,
+      saleIdSuffix: settingsForm.saleIdSuffix,
+      saleIdCounterLength: settingsForm.saleIdCounterLength,
+      saleIdUseDate: settingsForm.saleIdUseDate,
+      saleIdDateFormat: settingsForm.saleIdDateFormat,
     });
 
     showAlert("Berhasil", "Pengaturan umum berhasil disimpan.", "success");
