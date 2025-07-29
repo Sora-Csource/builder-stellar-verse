@@ -9248,6 +9248,228 @@ const EnhancedPOS: React.FC = () => {
                     </form>
                   </div>
                 )}
+
+                {/* Sale ID Settings Tab */}
+                {activeSettingsTab === "saleid" && (
+                  <div className="bg-gray-50 p-6 rounded-lg shadow-inner">
+                    <h3 className="text-xl font-semibold mb-6 text-gray-800">
+                      Pengaturan ID Penjualan
+                    </h3>
+
+                    <form onSubmit={handleSettingsSubmit} className="space-y-6">
+                      {/* Current Format Preview */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                          Preview Format ID
+                        </h4>
+                        <div className="bg-gray-100 p-4 rounded-lg border-2 border-dashed border-gray-300">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-600 mb-2">Contoh ID yang akan dihasilkan:</p>
+                            <p className="text-2xl font-bold text-indigo-600 font-mono">
+                              {(() => {
+                                let preview = "";
+                                if (settingsForm.saleIdPrefix) preview += settingsForm.saleIdPrefix;
+                                if (settingsForm.saleIdUseDate) {
+                                  const now = new Date();
+                                  let dateStr = "";
+                                  switch (settingsForm.saleIdDateFormat) {
+                                    case "DDMMYYYY":
+                                      dateStr = "01122024";
+                                      break;
+                                    case "MMDDYYYY":
+                                      dateStr = "12012024";
+                                      break;
+                                    case "YYYYMMDD":
+                                    default:
+                                      dateStr = "20241201";
+                                      break;
+                                  }
+                                  if (preview) preview += "-";
+                                  preview += dateStr;
+                                }
+                                const counterLength = settingsForm.saleIdCounterLength || 4;
+                                const counterStr = "0001".padStart(counterLength, '0');
+                                if (preview) preview += "-";
+                                preview += counterStr;
+                                if (settingsForm.saleIdSuffix) {
+                                  preview += "-" + settingsForm.saleIdSuffix;
+                                }
+                                return preview || "0001";
+                              })()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Basic Settings */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                          Konfigurasi Dasar
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Prefix (Awalan):
+                            </label>
+                            <input
+                              type="text"
+                              value={settingsForm.saleIdPrefix || ""}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  saleIdPrefix: e.target.value.toUpperCase(),
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              placeholder="TRX"
+                              maxLength={10}
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Awalan untuk ID penjualan (misal: TRX, INV, SALE)
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-gray-700 font-bold mb-2">
+                              Suffix (Akhiran):
+                            </label>
+                            <input
+                              type="text"
+                              value={settingsForm.saleIdSuffix || ""}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  saleIdSuffix: e.target.value.toUpperCase(),
+                                })
+                              }
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              placeholder="Kosongkan jika tidak diperlukan"
+                              maxLength={10}
+                            />
+                            <p className="text-sm text-gray-500 mt-1">
+                              Akhiran untuk ID penjualan (opsional)
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Counter Settings */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                          Pengaturan Counter
+                        </h4>
+                        <div>
+                          <label className="block text-gray-700 font-bold mb-2">
+                            Panjang Nomor Urut:
+                          </label>
+                          <select
+                            value={settingsForm.saleIdCounterLength || 4}
+                            onChange={(e) =>
+                              setSettingsForm({
+                                ...settingsForm,
+                                saleIdCounterLength: parseInt(e.target.value),
+                              })
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                          >
+                            <option value={3}>3 digit (001, 002, 003, ...)</option>
+                            <option value={4}>4 digit (0001, 0002, 0003, ...)</option>
+                            <option value={5}>5 digit (00001, 00002, 00003, ...)</option>
+                            <option value={6}>6 digit (000001, 000002, 000003, ...)</option>
+                          </select>
+                          <p className="text-sm text-gray-500 mt-1">
+                            Jumlah digit untuk nomor urut transaksi
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Date Settings */}
+                      <div className="bg-white p-6 rounded-lg shadow-sm">
+                        <h4 className="text-lg font-semibold mb-4 text-gray-700">
+                          Pengaturan Tanggal
+                        </h4>
+                        <div className="space-y-4">
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id="useDateInId"
+                              checked={settingsForm.saleIdUseDate || false}
+                              onChange={(e) =>
+                                setSettingsForm({
+                                  ...settingsForm,
+                                  saleIdUseDate: e.target.checked,
+                                })
+                              }
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="useDateInId" className="text-gray-700 font-medium">
+                              Sertakan tanggal dalam ID penjualan
+                            </label>
+                          </div>
+
+                          {settingsForm.saleIdUseDate && (
+                            <div>
+                              <label className="block text-gray-700 font-bold mb-2">
+                                Format Tanggal:
+                              </label>
+                              <select
+                                value={settingsForm.saleIdDateFormat || "YYYYMMDD"}
+                                onChange={(e) =>
+                                  setSettingsForm({
+                                    ...settingsForm,
+                                    saleIdDateFormat: e.target.value as any,
+                                  })
+                                }
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                              >
+                                <option value="YYYYMMDD">YYYY-MM-DD (20241201)</option>
+                                <option value="DDMMYYYY">DD-MM-YYYY (01122024)</option>
+                                <option value="MMDDYYYY">MM-DD-YYYY (12012024)</option>
+                              </select>
+                              <p className="text-sm text-gray-500 mt-1">
+                                Format tanggal yang akan digunakan dalam ID
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Important Notice */}
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <div className="flex items-center">
+                          <svg
+                            className="w-5 h-5 text-yellow-500 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          <div>
+                            <h5 className="font-medium text-yellow-800">Informasi Penting</h5>
+                            <p className="text-sm text-yellow-700 mt-1">
+                              Perubahan format ID hanya akan berlaku untuk transaksi baru.
+                              Transaksi yang sudah ada akan tetap menggunakan format lama.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-4 border-t border-gray-200">
+                        <button
+                          type="submit"
+                          className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-md font-semibold hover:from-indigo-700 hover:to-purple-700 transition duration-200"
+                        >
+                          💾 Simpan Pengaturan ID
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             )}
 
