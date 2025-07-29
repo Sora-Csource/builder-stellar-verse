@@ -357,6 +357,10 @@ const EnhancedPOS: React.FC = () => {
   // Data management tab state
   const [activeDataTab, setActiveDataTab] = useState("import");
 
+  // Global search state
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [showGlobalSearchResults, setShowGlobalSearchResults] = useState(false);
+
   // Settings state
   const [settings, setSettings] = useState<Settings>({
     storeName: "Crema POS",
@@ -10345,7 +10349,7 @@ const EnhancedPOS: React.FC = () => {
                   type="submit"
                   className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 shadow-md"
                 >
-                  💾 Simpan Produk
+                  �� Simpan Produk
                 </button>
               </div>
             </form>
