@@ -658,8 +658,16 @@ export const PaymentConfirmModal: React.FC<PaymentConfirmModalProps> = ({
           </div>
 
           {/* Payment Details */}
-          <div className="border-t pt-4 space-y-2">
-            <div className="flex justify-between text-lg font-bold">
+          <div className="border-t pt-4 space-y-3">
+            {/* Subtotal breakdown */}
+            <div className="bg-blue-50 rounded-lg p-3 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">Subtotal ({cartItems.length} item):</span>
+                <span className="font-medium">{formatCurrency(cartItems.reduce((sum, item) => sum + (item.quantity * item.price), 0))}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between text-lg font-bold border-t pt-3">
               <span>Total Pembayaran:</span>
               <span className="text-green-600">{formatCurrency(totalAmount)}</span>
             </div>
