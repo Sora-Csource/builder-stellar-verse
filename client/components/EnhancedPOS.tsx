@@ -1053,8 +1053,10 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-008",
           name: "Cake Slice",
+          category: "Dessert",
           price: 35000,
           stock: 0, // Out of stock
+          unit: "pcs",
           imageUrl:
             "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=300&fit=crop",
         },
