@@ -625,19 +625,33 @@ export const PaymentConfirmModal: React.FC<PaymentConfirmModalProps> = ({
 
         {/* Content */}
         <div className="p-6">
-          {/* Items Summary */}
+          {/* Complete Items Summary */}
           <div className="mb-4">
-            <h4 className="font-semibold text-gray-800 mb-2">Ringkasan Pesanan:</h4>
-            <div className="bg-gray-50 rounded-lg p-3 max-h-32 overflow-y-auto">
-              {cartItems.slice(0, 3).map((item, index) => (
-                <div key={index} className="flex justify-between text-sm py-1">
-                  <span className="text-gray-700">{item.name} x{item.quantity}</span>
-                  <span className="font-medium">{formatCurrency(item.quantity * item.price)}</span>
-                </div>
-              ))}
-              {cartItems.length > 3 && (
-                <div className="text-xs text-gray-500 text-center pt-2">
-                  +{cartItems.length - 3} item lainnya
+            <h4 className="font-semibold text-gray-800 mb-3 flex items-center">
+              <svg className="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              Ringkasan Lengkap Pesanan ({cartItems.length} item):
+            </h4>
+            <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto border border-gray-200">
+              <div className="space-y-3">
+                {cartItems.map((item, index) => (
+                  <div key={index} className="flex justify-between items-center py-2 px-3 bg-white rounded-md border border-gray-100 hover:bg-gray-50 transition-colors">
+                    <div className="flex-1">
+                      <span className="text-gray-800 font-medium">{item.name}</span>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {formatCurrency(item.price)} × {item.quantity}
+                      </div>
+                    </div>
+                    <div className="text-right ml-4">
+                      <span className="font-semibold text-gray-900">{formatCurrency(item.quantity * item.price)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {cartItems.length === 0 && (
+                <div className="text-center text-gray-500 py-4">
+                  Tidak ada item dalam pesanan
                 </div>
               )}
             </div>
