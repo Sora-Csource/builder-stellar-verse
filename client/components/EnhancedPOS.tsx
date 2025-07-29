@@ -1073,10 +1073,10 @@ const EnhancedPOS: React.FC = () => {
           phone: "081234567890",
           loyaltyPoints: 150,
           totalSpent: 425000,
-          joinDate: new Date('2024-01-15').toISOString(),
+          joinDate: new Date("2024-01-15").toISOString(),
           tier: "Silver",
           isActive: true,
-          lastVisit: new Date('2024-12-01').toISOString(),
+          lastVisit: new Date("2024-12-01").toISOString(),
         },
         {
           id: "cust-002",
@@ -1085,10 +1085,10 @@ const EnhancedPOS: React.FC = () => {
           phone: "081234567891",
           loyaltyPoints: 320,
           totalSpent: 850000,
-          joinDate: new Date('2024-02-20').toISOString(),
+          joinDate: new Date("2024-02-20").toISOString(),
           tier: "Gold",
           isActive: true,
-          lastVisit: new Date('2024-11-28').toISOString(),
+          lastVisit: new Date("2024-11-28").toISOString(),
         },
         {
           id: "cust-003",
@@ -1097,10 +1097,10 @@ const EnhancedPOS: React.FC = () => {
           phone: "081234567892",
           loyaltyPoints: 85,
           totalSpent: 275000,
-          joinDate: new Date('2024-03-10').toISOString(),
+          joinDate: new Date("2024-03-10").toISOString(),
           tier: "Bronze",
           isActive: true,
-          lastVisit: new Date('2024-11-30').toISOString(),
+          lastVisit: new Date("2024-11-30").toISOString(),
         },
         {
           id: "cust-004",
@@ -1109,10 +1109,10 @@ const EnhancedPOS: React.FC = () => {
           phone: "081234567893",
           loyaltyPoints: 620,
           totalSpent: 1750000,
-          joinDate: new Date('2024-01-05').toISOString(),
+          joinDate: new Date("2024-01-05").toISOString(),
           tier: "Platinum",
           isActive: true,
-          lastVisit: new Date('2024-12-02').toISOString(),
+          lastVisit: new Date("2024-12-02").toISOString(),
         },
         {
           id: "cust-005",
@@ -1121,10 +1121,10 @@ const EnhancedPOS: React.FC = () => {
           phone: "081234567894",
           loyaltyPoints: 45,
           totalSpent: 125000,
-          joinDate: new Date('2024-04-12').toISOString(),
+          joinDate: new Date("2024-04-12").toISOString(),
           tier: "Bronze",
           isActive: true,
-          lastVisit: new Date('2024-11-25').toISOString(),
+          lastVisit: new Date("2024-11-25").toISOString(),
         },
       ];
       setCustomers(sampleCustomers);
@@ -2315,7 +2315,7 @@ const EnhancedPOS: React.FC = () => {
       cart,
       finalTotal,
       paymentMethod,
-      cashGiven
+      cashGiven,
     );
     if (confirmed) {
       try {
@@ -2398,7 +2398,7 @@ const EnhancedPOS: React.FC = () => {
           "Pembayaran Berhasil! 🎉",
           `Transaksi ${saleId} telah berhasil diproses.\n\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nMetode: ${paymentMethod === "cash" ? "Tunai" : paymentMethod === "card" ? "Kartu" : "E-Wallet"}${paymentMethod === "cash" ? `\nKembalian: ${formatCurrency(cashGiven - finalTotal)}` : ""}\n\nStruk akan langsung dicetak.`,
           true,
-          () => printReceipt(newSale)
+          () => printReceipt(newSale),
         );
 
         setIsProcessingPayment(false);
@@ -3584,7 +3584,10 @@ const EnhancedPOS: React.FC = () => {
 
     const cashSalesTotal = currentShift.salesIds.reduce((total, saleId) => {
       const sale = sales.find(
-        (s) => s.id === saleId && s.status === "completed" && s.paymentMethod === "cash",
+        (s) =>
+          s.id === saleId &&
+          s.status === "completed" &&
+          s.paymentMethod === "cash",
       );
       return total + (sale ? sale.totalAmount : 0);
     }, 0);
@@ -5827,8 +5830,18 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("customers", "csv")}
                                 className="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition duration-200"
                               >
-                                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <svg
+                                  className="w-4 h-4 inline mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
                                 </svg>
                                 Export CSV
                               </button>
@@ -5836,8 +5849,18 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("customers", "json")}
                                 className="w-full bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 transition duration-200"
                               >
-                                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <svg
+                                  className="w-4 h-4 inline mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
                                 </svg>
                                 Export JSON
                               </button>
@@ -5857,8 +5880,18 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("sales", "csv")}
                                 className="w-full bg-purple-600 text-white px-3 py-2 rounded text-sm hover:bg-purple-700 transition duration-200"
                               >
-                                <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <svg
+                                  className="w-4 h-4 inline mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
                                 </svg>
                                 Export CSV
                               </button>
@@ -5972,8 +6005,18 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        <svg
+                          className="w-4 h-4 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
                         </svg>
                         Laporan Penjualan
                       </button>
@@ -5985,8 +6028,18 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-4 h-4 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         Laporan Shift
                       </button>
@@ -6008,8 +6061,18 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        <svg
+                          className="w-4 h-4 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
                         </svg>
                         Analytics Dashboard
                       </button>
@@ -6208,8 +6271,18 @@ const EnhancedPOS: React.FC = () => {
                           }}
                           className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
                         >
-                          <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          <svg
+                            className="w-4 h-4 inline mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
                           </svg>
                           Ekspor Produk
                         </button>
@@ -10759,7 +10832,10 @@ const EnhancedPOS: React.FC = () => {
       {showProductModal && (
         <div
           className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9998] p-4 animate-fadeIn"
-          onClick={(e) => e.target === e.currentTarget && (setShowProductModal(false), setEditingProduct(null))}
+          onClick={(e) =>
+            e.target === e.currentTarget &&
+            (setShowProductModal(false), setEditingProduct(null))
+          }
           role="dialog"
           aria-modal="true"
           aria-labelledby="product-modal-title"
@@ -10768,16 +10844,32 @@ const EnhancedPOS: React.FC = () => {
             <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-4 sm:p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
                   </svg>
                 </div>
-                <h3 id="product-modal-title" className="text-lg sm:text-xl font-bold truncate">
+                <h3
+                  id="product-modal-title"
+                  className="text-lg sm:text-xl font-bold truncate"
+                >
                   {editingProduct ? "Edit Produk" : "Tambah Produk Baru"}
                 </h3>
               </div>
             </div>
-            <form onSubmit={handleProductSubmit} className="p-4 sm:p-6 space-y-4">
+            <form
+              onSubmit={handleProductSubmit}
+              className="p-4 sm:p-6 space-y-4"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-gray-700 font-bold mb-2">
@@ -10800,7 +10892,10 @@ const EnhancedPOS: React.FC = () => {
                   <select
                     value={productForm.category}
                     onChange={(e) =>
-                      setProductForm({ ...productForm, category: e.target.value })
+                      setProductForm({
+                        ...productForm,
+                        category: e.target.value,
+                      })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                   >
@@ -11076,8 +11171,18 @@ const EnhancedPOS: React.FC = () => {
                   type="submit"
                   className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 shadow-md"
                 >
-                  <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  <svg
+                    className="w-5 h-5 inline mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
                   </svg>
                   Simpan Produk
                 </button>
@@ -11094,8 +11199,18 @@ const EnhancedPOS: React.FC = () => {
             <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 sm:p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                 </div>
                 <h3 className="text-lg sm:text-xl font-bold truncate">
@@ -11175,8 +11290,18 @@ const EnhancedPOS: React.FC = () => {
             <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                    />
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold">
