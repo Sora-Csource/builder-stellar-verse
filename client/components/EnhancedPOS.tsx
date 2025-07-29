@@ -323,6 +323,12 @@ const EnhancedPOS: React.FC = () => {
     quickDiscountPresets: [5, 10, 15, 20],
     serviceChargePercent: 0,
     enableServiceCharge: false,
+    // Sale ID format settings
+    saleIdPrefix: "TRX",
+    saleIdSuffix: "",
+    saleIdCounterLength: 4,
+    saleIdUseDate: true,
+    saleIdDateFormat: "YYYYMMDD",
   });
 
   // Receipt settings form state
