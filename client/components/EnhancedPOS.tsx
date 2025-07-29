@@ -492,6 +492,7 @@ const EnhancedPOS: React.FC = () => {
     { id: "stock-management", name: "Stok" },
     { id: "customer-management", name: "Pelanggan" },
     { id: "expense-management", name: "Pengeluaran" },
+    { id: "data-management", name: "Data Management" },
     { id: "reports", name: "Laporan" },
     { id: "shift-management", name: "Shift" },
     { id: "settings", name: "Pengaturan" },
