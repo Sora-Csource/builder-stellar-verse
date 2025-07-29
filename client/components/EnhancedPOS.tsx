@@ -4118,9 +4118,9 @@ const EnhancedPOS: React.FC = () => {
                               <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-purple-50">
                                 Transaksi ({results.sales.length})
                               </h4>
-                              {results.sales.slice(0, 3).map(sale => (
+                              {results.sales.slice(0, 3).map((sale, index) => (
                                 <div
-                                  key={sale.id}
+                                  key={`search-sale-${sale.id}-${index}`}
                                   onClick={() => {
                                     setActiveModule("reports");
                                     setActiveReportsTab("sales");
