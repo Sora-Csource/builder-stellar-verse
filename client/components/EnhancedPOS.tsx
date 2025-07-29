@@ -9410,7 +9410,7 @@ const EnhancedPOS: React.FC = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
             <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">👥</div>
+                <div className="text-2xl">��</div>
                 <h3 className="text-xl font-bold">
                   {editingCustomer ? "Edit Pelanggan" : "Tambah Pelanggan Baru"}
                 </h3>
@@ -9563,6 +9563,263 @@ const EnhancedPOS: React.FC = () => {
                   className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-200 shadow-md"
                 >
                   🔐 Simpan Pengguna
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Expense Modal */}
+      {showExpenseModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
+            <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 rounded-t-xl">
+              <div className="flex items-center space-x-3">
+                <div className="text-2xl">💰</div>
+                <h3 className="text-xl font-bold">
+                  {editingExpense ? "Edit Pengeluaran" : "Tambah Pengeluaran Baru"}
+                </h3>
+              </div>
+            </div>
+            <form onSubmit={handleExpenseSubmit} className="p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Kategori:
+                  </label>
+                  <select
+                    value={expenseForm.category}
+                    onChange={(e) =>
+                      setExpenseForm({
+                        ...expenseForm,
+                        category: e.target.value as any,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                    required
+                  >
+                    <option value="inventory">Inventori</option>
+                    <option value="operations">Operasional</option>
+                    <option value="marketing">Marketing</option>
+                    <option value="utilities">Utilitas</option>
+                    <option value="salaries">Gaji</option>
+                    <option value="rent">Sewa</option>
+                    <option value="other">Lainnya</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Metode Pembayaran:
+                  </label>
+                  <select
+                    value={expenseForm.paymentMethod}
+                    onChange={(e) =>
+                      setExpenseForm({
+                        ...expenseForm,
+                        paymentMethod: e.target.value as any,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                    required
+                  >
+                    <option value="cash">Tunai</option>
+                    <option value="card">Kartu</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="check">Cek</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Deskripsi:
+                </label>
+                <input
+                  type="text"
+                  value={expenseForm.description}
+                  onChange={(e) =>
+                    setExpenseForm({
+                      ...expenseForm,
+                      description: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                  placeholder="Deskripsi pengeluaran..."
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Jumlah (Rp):
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1000"
+                    value={expenseForm.amount || ""}
+                    onChange={(e) =>
+                      setExpenseForm({
+                        ...expenseForm,
+                        amount: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Supplier/Vendor:
+                  </label>
+                  <input
+                    type="text"
+                    value={expenseForm.supplier}
+                    onChange={(e) =>
+                      setExpenseForm({
+                        ...expenseForm,
+                        supplier: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                    placeholder="Nama supplier/vendor..."
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Nomor Kwitansi/Invoice:
+                </label>
+                <input
+                  type="text"
+                  value={expenseForm.receiptNumber}
+                  onChange={(e) =>
+                    setExpenseForm({
+                      ...expenseForm,
+                      receiptNumber: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                  placeholder="Nomor kwitansi atau invoice..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Catatan:
+                </label>
+                <textarea
+                  value={expenseForm.notes}
+                  onChange={(e) =>
+                    setExpenseForm({
+                      ...expenseForm,
+                      notes: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                  rows={3}
+                  placeholder="Catatan tambahan..."
+                />
+              </div>
+
+              {/* Recurring Options */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="flex items-center space-x-3 mb-3">
+                  <input
+                    type="checkbox"
+                    id="isRecurring"
+                    checked={expenseForm.isRecurring}
+                    onChange={(e) =>
+                      setExpenseForm({
+                        ...expenseForm,
+                        isRecurring: e.target.checked,
+                      })
+                    }
+                    className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="isRecurring" className="text-gray-700 font-medium">
+                    Pengeluaran Berulang
+                  </label>
+                </div>
+                {expenseForm.isRecurring && (
+                  <div>
+                    <label className="block text-gray-700 font-bold mb-2">
+                      Periode:
+                    </label>
+                    <select
+                      value={expenseForm.recurringPeriod}
+                      onChange={(e) =>
+                        setExpenseForm({
+                          ...expenseForm,
+                          recurringPeriod: e.target.value as any,
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                    >
+                      <option value="daily">Harian</option>
+                      <option value="weekly">Mingguan</option>
+                      <option value="monthly">Bulanan</option>
+                      <option value="quarterly">Triwulan</option>
+                      <option value="yearly">Tahunan</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              {/* Tags */}
+              <div>
+                <label className="block text-gray-700 font-bold mb-2">
+                  Tags (pisahkan dengan koma):
+                </label>
+                <input
+                  type="text"
+                  value={expenseForm.tags?.join(", ") || ""}
+                  onChange={(e) =>
+                    setExpenseForm({
+                      ...expenseForm,
+                      tags: e.target.value
+                        .split(",")
+                        .map((tag) => tag.trim())
+                        .filter((tag) => tag),
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-500"
+                  placeholder="operasional, bulanan, listrik..."
+                />
+              </div>
+
+              <div className="flex space-x-4 pt-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowExpenseModal(false);
+                    setEditingExpense(null);
+                    setExpenseForm({
+                      category: "other",
+                      description: "",
+                      amount: 0,
+                      supplier: "",
+                      paymentMethod: "cash",
+                      receiptNumber: "",
+                      notes: "",
+                      isRecurring: false,
+                      recurringPeriod: "monthly",
+                      tags: [],
+                    });
+                  }}
+                  className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-200"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition duration-200 shadow-md"
+                >
+                  💰 {editingExpense ? "Update" : "Simpan"} Pengeluaran
                 </button>
               </div>
             </form>
