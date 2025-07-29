@@ -901,6 +901,16 @@ export const useModals = () => {
         isOpen={loading.isOpen}
         message={loading.message}
       />
+      <PaymentConfirmModal
+        isOpen={paymentConfirm.isOpen}
+        title={paymentConfirm.title}
+        cartItems={paymentConfirm.cartItems}
+        totalAmount={paymentConfirm.totalAmount}
+        paymentMethod={paymentConfirm.paymentMethod}
+        cashGiven={paymentConfirm.cashGiven}
+        onConfirm={() => closePaymentConfirm(true)}
+        onCancel={() => closePaymentConfirm(false)}
+      />
     </>
   );
 
