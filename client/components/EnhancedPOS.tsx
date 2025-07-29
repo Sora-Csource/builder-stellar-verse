@@ -9820,7 +9820,7 @@ const EnhancedPOS: React.FC = () => {
                                   </h5>
                                   <ul className="text-sm text-gray-600 space-y-1">
                                     <li>
-                                      ��� Pastikan printer Bluetooth sudah dalam
+                                      ⚙️ Pastikan printer Bluetooth sudah dalam
                                       mode pairing
                                     </li>
                                     <li>
