@@ -741,7 +741,7 @@ export const PaymentConfirmModal: React.FC<PaymentConfirmModalProps> = ({
       aria-modal="true"
       aria-labelledby="payment-confirm-title"
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all animate-scaleIn scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
         {/* Header */}
         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-xl">
           <div className="flex items-center space-x-3">
