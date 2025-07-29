@@ -4925,6 +4925,260 @@ const EnhancedPOS: React.FC = () => {
                 </div>
               )}
 
+            {/* Data Management Module */}
+            {activeModule === "data-management" &&
+              hasModuleAccess("data-management") && (
+                <div>
+                  <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+                    🗂️ Data Management
+                  </h2>
+
+                  {/* Data Management Tabs */}
+                  <div className="mb-6">
+                    <div className="bg-gray-50 p-1 rounded-lg inline-flex">
+                      <button
+                        onClick={() => setActiveDataTab("import")}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeDataTab === "import"
+                            ? "bg-white text-indigo-600 shadow-sm"
+                            : "text-gray-600 hover:text-gray-800 hover:bg-white/50"
+                        }`}
+                      >
+                        📥 Import Data
+                      </button>
+                      <button
+                        onClick={() => setActiveDataTab("export")}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeDataTab === "export"
+                            ? "bg-white text-indigo-600 shadow-sm"
+                            : "text-gray-600 hover:text-gray-800 hover:bg-white/50"
+                        }`}
+                      >
+                        📤 Export Data
+                      </button>
+                      <button
+                        onClick={() => setActiveDataTab("backup")}
+                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                          activeDataTab === "backup"
+                            ? "bg-white text-indigo-600 shadow-sm"
+                            : "text-gray-600 hover:text-gray-800 hover:bg-white/50"
+                        }`}
+                      >
+                        💾 Backup
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Import Tab */}
+                  {activeDataTab === "import" && (
+                    <div className="space-y-6">
+                      <div className="bg-white p-6 rounded-lg shadow">
+                        <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                          Import Data dari CSV
+                        </h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Import Products */}
+                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h4 className="font-semibold text-blue-800 mb-3">Import Produk</h4>
+                            <p className="text-sm text-blue-700 mb-4">
+                              Upload file CSV dengan data produk untuk ditambahkan ke sistem.
+                            </p>
+                            <input
+                              type="file"
+                              accept=".csv"
+                              onChange={(e) => handleImportProducts(e.target.files?.[0])}
+                              className="w-full text-sm text-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
+                            />
+                            <div className="mt-3 text-xs text-blue-600">
+                              Format: name, category, price, stock, unit
+                            </div>
+                          </div>
+
+                          {/* Import Customers */}
+                          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 className="font-semibold text-green-800 mb-3">Import Pelanggan</h4>
+                            <p className="text-sm text-green-700 mb-4">
+                              Upload file CSV dengan data pelanggan untuk ditambahkan ke sistem.
+                            </p>
+                            <input
+                              type="file"
+                              accept=".csv"
+                              onChange={(e) => handleImportCustomers(e.target.files?.[0])}
+                              className="w-full text-sm text-green-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700"
+                            />
+                            <div className="mt-3 text-xs text-green-600">
+                              Format: name, phone, email, address
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Download Templates */}
+                        <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold text-gray-800 mb-3">Download Template CSV</h4>
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              onClick={() => downloadCSVTemplate("products")}
+                              className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition duration-200"
+                            >
+                              📄 Template Produk
+                            </button>
+                            <button
+                              onClick={() => downloadCSVTemplate("customers")}
+                              className="bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition duration-200"
+                            >
+                              📄 Template Pelanggan
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Export Tab */}
+                  {activeDataTab === "export" && (
+                    <div className="space-y-6">
+                      <div className="bg-white p-6 rounded-lg shadow">
+                        <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                          Export Data ke CSV/JSON
+                        </h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {/* Export Products */}
+                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <h4 className="font-semibold text-blue-800 mb-3">Export Produk</h4>
+                            <p className="text-sm text-blue-700 mb-4">
+                              {products.length} produk tersedia
+                            </p>
+                            <div className="space-y-2">
+                              <button
+                                onClick={() => exportData("products", "csv")}
+                                className="w-full bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition duration-200"
+                              >
+                                📊 Export CSV
+                              </button>
+                              <button
+                                onClick={() => exportData("products", "json")}
+                                className="w-full bg-blue-500 text-white px-3 py-2 rounded text-sm hover:bg-blue-600 transition duration-200"
+                              >
+                                📋 Export JSON
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Export Customers */}
+                          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <h4 className="font-semibold text-green-800 mb-3">Export Pelanggan</h4>
+                            <p className="text-sm text-green-700 mb-4">
+                              {customers.length} pelanggan tersedia
+                            </p>
+                            <div className="space-y-2">
+                              <button
+                                onClick={() => exportData("customers", "csv")}
+                                className="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition duration-200"
+                              >
+                                📊 Export CSV
+                              </button>
+                              <button
+                                onClick={() => exportData("customers", "json")}
+                                className="w-full bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 transition duration-200"
+                              >
+                                📋 Export JSON
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Export Sales */}
+                          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <h4 className="font-semibold text-purple-800 mb-3">Export Penjualan</h4>
+                            <p className="text-sm text-purple-700 mb-4">
+                              {sales.length} transaksi tersedia
+                            </p>
+                            <div className="space-y-2">
+                              <button
+                                onClick={() => exportData("sales", "csv")}
+                                className="w-full bg-purple-600 text-white px-3 py-2 rounded text-sm hover:bg-purple-700 transition duration-200"
+                              >
+                                📊 Export CSV
+                              </button>
+                              <button
+                                onClick={() => exportData("sales", "json")}
+                                className="w-full bg-purple-500 text-white px-3 py-2 rounded text-sm hover:bg-purple-600 transition duration-200"
+                              >
+                                📋 Export JSON
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Backup Tab */}
+                  {activeDataTab === "backup" && (
+                    <div className="space-y-6">
+                      <div className="bg-white p-6 rounded-lg shadow">
+                        <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                          Backup & Restore Data
+                        </h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Create Backup */}
+                          <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
+                            <h4 className="font-semibold text-indigo-800 mb-4">Buat Backup</h4>
+                            <p className="text-sm text-indigo-700 mb-6">
+                              Backup semua data aplikasi termasuk produk, pelanggan, penjualan, dan pengaturan.
+                            </p>
+                            <button
+                              onClick={createFullBackup}
+                              className="w-full bg-indigo-600 text-white px-4 py-3 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
+                            >
+                              💾 Buat Backup Lengkap
+                            </button>
+                          </div>
+
+                          {/* Restore Backup */}
+                          <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
+                            <h4 className="font-semibold text-orange-800 mb-4">Restore Backup</h4>
+                            <p className="text-sm text-orange-700 mb-6">
+                              Restore data dari file backup. Perhatian: Ini akan mengganti semua data yang ada.
+                            </p>
+                            <input
+                              type="file"
+                              accept=".json"
+                              onChange={(e) => handleRestoreBackup(e.target.files?.[0])}
+                              className="w-full text-sm text-orange-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-600 file:text-white hover:file:bg-orange-700"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Auto Backup Settings */}
+                        <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold text-gray-800 mb-3">Pengaturan Auto Backup</h4>
+                          <div className="flex items-center space-x-3">
+                            <input
+                              type="checkbox"
+                              id="autoBackup"
+                              checked={settings.autoBackupEnabled || false}
+                              onChange={(e) =>
+                                setSettings({
+                                  ...settings,
+                                  autoBackupEnabled: e.target.checked,
+                                })
+                              }
+                              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <label htmlFor="autoBackup" className="text-gray-700 font-medium">
+                              Aktifkan backup otomatis harian
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
             {/* Reports Module */}
             {activeModule === "reports" && hasModuleAccess("reports") && (
               <div>
@@ -5170,7 +5424,7 @@ const EnhancedPOS: React.FC = () => {
                           }}
                           className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
                         >
-                          ��� Ekspor Produk
+                          ���� Ekspor Produk
                         </button>
                       </div>
                     </div>
