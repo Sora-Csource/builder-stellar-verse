@@ -2259,11 +2259,13 @@ const EnhancedPOS: React.FC = () => {
       return;
     }
 
-    // Enhanced payment confirmation dialog
-    const confirmed = await showConfirm(
+    // Enhanced payment confirmation dialog with detailed breakdown
+    const confirmed = await showPaymentConfirm(
       "Konfirmasi Pembayaran",
-      `Apakah Anda yakin ingin memproses pembayaran?\n\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nMetode Pembayaran: ${paymentMethod === "cash" ? "Tunai" : paymentMethod === "card" ? "Kartu" : "E-Wallet"}${paymentMethod === "cash" ? `\nUang Diterima: ${formatCurrency(cashGiven)}\nKembalian: ${formatCurrency(cashGiven - finalTotal)}` : ""}`,
-      "info",
+      cart,
+      finalTotal,
+      paymentMethod,
+      cashGiven
     );
     if (confirmed) {
       try {
