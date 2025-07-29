@@ -215,7 +215,9 @@ const EnhancedPOS: React.FC = () => {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  );
   const [selectedUserForPermissions, setSelectedUserForPermissions] =
     useState<User | null>(null);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
@@ -227,7 +229,8 @@ const EnhancedPOS: React.FC = () => {
   const [saleCounter, setSaleCounter] = useState<number>(1);
 
   // Processing state to prevent duplicate payments
-  const [isProcessingPayment, setIsProcessingPayment] = useState<boolean>(false);
+  const [isProcessingPayment, setIsProcessingPayment] =
+    useState<boolean>(false);
 
   // Form states
   const [productSearch, setProductSearch] = useState("");
@@ -537,20 +540,23 @@ const EnhancedPOS: React.FC = () => {
 
       switch (settings.saleIdDateFormat) {
         case "DDMMYYYY":
-          dateStr = now.getDate().toString().padStart(2, '0') +
-                   (now.getMonth() + 1).toString().padStart(2, '0') +
-                   now.getFullYear().toString();
+          dateStr =
+            now.getDate().toString().padStart(2, "0") +
+            (now.getMonth() + 1).toString().padStart(2, "0") +
+            now.getFullYear().toString();
           break;
         case "MMDDYYYY":
-          dateStr = (now.getMonth() + 1).toString().padStart(2, '0') +
-                   now.getDate().toString().padStart(2, '0') +
-                   now.getFullYear().toString();
+          dateStr =
+            (now.getMonth() + 1).toString().padStart(2, "0") +
+            now.getDate().toString().padStart(2, "0") +
+            now.getFullYear().toString();
           break;
         case "YYYYMMDD":
         default:
-          dateStr = now.getFullYear().toString() +
-                   (now.getMonth() + 1).toString().padStart(2, '0') +
-                   now.getDate().toString().padStart(2, '0');
+          dateStr =
+            now.getFullYear().toString() +
+            (now.getMonth() + 1).toString().padStart(2, "0") +
+            now.getDate().toString().padStart(2, "0");
           break;
       }
 
@@ -560,7 +566,7 @@ const EnhancedPOS: React.FC = () => {
 
     // Add counter with timestamp to ensure uniqueness
     const counterLength = settings.saleIdCounterLength || 4;
-    const counterStr = saleCounter.toString().padStart(counterLength, '0');
+    const counterStr = saleCounter.toString().padStart(counterLength, "0");
 
     if (saleId) saleId += "-";
     saleId += counterStr;
@@ -571,7 +577,7 @@ const EnhancedPOS: React.FC = () => {
     }
 
     // Increment counter for next sale
-    setSaleCounter(prev => prev + 1);
+    setSaleCounter((prev) => prev + 1);
 
     return saleId;
   };
@@ -704,31 +710,36 @@ const EnhancedPOS: React.FC = () => {
 
   // Global Search Function
   const performGlobalSearch = (query: string) => {
-    if (!query.trim()) return { products: [], customers: [], sales: [], expenses: [] };
+    if (!query.trim())
+      return { products: [], customers: [], sales: [], expenses: [] };
 
     const searchTerm = query.toLowerCase();
 
     return {
-      products: products.filter(p =>
-        p.name.toLowerCase().includes(searchTerm) ||
-        p.category.toLowerCase().includes(searchTerm) ||
-        p.id.toLowerCase().includes(searchTerm)
+      products: products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(searchTerm) ||
+          p.category.toLowerCase().includes(searchTerm) ||
+          p.id.toLowerCase().includes(searchTerm),
       ),
-      customers: customers.filter(c =>
-        c.name.toLowerCase().includes(searchTerm) ||
-        c.phone.includes(searchTerm) ||
-        c.email.toLowerCase().includes(searchTerm) ||
-        c.id.toLowerCase().includes(searchTerm)
+      customers: customers.filter(
+        (c) =>
+          c.name.toLowerCase().includes(searchTerm) ||
+          c.phone.includes(searchTerm) ||
+          c.email.toLowerCase().includes(searchTerm) ||
+          c.id.toLowerCase().includes(searchTerm),
       ),
-      sales: sales.filter(s =>
-        s.id.toLowerCase().includes(searchTerm) ||
-        s.items.some(item => item.name.toLowerCase().includes(searchTerm))
+      sales: sales.filter(
+        (s) =>
+          s.id.toLowerCase().includes(searchTerm) ||
+          s.items.some((item) => item.name.toLowerCase().includes(searchTerm)),
       ),
-      expenses: expenses.filter(e =>
-        e.description.toLowerCase().includes(searchTerm) ||
-        e.category.toLowerCase().includes(searchTerm) ||
-        (e.supplier && e.supplier.toLowerCase().includes(searchTerm))
-      )
+      expenses: expenses.filter(
+        (e) =>
+          e.description.toLowerCase().includes(searchTerm) ||
+          e.category.toLowerCase().includes(searchTerm) ||
+          (e.supplier && e.supplier.toLowerCase().includes(searchTerm)),
+      ),
     };
   };
 
@@ -738,13 +749,13 @@ const EnhancedPOS: React.FC = () => {
 
     try {
       const text = await file.text();
-      const lines = text.split('\n');
-      const headers = lines[0].split(',').map(h => h.trim());
+      const lines = text.split("\n");
+      const headers = lines[0].split(",").map((h) => h.trim());
 
       const newProducts: Product[] = [];
 
       for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
+        const values = lines[i].split(",").map((v) => v.trim());
         if (values.length === headers.length && values[0]) {
           const product: Product = {
             id: generateUniqueId(),
@@ -758,8 +769,12 @@ const EnhancedPOS: React.FC = () => {
         }
       }
 
-      setProducts(prev => [...prev, ...newProducts]);
-      showAlert("Berhasil", `${newProducts.length} produk berhasil diimpor`, "success");
+      setProducts((prev) => [...prev, ...newProducts]);
+      showAlert(
+        "Berhasil",
+        `${newProducts.length} produk berhasil diimpor`,
+        "success",
+      );
     } catch (error) {
       showAlert("Error", "Gagal mengimpor file CSV", "error");
     }
@@ -770,13 +785,13 @@ const EnhancedPOS: React.FC = () => {
 
     try {
       const text = await file.text();
-      const lines = text.split('\n');
-      const headers = lines[0].split(',').map(h => h.trim());
+      const lines = text.split("\n");
+      const headers = lines[0].split(",").map((h) => h.trim());
 
       const newCustomers: Customer[] = [];
 
       for (let i = 1; i < lines.length; i++) {
-        const values = lines[i].split(',').map(v => v.trim());
+        const values = lines[i].split(",").map((v) => v.trim());
         if (values.length === headers.length && values[0]) {
           const customer: Customer = {
             id: generateUniqueId(),
@@ -793,8 +808,12 @@ const EnhancedPOS: React.FC = () => {
         }
       }
 
-      setCustomers(prev => [...prev, ...newCustomers]);
-      showAlert("Berhasil", `${newCustomers.length} pelanggan berhasil diimpor`, "success");
+      setCustomers((prev) => [...prev, ...newCustomers]);
+      showAlert(
+        "Berhasil",
+        `${newCustomers.length} pelanggan berhasil diimpor`,
+        "success",
+      );
     } catch (error) {
       showAlert("Error", "Gagal mengimpor file CSV", "error");
     }
@@ -809,20 +828,25 @@ const EnhancedPOS: React.FC = () => {
       csvContent += "Contoh Minuman,Minuman,8000,50,botol\n";
     } else if (type === "customers") {
       csvContent = "name,phone,email,address\n";
-      csvContent += "John Doe,081234567890,john@example.com,Jl. Contoh No. 123\n";
-      csvContent += "Jane Smith,081987654321,jane@example.com,Jl. Sample No. 456\n";
+      csvContent +=
+        "John Doe,081234567890,john@example.com,Jl. Contoh No. 123\n";
+      csvContent +=
+        "Jane Smith,081987654321,jane@example.com,Jl. Sample No. 456\n";
     }
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `template_${type}.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
 
-  const exportData = (type: "products" | "customers" | "sales", format: "csv" | "json") => {
+  const exportData = (
+    type: "products" | "customers" | "sales",
+    format: "csv" | "json",
+  ) => {
     let data: any[] = [];
     let filename = "";
 
@@ -846,34 +870,40 @@ const EnhancedPOS: React.FC = () => {
       if (data.length > 0) {
         const headers = Object.keys(data[0]);
         csvContent = headers.join(",") + "\n";
-        data.forEach(item => {
-          const values = headers.map(header => {
+        data.forEach((item) => {
+          const values = headers.map((header) => {
             const value = item[header];
-            return typeof value === 'string' && value.includes(',') ? `"${value}"` : value;
+            return typeof value === "string" && value.includes(",")
+              ? `"${value}"`
+              : value;
           });
           csvContent += values.join(",") + "\n";
         });
       }
 
-      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const blob = new Blob([csvContent], { type: "text/csv" });
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `${filename}_${new Date().toISOString().split("T")[0]}.csv`;
       a.click();
       window.URL.revokeObjectURL(url);
     } else if (format === "json") {
       const jsonContent = JSON.stringify(data, null, 2);
-      const blob = new Blob([jsonContent], { type: 'application/json' });
+      const blob = new Blob([jsonContent], { type: "application/json" });
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `${filename}_${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `${filename}_${new Date().toISOString().split("T")[0]}.json`;
       a.click();
       window.URL.revokeObjectURL(url);
     }
 
-    showAlert("Berhasil", `Data ${type} berhasil diekspor dalam format ${format.toUpperCase()}`, "success");
+    showAlert(
+      "Berhasil",
+      `Data ${type} berhasil diekspor dalam format ${format.toUpperCase()}`,
+      "success",
+    );
   };
 
   const createFullBackup = () => {
@@ -888,15 +918,15 @@ const EnhancedPOS: React.FC = () => {
         users,
         shifts,
         settings,
-      }
+      },
     };
 
     const jsonContent = JSON.stringify(backupData, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const blob = new Blob([jsonContent], { type: "application/json" });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `backup_${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     window.URL.revokeObjectURL(url);
 
@@ -909,7 +939,7 @@ const EnhancedPOS: React.FC = () => {
     const confirmed = await showConfirm(
       "Konfirmasi Restore",
       "Apakah Anda yakin ingin restore backup? Semua data saat ini akan diganti.",
-      "danger"
+      "danger",
     );
 
     if (confirmed) {
@@ -919,14 +949,19 @@ const EnhancedPOS: React.FC = () => {
 
         if (backupData.data) {
           if (backupData.data.products) setProducts(backupData.data.products);
-          if (backupData.data.customers) setCustomers(backupData.data.customers);
+          if (backupData.data.customers)
+            setCustomers(backupData.data.customers);
           if (backupData.data.sales) setSales(backupData.data.sales);
           if (backupData.data.expenses) setExpenses(backupData.data.expenses);
           if (backupData.data.users) setUsers(backupData.data.users);
           if (backupData.data.shifts) setShifts(backupData.data.shifts);
           if (backupData.data.settings) setSettings(backupData.data.settings);
 
-          showAlert("Berhasil", "Data berhasil direstore dari backup", "success");
+          showAlert(
+            "Berhasil",
+            "Data berhasil direstore dari backup",
+            "success",
+          );
         } else {
           showAlert("Error", "Format backup tidak valid", "error");
         }
@@ -2225,7 +2260,7 @@ const EnhancedPOS: React.FC = () => {
 
     // Temporary fix: use native confirm for debugging
     const confirmed = window.confirm(
-      `Konfirmasi Pembayaran\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nLanjutkan pembayaran?`
+      `Konfirmasi Pembayaran\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nLanjutkan pembayaran?`,
     );
     if (confirmed) {
       try {
@@ -2311,7 +2346,9 @@ const EnhancedPOS: React.FC = () => {
 
         // Show success modal with print option
         console.log("About to show success");
-        alert(`Pembayaran Berhasil!\nTransaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`);
+        alert(
+          `Pembayaran Berhasil!\nTransaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
+        );
 
         // Print receipt directly
         printReceipt(newSale);
@@ -2866,7 +2903,11 @@ const EnhancedPOS: React.FC = () => {
       saleIdDateFormat: settingsForm.saleIdDateFormat,
     });
 
-    showAlert("Berhasil", `Pengaturan ${activeSettingsTab === "saleid" ? "ID Penjualan" : "umum"} berhasil disimpan.`, "success");
+    showAlert(
+      "Berhasil",
+      `Pengaturan ${activeSettingsTab === "saleid" ? "ID Penjualan" : "umum"} berhasil disimpan.`,
+      "success",
+    );
   };
 
   // Handle logo upload
@@ -3412,7 +3453,8 @@ const EnhancedPOS: React.FC = () => {
       saleIdPrefix: settings.saleIdPrefix || "TRX",
       saleIdSuffix: settings.saleIdSuffix || "",
       saleIdCounterLength: settings.saleIdCounterLength || 4,
-      saleIdUseDate: settings.saleIdUseDate !== undefined ? settings.saleIdUseDate : true,
+      saleIdUseDate:
+        settings.saleIdUseDate !== undefined ? settings.saleIdUseDate : true,
       saleIdDateFormat: settings.saleIdDateFormat || "YYYYMMDD",
     });
   }, [settings]);
@@ -4077,9 +4119,15 @@ const EnhancedPOS: React.FC = () => {
                       value={globalSearch}
                       onChange={(e) => {
                         setGlobalSearch(e.target.value);
-                        setShowGlobalSearchResults(e.target.value.trim().length > 0);
+                        setShowGlobalSearchResults(
+                          e.target.value.trim().length > 0,
+                        );
                       }}
-                      onFocus={() => setShowGlobalSearchResults(globalSearch.trim().length > 0)}
+                      onFocus={() =>
+                        setShowGlobalSearchResults(
+                          globalSearch.trim().length > 0,
+                        )
+                      }
                       className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                       placeholder="Cari produk, pelanggan, transaksi..."
                     />
@@ -4106,8 +4154,18 @@ const EnhancedPOS: React.FC = () => {
                       }}
                       className="text-gray-400 hover:text-gray-600"
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   )}
@@ -4118,7 +4176,11 @@ const EnhancedPOS: React.FC = () => {
                   <div className="absolute top-12 right-0 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
                     {(() => {
                       const results = performGlobalSearch(globalSearch);
-                      const hasResults = results.products.length > 0 || results.customers.length > 0 || results.sales.length > 0 || results.expenses.length > 0;
+                      const hasResults =
+                        results.products.length > 0 ||
+                        results.customers.length > 0 ||
+                        results.sales.length > 0 ||
+                        results.expenses.length > 0;
 
                       if (!hasResults) {
                         return (
@@ -4135,7 +4197,7 @@ const EnhancedPOS: React.FC = () => {
                               <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-blue-50">
                                 Produk ({results.products.length})
                               </h4>
-                              {results.products.slice(0, 3).map(product => (
+                              {results.products.slice(0, 3).map((product) => (
                                 <div
                                   key={product.id}
                                   onClick={() => {
@@ -4146,8 +4208,12 @@ const EnhancedPOS: React.FC = () => {
                                   }}
                                   className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
                                 >
-                                  <div className="font-medium text-sm">{product.name}</div>
-                                  <div className="text-xs text-gray-500">{product.category} • Stok: {product.stock}</div>
+                                  <div className="font-medium text-sm">
+                                    {product.name}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {product.category} • Stok: {product.stock}
+                                  </div>
                                 </div>
                               ))}
                               {results.products.length > 3 && (
@@ -4163,7 +4229,7 @@ const EnhancedPOS: React.FC = () => {
                               <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-green-50">
                                 Pelanggan ({results.customers.length})
                               </h4>
-                              {results.customers.slice(0, 3).map(customer => (
+                              {results.customers.slice(0, 3).map((customer) => (
                                 <div
                                   key={customer.id}
                                   onClick={() => {
@@ -4174,13 +4240,18 @@ const EnhancedPOS: React.FC = () => {
                                   }}
                                   className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
                                 >
-                                  <div className="font-medium text-sm">{customer.name}</div>
-                                  <div className="text-xs text-gray-500">{customer.phone} • {customer.tier}</div>
+                                  <div className="font-medium text-sm">
+                                    {customer.name}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {customer.phone} • {customer.tier}
+                                  </div>
                                 </div>
                               ))}
                               {results.customers.length > 3 && (
                                 <div className="px-3 py-1 text-xs text-green-600">
-                                  +{results.customers.length - 3} pelanggan lainnya
+                                  +{results.customers.length - 3} pelanggan
+                                  lainnya
                                 </div>
                               )}
                             </div>
@@ -4202,9 +4273,14 @@ const EnhancedPOS: React.FC = () => {
                                   }}
                                   className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
                                 >
-                                  <div className="font-medium text-sm">ID: {sale.id}</div>
+                                  <div className="font-medium text-sm">
+                                    ID: {sale.id}
+                                  </div>
                                   <div className="text-xs text-gray-500">
-                                    {formatCurrency(sale.totalAmount)} • {new Date(sale.date).toLocaleDateString("id-ID")}
+                                    {formatCurrency(sale.totalAmount)} •{" "}
+                                    {new Date(sale.date).toLocaleDateString(
+                                      "id-ID",
+                                    )}
                                   </div>
                                 </div>
                               ))}
@@ -4221,7 +4297,7 @@ const EnhancedPOS: React.FC = () => {
                               <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-red-50">
                                 Pengeluaran ({results.expenses.length})
                               </h4>
-                              {results.expenses.slice(0, 3).map(expense => (
+                              {results.expenses.slice(0, 3).map((expense) => (
                                 <div
                                   key={expense.id}
                                   onClick={() => {
@@ -4232,15 +4308,19 @@ const EnhancedPOS: React.FC = () => {
                                   }}
                                   className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
                                 >
-                                  <div className="font-medium text-sm">{expense.description}</div>
+                                  <div className="font-medium text-sm">
+                                    {expense.description}
+                                  </div>
                                   <div className="text-xs text-gray-500">
-                                    {formatCurrency(expense.amount)} • {expense.category}
+                                    {formatCurrency(expense.amount)} •{" "}
+                                    {expense.category}
                                   </div>
                                 </div>
                               ))}
                               {results.expenses.length > 3 && (
                                 <div className="px-3 py-1 text-xs text-red-600">
-                                  +{results.expenses.length - 3} pengeluaran lainnya
+                                  +{results.expenses.length - 3} pengeluaran
+                                  lainnya
                                 </div>
                               )}
                             </div>
@@ -4615,21 +4695,32 @@ const EnhancedPOS: React.FC = () => {
                                   <select
                                     value={selectedCustomer?.id || ""}
                                     onChange={(e) => {
-                                      const customer = customers.find(c => c.id === e.target.value);
+                                      const customer = customers.find(
+                                        (c) => c.id === e.target.value,
+                                      );
                                       setSelectedCustomer(customer || null);
                                     }}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                                   >
-                                    <option value="">Tidak ada pelanggan</option>
+                                    <option value="">
+                                      Tidak ada pelanggan
+                                    </option>
                                     {customers.map((customer) => (
-                                      <option key={customer.id} value={customer.id}>
-                                        {customer.name} {customer.loyaltyPoints ? `(${customer.loyaltyPoints} pts)` : ''}
+                                      <option
+                                        key={customer.id}
+                                        value={customer.id}
+                                      >
+                                        {customer.name}{" "}
+                                        {customer.loyaltyPoints
+                                          ? `(${customer.loyaltyPoints} pts)`
+                                          : ""}
                                       </option>
                                     ))}
                                   </select>
                                   {selectedCustomer && (
                                     <div className="mt-2 text-sm text-blue-600">
-                                      Tier: {selectedCustomer.tier} | Points: {selectedCustomer.loyaltyPoints || 0}
+                                      Tier: {selectedCustomer.tier} | Points:{" "}
+                                      {selectedCustomer.loyaltyPoints || 0}
                                     </div>
                                   )}
                                 </div>
@@ -4817,7 +4908,9 @@ const EnhancedPOS: React.FC = () => {
                                     : "bg-indigo-600 text-white hover:bg-indigo-700"
                                 }`}
                               >
-                                {isProcessingPayment ? "Memproses..." : "Proses Pembayaran"}
+                                {isProcessingPayment
+                                  ? "Memproses..."
+                                  : "Proses Pembayaran"}
                               </button>
                             </>
                           );
@@ -5574,14 +5667,19 @@ const EnhancedPOS: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Import Products */}
                           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <h4 className="font-semibold text-blue-800 mb-3">Import Produk</h4>
+                            <h4 className="font-semibold text-blue-800 mb-3">
+                              Import Produk
+                            </h4>
                             <p className="text-sm text-blue-700 mb-4">
-                              Upload file CSV dengan data produk untuk ditambahkan ke sistem.
+                              Upload file CSV dengan data produk untuk
+                              ditambahkan ke sistem.
                             </p>
                             <input
                               type="file"
                               accept=".csv"
-                              onChange={(e) => handleImportProducts(e.target.files?.[0])}
+                              onChange={(e) =>
+                                handleImportProducts(e.target.files?.[0])
+                              }
                               className="w-full text-sm text-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                             />
                             <div className="mt-3 text-xs text-blue-600">
@@ -5591,14 +5689,19 @@ const EnhancedPOS: React.FC = () => {
 
                           {/* Import Customers */}
                           <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                            <h4 className="font-semibold text-green-800 mb-3">Import Pelanggan</h4>
+                            <h4 className="font-semibold text-green-800 mb-3">
+                              Import Pelanggan
+                            </h4>
                             <p className="text-sm text-green-700 mb-4">
-                              Upload file CSV dengan data pelanggan untuk ditambahkan ke sistem.
+                              Upload file CSV dengan data pelanggan untuk
+                              ditambahkan ke sistem.
                             </p>
                             <input
                               type="file"
                               accept=".csv"
-                              onChange={(e) => handleImportCustomers(e.target.files?.[0])}
+                              onChange={(e) =>
+                                handleImportCustomers(e.target.files?.[0])
+                              }
                               className="w-full text-sm text-green-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-600 file:text-white hover:file:bg-green-700"
                             />
                             <div className="mt-3 text-xs text-green-600">
@@ -5609,7 +5712,9 @@ const EnhancedPOS: React.FC = () => {
 
                         {/* Download Templates */}
                         <div className="mt-6 bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-semibold text-gray-800 mb-3">Download Template CSV</h4>
+                          <h4 className="font-semibold text-gray-800 mb-3">
+                            Download Template CSV
+                          </h4>
                           <div className="flex flex-wrap gap-2">
                             <button
                               onClick={() => downloadCSVTemplate("products")}
@@ -5640,7 +5745,9 @@ const EnhancedPOS: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {/* Export Products */}
                           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <h4 className="font-semibold text-blue-800 mb-3">Export Produk</h4>
+                            <h4 className="font-semibold text-blue-800 mb-3">
+                              Export Produk
+                            </h4>
                             <p className="text-sm text-blue-700 mb-4">
                               {products.length} produk tersedia
                             </p>
@@ -5662,7 +5769,9 @@ const EnhancedPOS: React.FC = () => {
 
                           {/* Export Customers */}
                           <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                            <h4 className="font-semibold text-green-800 mb-3">Export Pelanggan</h4>
+                            <h4 className="font-semibold text-green-800 mb-3">
+                              Export Pelanggan
+                            </h4>
                             <p className="text-sm text-green-700 mb-4">
                               {customers.length} pelanggan tersedia
                             </p>
@@ -5684,7 +5793,9 @@ const EnhancedPOS: React.FC = () => {
 
                           {/* Export Sales */}
                           <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                            <h4 className="font-semibold text-purple-800 mb-3">Export Penjualan</h4>
+                            <h4 className="font-semibold text-purple-800 mb-3">
+                              Export Penjualan
+                            </h4>
                             <p className="text-sm text-purple-700 mb-4">
                               {sales.length} transaksi tersedia
                             </p>
@@ -5719,9 +5830,12 @@ const EnhancedPOS: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {/* Create Backup */}
                           <div className="bg-indigo-50 p-6 rounded-lg border border-indigo-200">
-                            <h4 className="font-semibold text-indigo-800 mb-4">Buat Backup</h4>
+                            <h4 className="font-semibold text-indigo-800 mb-4">
+                              Buat Backup
+                            </h4>
                             <p className="text-sm text-indigo-700 mb-6">
-                              Backup semua data aplikasi termasuk produk, pelanggan, penjualan, dan pengaturan.
+                              Backup semua data aplikasi termasuk produk,
+                              pelanggan, penjualan, dan pengaturan.
                             </p>
                             <button
                               onClick={createFullBackup}
@@ -5733,14 +5847,19 @@ const EnhancedPOS: React.FC = () => {
 
                           {/* Restore Backup */}
                           <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                            <h4 className="font-semibold text-orange-800 mb-4">Restore Backup</h4>
+                            <h4 className="font-semibold text-orange-800 mb-4">
+                              Restore Backup
+                            </h4>
                             <p className="text-sm text-orange-700 mb-6">
-                              Restore data dari file backup. Perhatian: Ini akan mengganti semua data yang ada.
+                              Restore data dari file backup. Perhatian: Ini akan
+                              mengganti semua data yang ada.
                             </p>
                             <input
                               type="file"
                               accept=".json"
-                              onChange={(e) => handleRestoreBackup(e.target.files?.[0])}
+                              onChange={(e) =>
+                                handleRestoreBackup(e.target.files?.[0])
+                              }
                               className="w-full text-sm text-orange-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-600 file:text-white hover:file:bg-orange-700"
                             />
                           </div>
@@ -5748,7 +5867,9 @@ const EnhancedPOS: React.FC = () => {
 
                         {/* Auto Backup Settings */}
                         <div className="mt-6 bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-semibold text-gray-800 mb-3">Pengaturan Auto Backup</h4>
+                          <h4 className="font-semibold text-gray-800 mb-3">
+                            Pengaturan Auto Backup
+                          </h4>
                           <div className="flex items-center space-x-3">
                             <input
                               type="checkbox"
@@ -5762,7 +5883,10 @@ const EnhancedPOS: React.FC = () => {
                               }
                               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                             />
-                            <label htmlFor="autoBackup" className="text-gray-700 font-medium">
+                            <label
+                              htmlFor="autoBackup"
+                              className="text-gray-700 font-medium"
+                            >
                               Aktifkan backup otomatis harian
                             </label>
                           </div>
@@ -5843,8 +5967,9 @@ const EnhancedPOS: React.FC = () => {
 
                     <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mb-4">
                       <p className="text-sm text-yellow-800">
-                        💡 <strong>Tampilan Default:</strong> Hanya menampilkan transaksi shift saat ini.
-                        Gunakan filter tanggal untuk melihat data historis.
+                        💡 <strong>Tampilan Default:</strong> Hanya menampilkan
+                        transaksi shift saat ini. Gunakan filter tanggal untuk
+                        melihat data historis.
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -6450,17 +6575,22 @@ const EnhancedPOS: React.FC = () => {
                               </td>
                             </tr>
                           ) : (
-                          getFilteredSales()
-                            .filter((sale, index, self) =>
-                              self.findIndex(s => s.id === sale.id) === index
-                            )
-                            .sort(
-                              (a, b) =>
-                                new Date(b.date).getTime() -
-                                new Date(a.date).getTime(),
-                            )
-                            .map((sale, index) => (
-                              <tr key={`${sale.id}-${index}`} className="even:bg-gray-50">
+                            getFilteredSales()
+                              .filter(
+                                (sale, index, self) =>
+                                  self.findIndex((s) => s.id === sale.id) ===
+                                  index,
+                              )
+                              .sort(
+                                (a, b) =>
+                                  new Date(b.date).getTime() -
+                                  new Date(a.date).getTime(),
+                              )
+                              .map((sale, index) => (
+                                <tr
+                                  key={`${sale.id}-${index}`}
+                                  className="even:bg-gray-50"
+                                >
                                   <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
                                     {sale.id}
                                   </td>
@@ -7623,38 +7753,66 @@ const EnhancedPOS: React.FC = () => {
                               </h4>
                               {(() => {
                                 try {
-                                  const last7Days = Array.from({ length: 7 }, (_, i) => {
-                                    const date = new Date();
-                                    date.setDate(date.getDate() - i);
-                                    return date.toISOString().split('T')[0];
-                                  }).reverse();
+                                  const last7Days = Array.from(
+                                    { length: 7 },
+                                    (_, i) => {
+                                      const date = new Date();
+                                      date.setDate(date.getDate() - i);
+                                      return date.toISOString().split("T")[0];
+                                    },
+                                  ).reverse();
 
-                                  const dailySales = last7Days.map(date => {
-                                    const dayStart = new Date(date + 'T00:00:00');
-                                    const dayEnd = new Date(date + 'T23:59:59');
-                                    const daySales = sales.filter(sale => {
+                                  const dailySales = last7Days.map((date) => {
+                                    const dayStart = new Date(
+                                      date + "T00:00:00",
+                                    );
+                                    const dayEnd = new Date(date + "T23:59:59");
+                                    const daySales = sales.filter((sale) => {
                                       const saleDate = new Date(sale.date);
-                                      return saleDate >= dayStart && saleDate <= dayEnd && sale.status === 'completed';
+                                      return (
+                                        saleDate >= dayStart &&
+                                        saleDate <= dayEnd &&
+                                        sale.status === "completed"
+                                      );
                                     });
-                                    const total = daySales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
+                                    const total = daySales.reduce(
+                                      (sum, sale) =>
+                                        sum + (sale.totalAmount || 0),
+                                      0,
+                                    );
                                     return {
-                                      date: new Date(date).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric' }),
+                                      date: new Date(date).toLocaleDateString(
+                                        "id-ID",
+                                        { weekday: "short", day: "numeric" },
+                                      ),
                                       total,
-                                      count: daySales.length
+                                      count: daySales.length,
                                     };
                                   });
 
-                                  const maxTotal = Math.max(...dailySales.map(d => d.total));
+                                  const maxTotal = Math.max(
+                                    ...dailySales.map((d) => d.total),
+                                  );
 
                                   return (
                                     <div className="space-y-3">
                                       {dailySales.map((day, index) => (
-                                        <div key={index} className="flex items-center space-x-3">
-                                          <div className="w-12 text-xs text-gray-600">{day.date}</div>
+                                        <div
+                                          key={index}
+                                          className="flex items-center space-x-3"
+                                        >
+                                          <div className="w-12 text-xs text-gray-600">
+                                            {day.date}
+                                          </div>
                                           <div className="flex-1 bg-gray-200 rounded-full h-6 relative">
                                             <div
                                               className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                                              style={{ width: maxTotal > 0 ? `${(day.total / maxTotal) * 100}%` : '0%' }}
+                                              style={{
+                                                width:
+                                                  maxTotal > 0
+                                                    ? `${(day.total / maxTotal) * 100}%`
+                                                    : "0%",
+                                              }}
                                             >
                                               {day.total > 0 && (
                                                 <span className="text-xs text-white font-medium">
@@ -7663,7 +7821,9 @@ const EnhancedPOS: React.FC = () => {
                                               )}
                                             </div>
                                           </div>
-                                          <div className="w-8 text-xs text-gray-600">{day.count}</div>
+                                          <div className="w-8 text-xs text-gray-600">
+                                            {day.count}
+                                          </div>
                                         </div>
                                       ))}
                                     </div>
@@ -7685,52 +7845,79 @@ const EnhancedPOS: React.FC = () => {
                               </h4>
                               {(() => {
                                 try {
-                                  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                                  const recentSales = sales.filter(sale =>
-                                    new Date(sale.date) >= thirtyDaysAgo && sale.status === 'completed'
+                                  const thirtyDaysAgo = new Date(
+                                    Date.now() - 30 * 24 * 60 * 60 * 1000,
+                                  );
+                                  const recentSales = sales.filter(
+                                    (sale) =>
+                                      new Date(sale.date) >= thirtyDaysAgo &&
+                                      sale.status === "completed",
                                   );
 
-                                  const productSales: { [key: string]: { name: string; quantity: number; revenue: number } } = {};
+                                  const productSales: {
+                                    [key: string]: {
+                                      name: string;
+                                      quantity: number;
+                                      revenue: number;
+                                    };
+                                  } = {};
 
-                                  recentSales.forEach(sale => {
-                                    sale.items.forEach(item => {
+                                  recentSales.forEach((sale) => {
+                                    sale.items.forEach((item) => {
                                       if (!productSales[item.productId]) {
                                         productSales[item.productId] = {
                                           name: item.name,
                                           quantity: 0,
-                                          revenue: 0
+                                          revenue: 0,
                                         };
                                       }
-                                      productSales[item.productId].quantity += item.quantity;
-                                      productSales[item.productId].revenue += item.price * item.quantity;
+                                      productSales[item.productId].quantity +=
+                                        item.quantity;
+                                      productSales[item.productId].revenue +=
+                                        item.price * item.quantity;
                                     });
                                   });
 
-                                  const topProducts = Object.values(productSales)
+                                  const topProducts = Object.values(
+                                    productSales,
+                                  )
                                     .sort((a, b) => b.quantity - a.quantity)
                                     .slice(0, 5);
 
-                                  const maxQuantity = Math.max(...topProducts.map(p => p.quantity));
+                                  const maxQuantity = Math.max(
+                                    ...topProducts.map((p) => p.quantity),
+                                  );
 
                                   return topProducts.length > 0 ? (
                                     <div className="space-y-3">
                                       {topProducts.map((product, index) => (
-                                        <div key={index} className="flex items-center space-x-3">
+                                        <div
+                                          key={index}
+                                          className="flex items-center space-x-3"
+                                        >
                                           <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
                                             {index + 1}
                                           </div>
                                           <div className="flex-1">
-                                            <div className="font-medium text-gray-800 text-sm">{product.name}</div>
+                                            <div className="font-medium text-gray-800 text-sm">
+                                              {product.name}
+                                            </div>
                                             <div className="bg-gray-200 rounded-full h-3 mt-1">
                                               <div
                                                 className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full"
-                                                style={{ width: `${(product.quantity / maxQuantity) * 100}%` }}
+                                                style={{
+                                                  width: `${(product.quantity / maxQuantity) * 100}%`,
+                                                }}
                                               />
                                             </div>
                                           </div>
                                           <div className="text-right">
-                                            <div className="text-sm font-bold text-gray-800">{product.quantity}</div>
-                                            <div className="text-xs text-gray-500">{formatCurrency(product.revenue)}</div>
+                                            <div className="text-sm font-bold text-gray-800">
+                                              {product.quantity}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                              {formatCurrency(product.revenue)}
+                                            </div>
                                           </div>
                                         </div>
                                       ))}
@@ -10127,11 +10314,14 @@ const EnhancedPOS: React.FC = () => {
                         </h4>
                         <div className="bg-gray-100 p-4 rounded-lg border-2 border-dashed border-gray-300">
                           <div className="text-center">
-                            <p className="text-sm text-gray-600 mb-2">Contoh ID yang akan dihasilkan:</p>
+                            <p className="text-sm text-gray-600 mb-2">
+                              Contoh ID yang akan dihasilkan:
+                            </p>
                             <p className="text-2xl font-bold text-indigo-600 font-mono">
                               {(() => {
                                 let preview = "";
-                                if (settingsForm.saleIdPrefix) preview += settingsForm.saleIdPrefix;
+                                if (settingsForm.saleIdPrefix)
+                                  preview += settingsForm.saleIdPrefix;
                                 if (settingsForm.saleIdUseDate) {
                                   const now = new Date();
                                   let dateStr = "";
@@ -10150,8 +10340,12 @@ const EnhancedPOS: React.FC = () => {
                                   if (preview) preview += "-";
                                   preview += dateStr;
                                 }
-                                const counterLength = settingsForm.saleIdCounterLength || 4;
-                                const counterStr = "0001".padStart(counterLength, '0');
+                                const counterLength =
+                                  settingsForm.saleIdCounterLength || 4;
+                                const counterStr = "0001".padStart(
+                                  counterLength,
+                                  "0",
+                                );
                                 if (preview) preview += "-";
                                 preview += counterStr;
                                 if (settingsForm.saleIdSuffix) {
@@ -10234,10 +10428,18 @@ const EnhancedPOS: React.FC = () => {
                             }
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                           >
-                            <option value={3}>3 digit (001, 002, 003, ...)</option>
-                            <option value={4}>4 digit (0001, 0002, 0003, ...)</option>
-                            <option value={5}>5 digit (00001, 00002, 00003, ...)</option>
-                            <option value={6}>6 digit (000001, 000002, 000003, ...)</option>
+                            <option value={3}>
+                              3 digit (001, 002, 003, ...)
+                            </option>
+                            <option value={4}>
+                              4 digit (0001, 0002, 0003, ...)
+                            </option>
+                            <option value={5}>
+                              5 digit (00001, 00002, 00003, ...)
+                            </option>
+                            <option value={6}>
+                              6 digit (000001, 000002, 000003, ...)
+                            </option>
                           </select>
                           <p className="text-sm text-gray-500 mt-1">
                             Jumlah digit untuk nomor urut transaksi
@@ -10264,7 +10466,10 @@ const EnhancedPOS: React.FC = () => {
                               }
                               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                             />
-                            <label htmlFor="useDateInId" className="text-gray-700 font-medium">
+                            <label
+                              htmlFor="useDateInId"
+                              className="text-gray-700 font-medium"
+                            >
                               Sertakan tanggal dalam ID penjualan
                             </label>
                           </div>
@@ -10275,7 +10480,9 @@ const EnhancedPOS: React.FC = () => {
                                 Format Tanggal:
                               </label>
                               <select
-                                value={settingsForm.saleIdDateFormat || "YYYYMMDD"}
+                                value={
+                                  settingsForm.saleIdDateFormat || "YYYYMMDD"
+                                }
                                 onChange={(e) =>
                                   setSettingsForm({
                                     ...settingsForm,
@@ -10284,9 +10491,15 @@ const EnhancedPOS: React.FC = () => {
                                 }
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                               >
-                                <option value="YYYYMMDD">YYYY-MM-DD (20241201)</option>
-                                <option value="DDMMYYYY">DD-MM-YYYY (01122024)</option>
-                                <option value="MMDDYYYY">MM-DD-YYYY (12012024)</option>
+                                <option value="YYYYMMDD">
+                                  YYYY-MM-DD (20241201)
+                                </option>
+                                <option value="DDMMYYYY">
+                                  DD-MM-YYYY (01122024)
+                                </option>
+                                <option value="MMDDYYYY">
+                                  MM-DD-YYYY (12012024)
+                                </option>
                               </select>
                               <p className="text-sm text-gray-500 mt-1">
                                 Format tanggal yang akan digunakan dalam ID
@@ -10313,10 +10526,13 @@ const EnhancedPOS: React.FC = () => {
                             />
                           </svg>
                           <div>
-                            <h5 className="font-medium text-yellow-800">Informasi Penting</h5>
+                            <h5 className="font-medium text-yellow-800">
+                              Informasi Penting
+                            </h5>
                             <p className="text-sm text-yellow-700 mt-1">
-                              Perubahan format ID hanya akan berlaku untuk transaksi baru.
-                              Transaksi yang sudah ada akan tetap menggunakan format lama.
+                              Perubahan format ID hanya akan berlaku untuk
+                              transaksi baru. Transaksi yang sudah ada akan
+                              tetap menggunakan format lama.
                             </p>
                           </div>
                         </div>
@@ -10917,7 +11133,9 @@ const EnhancedPOS: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <div className="text-2xl">💰</div>
                 <h3 className="text-xl font-bold">
-                  {editingExpense ? "Edit Pengeluaran" : "Tambah Pengeluaran Baru"}
+                  {editingExpense
+                    ? "Edit Pengeluaran"
+                    : "Tambah Pengeluaran Baru"}
                 </h3>
               </div>
             </div>
@@ -11080,7 +11298,10 @@ const EnhancedPOS: React.FC = () => {
                     }
                     className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="isRecurring" className="text-gray-700 font-medium">
+                  <label
+                    htmlFor="isRecurring"
+                    className="text-gray-700 font-medium"
+                  >
                     Pengeluaran Berulang
                   </label>
                 </div>
