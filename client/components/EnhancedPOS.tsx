@@ -3924,14 +3924,200 @@ const EnhancedPOS: React.FC = () => {
 
           {/* Main Content */}
           <main className="flex-1 p-6 bg-white m-4 rounded-lg shadow-md">
-            <div className="flex items-center justify-center mb-6">
-              <h1 className="text-3xl font-bold text-gray-900">
-                {settings.storeName}
-              </h1>
-              <span className="ml-4 text-sm text-gray-500">
-                User: {currentUser.username} ({currentUser.role})
-                {currentShift && ` | Shift: ${currentShift.id}`}
-              </span>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {settings.storeName}
+                </h1>
+                <span className="ml-4 text-sm text-gray-500">
+                  User: {currentUser.username} ({currentUser.role})
+                  {currentShift && ` | Shift: ${currentShift.id}`}
+                </span>
+              </div>
+
+              {/* Global Search */}
+              <div className="relative">
+                <div className="flex items-center space-x-2">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={globalSearch}
+                      onChange={(e) => {
+                        setGlobalSearch(e.target.value);
+                        setShowGlobalSearchResults(e.target.value.trim().length > 0);
+                      }}
+                      onFocus={() => setShowGlobalSearchResults(globalSearch.trim().length > 0)}
+                      className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                      placeholder="Cari produk, pelanggan, transaksi..."
+                    />
+                    <svg
+                      className="w-5 h-5 text-gray-400 absolute left-3 top-2.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </div>
+
+                  {globalSearch && (
+                    <button
+                      onClick={() => {
+                        setGlobalSearch("");
+                        setShowGlobalSearchResults(false);
+                      }}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+
+                {/* Global Search Results */}
+                {showGlobalSearchResults && globalSearch.trim() && (
+                  <div className="absolute top-12 right-0 w-96 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                    {(() => {
+                      const results = performGlobalSearch(globalSearch);
+                      const hasResults = results.products.length > 0 || results.customers.length > 0 || results.sales.length > 0 || results.expenses.length > 0;
+
+                      if (!hasResults) {
+                        return (
+                          <div className="p-4 text-center text-gray-500">
+                            Tidak ada hasil ditemukan untuk "{globalSearch}"
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="p-2">
+                          {results.products.length > 0 && (
+                            <div className="mb-4">
+                              <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-blue-50">
+                                Produk ({results.products.length})
+                              </h4>
+                              {results.products.slice(0, 3).map(product => (
+                                <div
+                                  key={product.id}
+                                  onClick={() => {
+                                    setActiveModule("stock-management");
+                                    setProductSearch(product.name);
+                                    setGlobalSearch("");
+                                    setShowGlobalSearchResults(false);
+                                  }}
+                                  className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+                                >
+                                  <div className="font-medium text-sm">{product.name}</div>
+                                  <div className="text-xs text-gray-500">{product.category} • Stok: {product.stock}</div>
+                                </div>
+                              ))}
+                              {results.products.length > 3 && (
+                                <div className="px-3 py-1 text-xs text-blue-600">
+                                  +{results.products.length - 3} produk lainnya
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {results.customers.length > 0 && (
+                            <div className="mb-4">
+                              <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-green-50">
+                                Pelanggan ({results.customers.length})
+                              </h4>
+                              {results.customers.slice(0, 3).map(customer => (
+                                <div
+                                  key={customer.id}
+                                  onClick={() => {
+                                    setActiveModule("customer-management");
+                                    setCustomerSearch(customer.name);
+                                    setGlobalSearch("");
+                                    setShowGlobalSearchResults(false);
+                                  }}
+                                  className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+                                >
+                                  <div className="font-medium text-sm">{customer.name}</div>
+                                  <div className="text-xs text-gray-500">{customer.phone} • {customer.tier}</div>
+                                </div>
+                              ))}
+                              {results.customers.length > 3 && (
+                                <div className="px-3 py-1 text-xs text-green-600">
+                                  +{results.customers.length - 3} pelanggan lainnya
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {results.sales.length > 0 && (
+                            <div className="mb-4">
+                              <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-purple-50">
+                                Transaksi ({results.sales.length})
+                              </h4>
+                              {results.sales.slice(0, 3).map(sale => (
+                                <div
+                                  key={sale.id}
+                                  onClick={() => {
+                                    setActiveModule("reports");
+                                    setActiveReportsTab("sales");
+                                    setGlobalSearch("");
+                                    setShowGlobalSearchResults(false);
+                                  }}
+                                  className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+                                >
+                                  <div className="font-medium text-sm">ID: {sale.id}</div>
+                                  <div className="text-xs text-gray-500">
+                                    {formatCurrency(sale.totalAmount)} • {new Date(sale.date).toLocaleDateString("id-ID")}
+                                  </div>
+                                </div>
+                              ))}
+                              {results.sales.length > 3 && (
+                                <div className="px-3 py-1 text-xs text-purple-600">
+                                  +{results.sales.length - 3} transaksi lainnya
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {results.expenses.length > 0 && (
+                            <div>
+                              <h4 className="text-sm font-semibold text-gray-700 px-2 py-1 bg-red-50">
+                                Pengeluaran ({results.expenses.length})
+                              </h4>
+                              {results.expenses.slice(0, 3).map(expense => (
+                                <div
+                                  key={expense.id}
+                                  onClick={() => {
+                                    setActiveModule("expense-management");
+                                    setCustomerSearch(expense.description);
+                                    setGlobalSearch("");
+                                    setShowGlobalSearchResults(false);
+                                  }}
+                                  className="px-3 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-100"
+                                >
+                                  <div className="font-medium text-sm">{expense.description}</div>
+                                  <div className="text-xs text-gray-500">
+                                    {formatCurrency(expense.amount)} • {expense.category}
+                                  </div>
+                                </div>
+                              ))}
+                              {results.expenses.length > 3 && (
+                                <div className="px-3 py-1 text-xs text-red-600">
+                                  +{results.expenses.length - 3} pengeluaran lainnya
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Order Entry Module */}
