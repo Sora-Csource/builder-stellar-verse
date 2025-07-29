@@ -225,6 +225,9 @@ const EnhancedPOS: React.FC = () => {
   // Sale counter for custom IDs
   const [saleCounter, setSaleCounter] = useState<number>(1);
 
+  // Processing state to prevent duplicate payments
+  const [isProcessingPayment, setIsProcessingPayment] = useState<boolean>(false);
+
   // Form states
   const [productSearch, setProductSearch] = useState("");
   const [customerSearch, setCustomerSearch] = useState("");
