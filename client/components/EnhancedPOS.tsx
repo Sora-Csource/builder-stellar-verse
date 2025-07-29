@@ -3118,7 +3118,13 @@ const EnhancedPOS: React.FC = () => {
   // Get filtered sales for reports
   const getFilteredSales = () => {
     return sales.filter((sale) => {
-      // Date filtering
+      // Shift-based filtering: Only show current shift sales unless date filters are explicitly set
+      if (!reportStartDate && !reportEndDate && currentShift) {
+        // Show only current shift sales when no date filters are applied
+        return sale.shiftId === currentShift.id;
+      }
+
+      // Date filtering (when explicitly requested)
       const saleDate = new Date(sale.date);
       const startDate = reportStartDate ? new Date(reportStartDate) : null;
       const endDate = reportEndDate ? new Date(reportEndDate) : null;
