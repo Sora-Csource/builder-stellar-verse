@@ -2336,7 +2336,6 @@ const EnhancedPOS: React.FC = () => {
             shifts.map((s) => (s.id === currentShift.id ? updatedShift : s)),
           );
         }
-        console.log("Shift updated");
 
         // Clear cart and discount
         setCart([]);
