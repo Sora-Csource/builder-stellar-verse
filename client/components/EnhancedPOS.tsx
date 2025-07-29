@@ -5756,7 +5756,7 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("products", "csv")}
                                 className="w-full bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition duration-200"
                               >
-                                ��� Export CSV
+                                📊 Export CSV
                               </button>
                               <button
                                 onClick={() => exportData("products", "json")}
@@ -10709,7 +10709,7 @@ const EnhancedPOS: React.FC = () => {
                 </h3>
               </div>
             </div>
-            <form onSubmit={handleProductSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleProductSubmit} className="p-4 sm:p-6 space-y-4">
               <div>
                 <label className="block text-gray-700 font-bold mb-2">
                   Nama Produk:
