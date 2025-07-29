@@ -10929,42 +10929,66 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Harga:
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={productForm.price}
-                  onChange={(e) =>
-                    setProductForm({
-                      ...productForm,
-                      price: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Stok:
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={productForm.stock}
-                  onChange={(e) =>
-                    setProductForm({
-                      ...productForm,
-                      stock: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Harga (Rp):
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={productForm.price}
+                    onChange={(e) =>
+                      setProductForm({
+                        ...productForm,
+                        price: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Stok:
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={productForm.stock}
+                    onChange={(e) =>
+                      setProductForm({
+                        ...productForm,
+                        stock: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Satuan:
+                  </label>
+                  <select
+                    value={productForm.unit}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, unit: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="pcs">Pcs</option>
+                    <option value="kg">Kg</option>
+                    <option value="gram">Gram</option>
+                    <option value="liter">Liter</option>
+                    <option value="ml">ML</option>
+                    <option value="box">Box</option>
+                    <option value="pack">Pack</option>
+                    <option value="botol">Botol</option>
+                    <option value="porsi">Porsi</option>
+                  </select>
+                </div>
               </div>
               <div className="flex space-x-4 pt-4 border-t border-gray-200">
                 <button
