@@ -222,6 +222,9 @@ const EnhancedPOS: React.FC = () => {
     null,
   );
 
+  // Sale counter for custom IDs
+  const [saleCounter, setSaleCounter] = useState<number>(1);
+
   // Form states
   const [productSearch, setProductSearch] = useState("");
   const [customerSearch, setCustomerSearch] = useState("");
