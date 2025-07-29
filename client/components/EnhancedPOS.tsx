@@ -2216,7 +2216,7 @@ const EnhancedPOS: React.FC = () => {
     if (paymentMethod === "cash" && cashGiven < finalTotal) {
       showAlert(
         "Pembayaran Kurang",
-        "Jumlah uang yang diberikan tidak mencukupi.",
+        "Jumlah uang yang diberikan tidak mencukupi. Gunakan tombol 'Uang Pas' atau masukkan jumlah yang tepat.",
         "error",
       );
       return;
