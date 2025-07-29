@@ -2254,6 +2254,8 @@ const EnhancedPOS: React.FC = () => {
       );
 
       setIsProcessingPayment(false);
+    } else {
+      setIsProcessingPayment(false);
     }
   };
 
