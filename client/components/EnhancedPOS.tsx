@@ -4605,6 +4605,35 @@ const EnhancedPOS: React.FC = () => {
                                 </div>
                               </div>
 
+                              {/* Customer Selection for Loyalty Program */}
+                              {settings.loyaltyProgramEnabled && (
+                                <div className="mb-4">
+                                  <label className="block text-gray-700 font-bold mb-2">
+                                    Pelanggan (Opsional):
+                                  </label>
+                                  <select
+                                    value={selectedCustomer?.id || ""}
+                                    onChange={(e) => {
+                                      const customer = customers.find(c => c.id === e.target.value);
+                                      setSelectedCustomer(customer || null);
+                                    }}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                  >
+                                    <option value="">Tidak ada pelanggan</option>
+                                    {customers.map((customer) => (
+                                      <option key={customer.id} value={customer.id}>
+                                        {customer.name} {customer.loyaltyPoints ? `(${customer.loyaltyPoints} pts)` : ''}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  {selectedCustomer && (
+                                    <div className="mt-2 text-sm text-blue-600">
+                                      Tier: {selectedCustomer.tier} | Points: {selectedCustomer.loyaltyPoints || 0}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
                               <div className="mb-4">
                                 <label className="block text-gray-700 font-bold mb-2">
                                   Metode Pembayaran:
