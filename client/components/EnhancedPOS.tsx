@@ -10715,19 +10715,40 @@ const EnhancedPOS: React.FC = () => {
               </div>
             </div>
             <form onSubmit={handleProductSubmit} className="p-4 sm:p-6 space-y-4">
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Nama Produk:
-                </label>
-                <input
-                  type="text"
-                  value={productForm.name}
-                  onChange={(e) =>
-                    setProductForm({ ...productForm, name: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Nama Produk:
+                  </label>
+                  <input
+                    type="text"
+                    value={productForm.name}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, name: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Kategori:
+                  </label>
+                  <select
+                    value={productForm.category}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, category: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
+                    <option value="Snack">Snack</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Umum">Umum</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
               </div>
 
               <div>
