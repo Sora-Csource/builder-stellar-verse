@@ -3582,14 +3582,14 @@ const EnhancedPOS: React.FC = () => {
       return;
     }
 
-    const salesTotal = currentShift.salesIds.reduce((total, saleId) => {
+    const cashSalesTotal = currentShift.salesIds.reduce((total, saleId) => {
       const sale = sales.find(
-        (s) => s.id === saleId && s.status === "completed",
+        (s) => s.id === saleId && s.status === "completed" && s.paymentMethod === "cash",
       );
       return total + (sale ? sale.totalAmount : 0);
     }, 0);
 
-    const expectedCash = currentShift.startCash + salesTotal;
+    const expectedCash = currentShift.startCash + cashSalesTotal;
     const finalCashStr = await showPrompt(
       "Akhiri Shift",
       "Masukkan Kas Akhir Shift:",
