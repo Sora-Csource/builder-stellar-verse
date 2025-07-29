@@ -2308,12 +2308,11 @@ const EnhancedPOS: React.FC = () => {
         console.log("Cart cleared");
 
         // Show success modal with print option
-        showSuccess(
-          "Pembayaran Berhasil!",
-          `Transaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
-          true,
-          () => printReceipt(newSale),
-        );
+        console.log("About to show success");
+        alert(`Pembayaran Berhasil!\nTransaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`);
+
+        // Print receipt directly
+        printReceipt(newSale);
         console.log("Success modal shown");
 
         setIsProcessingPayment(false);
