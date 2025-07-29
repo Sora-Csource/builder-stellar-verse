@@ -676,7 +676,7 @@ export const PaymentConfirmModal: React.FC<PaymentConfirmModalProps> = ({
           {/* Confirmation Message */}
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mt-4">
             <p className="text-sm text-yellow-800">
-              ��️ Pastikan semua detail sudah benar sebelum melanjutkan. Transaksi yang sudah diproses tidak dapat dibatalkan.
+              ⚠️ Pastikan semua detail sudah benar sebelum melanjutkan. Transaksi yang sudah diproses tidak dapat dibatalkan.
             </p>
           </div>
         </div>
@@ -856,6 +856,11 @@ export const useModals = () => {
 
   const closeSuccess = () => {
     setSuccess({ ...success, isOpen: false });
+  };
+
+  const closePaymentConfirm = (result: boolean) => {
+    paymentConfirm.resolve?.(result);
+    setPaymentConfirm({ ...paymentConfirm, isOpen: false });
   };
 
   const Modals = () => (
