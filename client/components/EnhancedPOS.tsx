@@ -5779,7 +5779,7 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("customers", "csv")}
                                 className="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition duration-200"
                               >
-                                📊 Export CSV
+                                �� Export CSV
                               </button>
                               <button
                                 onClick={() => exportData("customers", "json")}
@@ -10998,8 +10998,10 @@ const EnhancedPOS: React.FC = () => {
                     setEditingProduct(null);
                     setProductForm({
                       name: "",
+                      category: "Umum",
                       price: 0,
                       stock: 0,
+                      unit: "pcs",
                       imageUrl: "",
                     });
                   }}
