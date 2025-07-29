@@ -6348,14 +6348,17 @@ const EnhancedPOS: React.FC = () => {
                               </td>
                             </tr>
                           ) : (
-                            getFilteredSales()
-                              .sort(
-                                (a, b) =>
-                                  new Date(b.date).getTime() -
-                                  new Date(a.date).getTime(),
-                              )
-                              .map((sale) => (
-                                <tr key={sale.id} className="even:bg-gray-50">
+                          getFilteredSales()
+                            .filter((sale, index, self) =>
+                              self.findIndex(s => s.id === sale.id) === index
+                            )
+                            .sort(
+                              (a, b) =>
+                                new Date(b.date).getTime() -
+                                new Date(a.date).getTime(),
+                            )
+                            .map((sale, index) => (
+                              <tr key={`${sale.id}-${index}`} className="even:bg-gray-50">
                                   <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">
                                     {sale.id}
                                   </td>
