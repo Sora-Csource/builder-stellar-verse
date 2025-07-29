@@ -138,6 +138,12 @@ interface Settings {
     gold: { pointsMultiplier: number; discountPercent: number };
     platinum: { pointsMultiplier: number; discountPercent: number };
   };
+  // Sale ID format settings
+  saleIdPrefix?: string;
+  saleIdSuffix?: string;
+  saleIdCounterLength?: number;
+  saleIdUseDate?: boolean;
+  saleIdDateFormat?: "YYYYMMDD" | "DDMMYYYY" | "MMDDYYYY";
   // Thermal printer settings
   thermalPrinterEnabled?: boolean;
   thermalPrinterWidth?: number;
