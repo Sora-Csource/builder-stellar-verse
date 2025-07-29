@@ -2252,6 +2252,8 @@ const EnhancedPOS: React.FC = () => {
         true,
         () => printReceipt(newSale),
       );
+
+      setIsProcessingPayment(false);
     }
   };
 
