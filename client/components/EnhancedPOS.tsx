@@ -1905,8 +1905,8 @@ const EnhancedPOS: React.FC = () => {
       });
       setProducts(updatedProducts);
 
-      // Create sale record
-      const saleId = generateUniqueId();
+      // Create sale record with custom ID format
+      const saleId = generateSaleId();
       const newSale: Sale = {
         id: saleId,
         date: new Date().toISOString(),
