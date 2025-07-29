@@ -2270,7 +2270,6 @@ const EnhancedPOS: React.FC = () => {
     if (confirmed) {
       try {
         setIsProcessingPayment(true);
-        console.log("Starting payment processing...");
 
         // Update stock
         const updatedProducts = products.map((product) => {
