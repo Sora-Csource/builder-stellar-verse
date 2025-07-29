@@ -215,6 +215,7 @@ const EnhancedPOS: React.FC = () => {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedUserForPermissions, setSelectedUserForPermissions] =
     useState<User | null>(null);
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
@@ -10446,7 +10447,7 @@ const EnhancedPOS: React.FC = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
             <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">📦</div>
+                <div className="text-2xl">���</div>
                 <h3 className="text-xl font-bold">
                   {editingProduct ? "Edit Produk" : "Tambah Produk Baru"}
                 </h3>
