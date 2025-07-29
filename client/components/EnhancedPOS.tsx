@@ -3225,7 +3225,7 @@ const EnhancedPOS: React.FC = () => {
           };
         }
         productPerformance[item.id].quantity += item.quantity;
-        productPerformance[item.id].revenue += item.subtotal;
+        productPerformance[item.id].revenue += item.quantity * item.price;
       });
     });
 
