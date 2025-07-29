@@ -2227,86 +2227,105 @@ const EnhancedPOS: React.FC = () => {
       `Konfirmasi Pembayaran\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nLanjutkan pembayaran?`
     );
     if (confirmed) {
-      setIsProcessingPayment(true);
-      // Update stock
-      const updatedProducts = products.map((product) => {
-        const cartItem = cart.find((item) => item.productId === product.id);
-        if (cartItem) {
-          return { ...product, stock: product.stock - cartItem.quantity };
+      try {
+        setIsProcessingPayment(true);
+        console.log("Starting payment processing...");
+
+        // Update stock
+        const updatedProducts = products.map((product) => {
+          const cartItem = cart.find((item) => item.productId === product.id);
+          if (cartItem) {
+            return { ...product, stock: product.stock - cartItem.quantity };
+          }
+          return product;
+        });
+        setProducts(updatedProducts);
+        console.log("Stock updated");
+
+        // Create sale record with custom ID format
+        const saleId = generateSaleId();
+        console.log("Generated sale ID:", saleId);
+
+        const newSale: Sale = {
+          id: saleId,
+          date: new Date().toISOString(),
+          items: [...cart],
+          totalAmount: finalTotal,
+          paymentMethod,
+          cashGiven: paymentMethod === "cash" ? cashGiven : 0,
+          customer: null,
+          status: "completed",
+          processedByUserId: currentUser?.id || "unknown",
+          shiftId: currentShift?.id || "",
+        };
+        setSales([...sales, newSale]);
+        setLastCompletedSaleId(saleId);
+        console.log("Sale record created");
+
+        // Process loyalty points if customer is selected
+        if (selectedCustomer && settings.loyaltyProgramEnabled) {
+          updateCustomerLoyalty(selectedCustomer.id, finalTotal);
+
+          const pointsEarned = calculateLoyaltyPoints(
+            finalTotal,
+            selectedCustomer.tier,
+          );
+          if (pointsEarned > 0) {
+            showAlert(
+              "Points Earned! 🎯",
+              `${selectedCustomer.name} mendapat ${pointsEarned} points!`,
+              "success",
+            );
+          }
         }
-        return product;
-      });
-      setProducts(updatedProducts);
 
-      // Create sale record with custom ID format
-      const saleId = generateSaleId();
-      const newSale: Sale = {
-        id: saleId,
-        date: new Date().toISOString(),
-        items: [...cart],
-        totalAmount: finalTotal,
-        paymentMethod,
-        cashGiven: paymentMethod === "cash" ? cashGiven : 0,
-        customer: null,
-        status: "completed",
-        processedByUserId: currentUser?.id || "unknown",
-        shiftId: currentShift?.id || "",
-      };
-      setSales([...sales, newSale]);
-      setLastCompletedSaleId(saleId);
+        // Save offline data if not online
+        if (!isOnline) {
+          addOfflineSale(newSale);
+          saveOfflineData({
+            products: updatedProducts,
+            sales: [...sales, newSale],
+          });
+        }
 
-      // Process loyalty points if customer is selected
-      if (selectedCustomer && settings.loyaltyProgramEnabled) {
-        updateCustomerLoyalty(selectedCustomer.id, finalTotal);
-
-        const pointsEarned = calculateLoyaltyPoints(
-          finalTotal,
-          selectedCustomer.tier,
-        );
-        if (pointsEarned > 0) {
-          showAlert(
-            "Points Earned! 🎯",
-            `${selectedCustomer.name} mendapat ${pointsEarned} points!`,
-            "success",
+        // Update current shift
+        if (currentShift) {
+          const updatedShift = {
+            ...currentShift,
+            salesIds: [...currentShift.salesIds, saleId],
+          };
+          setCurrentShift(updatedShift);
+          setShifts(
+            shifts.map((s) => (s.id === currentShift.id ? updatedShift : s)),
           );
         }
-      }
+        console.log("Shift updated");
 
-      // Save offline data if not online
-      if (!isOnline) {
-        addOfflineSale(newSale);
-        saveOfflineData({
-          products: updatedProducts,
-          sales: [...sales, newSale],
-        });
-      }
+        // Clear cart and discount
+        setCart([]);
+        setCashGiven(0);
+        setDiscountAmount(0);
+        console.log("Cart cleared");
 
-      // Update current shift
-      if (currentShift) {
-        const updatedShift = {
-          ...currentShift,
-          salesIds: [...currentShift.salesIds, saleId],
-        };
-        setCurrentShift(updatedShift);
-        setShifts(
-          shifts.map((s) => (s.id === currentShift.id ? updatedShift : s)),
+        // Show success modal with print option
+        showSuccess(
+          "Pembayaran Berhasil!",
+          `Transaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
+          true,
+          () => printReceipt(newSale),
         );
+        console.log("Success modal shown");
+
+        setIsProcessingPayment(false);
+      } catch (error) {
+        console.error("Payment processing error:", error);
+        showAlert(
+          "Error Pembayaran",
+          "Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi.",
+          "error",
+        );
+        setIsProcessingPayment(false);
       }
-
-      // Clear cart and discount
-      setCart([]);
-      setCashGiven(0);
-      setDiscountAmount(0);
-
-      // Show success modal with print option
-      showSuccess(
-        "Pembayaran Berhasil!",
-        `Transaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
-        true,
-        () => printReceipt(newSale),
-      );
-
-      setIsProcessingPayment(false);
     } else {
       setIsProcessingPayment(false);
     }
