@@ -2306,6 +2306,7 @@ const EnhancedPOS: React.FC = () => {
         setCart([]);
         setCashGiven(0);
         setDiscountAmount(0);
+        setSelectedCustomer(null);
         console.log("Cart cleared");
 
         // Show success modal with print option
