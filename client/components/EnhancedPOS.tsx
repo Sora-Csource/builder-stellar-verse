@@ -3339,7 +3339,7 @@ const EnhancedPOS: React.FC = () => {
         </div>
 
         <div class="section">
-          <h3>���� Top 10 Produk Terlaris</h3>
+          <h3>📊 Top 10 Produk Terlaris</h3>
           <table>
             <thead>
               <tr>
