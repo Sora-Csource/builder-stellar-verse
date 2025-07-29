@@ -791,7 +791,7 @@ export const PaymentConfirmModal: React.FC<PaymentConfirmModalProps> = ({
               </svg>
               Ringkasan Lengkap Pesanan ({cartItems.length} item):
             </h4>
-            <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto border border-gray-200">
+            <div className="bg-gray-50 rounded-lg p-4 max-h-64 overflow-y-auto border border-gray-200 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 hover:scrollbar-thumb-gray-500">
               <div className="space-y-3">
                 {cartItems.map((item, index) => (
                   <div
