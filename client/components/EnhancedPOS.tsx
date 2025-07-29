@@ -2961,18 +2961,16 @@ const EnhancedPOS: React.FC = () => {
       date: new Date().toISOString(),
       items: [
         {
-          id: "test-item-1",
+          productId: "test-item-1",
           name: "Contoh Produk 1",
           price: 15000,
           quantity: 2,
-          subtotal: 30000,
         },
         {
-          id: "test-item-2",
+          productId: "test-item-2",
           name: "Contoh Produk 2",
           price: 25000,
           quantity: 1,
-          subtotal: 25000,
         },
       ],
       totalAmount: 59125, // Including tax
