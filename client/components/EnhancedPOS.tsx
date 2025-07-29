@@ -498,6 +498,61 @@ const EnhancedPOS: React.FC = () => {
     return "id-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
   };
 
+  // Generate custom sale ID based on settings
+  const generateSaleId = () => {
+    let saleId = "";
+
+    // Add prefix
+    if (settings.saleIdPrefix) {
+      saleId += settings.saleIdPrefix;
+    }
+
+    // Add date if enabled
+    if (settings.saleIdUseDate) {
+      const now = new Date();
+      let dateStr = "";
+
+      switch (settings.saleIdDateFormat) {
+        case "DDMMYYYY":
+          dateStr = now.getDate().toString().padStart(2, '0') +
+                   (now.getMonth() + 1).toString().padStart(2, '0') +
+                   now.getFullYear().toString();
+          break;
+        case "MMDDYYYY":
+          dateStr = (now.getMonth() + 1).toString().padStart(2, '0') +
+                   now.getDate().toString().padStart(2, '0') +
+                   now.getFullYear().toString();
+          break;
+        case "YYYYMMDD":
+        default:
+          dateStr = now.getFullYear().toString() +
+                   (now.getMonth() + 1).toString().padStart(2, '0') +
+                   now.getDate().toString().padStart(2, '0');
+          break;
+      }
+
+      if (saleId) saleId += "-";
+      saleId += dateStr;
+    }
+
+    // Add counter
+    const counterLength = settings.saleIdCounterLength || 4;
+    const counterStr = saleCounter.toString().padStart(counterLength, '0');
+
+    if (saleId) saleId += "-";
+    saleId += counterStr;
+
+    // Add suffix
+    if (settings.saleIdSuffix) {
+      saleId += "-" + settings.saleIdSuffix;
+    }
+
+    // Increment counter for next sale
+    setSaleCounter(prev => prev + 1);
+
+    return saleId;
+  };
+
   // Notification functions
   const addNotification = (
     type: "info" | "warning" | "error" | "success",
