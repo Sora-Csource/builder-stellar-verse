@@ -2346,15 +2346,13 @@ const EnhancedPOS: React.FC = () => {
         setSelectedCustomer(null);
         console.log("Cart cleared");
 
-        // Show success modal with print option
-        console.log("About to show success");
-        alert(
-          `Pembayaran Berhasil!\nTransaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
+        // Show enhanced success modal with print option
+        showSuccess(
+          "Pembayaran Berhasil! 🎉",
+          `Transaksi ${saleId} telah berhasil diproses.\n\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nMetode: ${paymentMethod === "cash" ? "Tunai" : paymentMethod === "card" ? "Kartu" : "E-Wallet"}${paymentMethod === "cash" ? `\nKembalian: ${formatCurrency(cashGiven - finalTotal)}` : ""}\n\nStruk akan langsung dicetak.`,
+          true,
+          () => printReceipt(newSale)
         );
-
-        // Print receipt directly
-        printReceipt(newSale);
-        console.log("Success modal shown");
 
         setIsProcessingPayment(false);
       } catch (error) {
@@ -5918,7 +5916,7 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        ���� Laporan Penjualan
+                        ����� Laporan Penjualan
                       </button>
                       <button
                         onClick={() => setActiveReportsTab("shifts")}
