@@ -676,6 +676,210 @@ const EnhancedPOS: React.FC = () => {
     };
   }, [showNotifications]);
 
+  // Data Import/Export Functions
+  const handleImportProducts = async (file: File | undefined) => {
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const lines = text.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+
+      const newProducts: Product[] = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length === headers.length && values[0]) {
+          const product: Product = {
+            id: generateUniqueId(),
+            name: values[0],
+            category: values[1] || "Umum",
+            price: parseFloat(values[2]) || 0,
+            stock: parseInt(values[3]) || 0,
+            unit: values[4] || "pcs",
+          };
+          newProducts.push(product);
+        }
+      }
+
+      setProducts(prev => [...prev, ...newProducts]);
+      showAlert("Berhasil", `${newProducts.length} produk berhasil diimpor`, "success");
+    } catch (error) {
+      showAlert("Error", "Gagal mengimpor file CSV", "error");
+    }
+  };
+
+  const handleImportCustomers = async (file: File | undefined) => {
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const lines = text.split('\n');
+      const headers = lines[0].split(',').map(h => h.trim());
+
+      const newCustomers: Customer[] = [];
+
+      for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(',').map(v => v.trim());
+        if (values.length === headers.length && values[0]) {
+          const customer: Customer = {
+            id: generateUniqueId(),
+            name: values[0],
+            phone: values[1] || "",
+            email: values[2] || "",
+            address: values[3] || "",
+            loyaltyPoints: 0,
+            totalSpent: 0,
+            tier: "Bronze",
+            joinDate: new Date().toISOString(),
+          };
+          newCustomers.push(customer);
+        }
+      }
+
+      setCustomers(prev => [...prev, ...newCustomers]);
+      showAlert("Berhasil", `${newCustomers.length} pelanggan berhasil diimpor`, "success");
+    } catch (error) {
+      showAlert("Error", "Gagal mengimpor file CSV", "error");
+    }
+  };
+
+  const downloadCSVTemplate = (type: "products" | "customers") => {
+    let csvContent = "";
+
+    if (type === "products") {
+      csvContent = "name,category,price,stock,unit\n";
+      csvContent += "Contoh Produk,Makanan,15000,100,pcs\n";
+      csvContent += "Contoh Minuman,Minuman,8000,50,botol\n";
+    } else if (type === "customers") {
+      csvContent = "name,phone,email,address\n";
+      csvContent += "John Doe,081234567890,john@example.com,Jl. Contoh No. 123\n";
+      csvContent += "Jane Smith,081987654321,jane@example.com,Jl. Sample No. 456\n";
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `template_${type}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const exportData = (type: "products" | "customers" | "sales", format: "csv" | "json") => {
+    let data: any[] = [];
+    let filename = "";
+
+    switch (type) {
+      case "products":
+        data = products;
+        filename = "products";
+        break;
+      case "customers":
+        data = customers;
+        filename = "customers";
+        break;
+      case "sales":
+        data = sales;
+        filename = "sales";
+        break;
+    }
+
+    if (format === "csv") {
+      let csvContent = "";
+      if (data.length > 0) {
+        const headers = Object.keys(data[0]);
+        csvContent = headers.join(",") + "\n";
+        data.forEach(item => {
+          const values = headers.map(header => {
+            const value = item[header];
+            return typeof value === 'string' && value.includes(',') ? `"${value}"` : value;
+          });
+          csvContent += values.join(",") + "\n";
+        });
+      }
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else if (format === "json") {
+      const jsonContent = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonContent], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename}_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    showAlert("Berhasil", `Data ${type} berhasil diekspor dalam format ${format.toUpperCase()}`, "success");
+  };
+
+  const createFullBackup = () => {
+    const backupData = {
+      timestamp: new Date().toISOString(),
+      version: "1.0",
+      data: {
+        products,
+        customers,
+        sales,
+        expenses,
+        users,
+        shifts,
+        settings,
+      }
+    };
+
+    const jsonContent = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    showAlert("Berhasil", "Backup lengkap berhasil dibuat", "success");
+  };
+
+  const handleRestoreBackup = async (file: File | undefined) => {
+    if (!file) return;
+
+    const confirmed = await showConfirm(
+      "Konfirmasi Restore",
+      "Apakah Anda yakin ingin restore backup? Semua data saat ini akan diganti.",
+      "danger"
+    );
+
+    if (confirmed) {
+      try {
+        const text = await file.text();
+        const backupData = JSON.parse(text);
+
+        if (backupData.data) {
+          if (backupData.data.products) setProducts(backupData.data.products);
+          if (backupData.data.customers) setCustomers(backupData.data.customers);
+          if (backupData.data.sales) setSales(backupData.data.sales);
+          if (backupData.data.expenses) setExpenses(backupData.data.expenses);
+          if (backupData.data.users) setUsers(backupData.data.users);
+          if (backupData.data.shifts) setShifts(backupData.data.shifts);
+          if (backupData.data.settings) setSettings(backupData.data.settings);
+
+          showAlert("Berhasil", "Data berhasil direstore dari backup", "success");
+        } else {
+          showAlert("Error", "Format backup tidak valid", "error");
+        }
+      } catch (error) {
+        showAlert("Error", "Gagal membaca file backup", "error");
+      }
+    }
+  };
+
   // Sample data initialization
   const initializeSampleData = () => {
     if (products.length === 0) {
