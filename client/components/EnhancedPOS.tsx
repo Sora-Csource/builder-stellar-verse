@@ -2174,6 +2174,7 @@ const EnhancedPOS: React.FC = () => {
       "info",
     );
     if (confirmed) {
+      setIsProcessingPayment(true);
       // Update stock
       const updatedProducts = products.map((product) => {
         const cartItem = cart.find((item) => item.productId === product.id);
