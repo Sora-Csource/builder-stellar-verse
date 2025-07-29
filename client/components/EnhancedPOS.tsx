@@ -680,6 +680,24 @@ const EnhancedPOS: React.FC = () => {
     };
   }, [showNotifications]);
 
+  // Click outside handler for global search
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (
+        showGlobalSearchResults &&
+        !target.closest(".global-search-container")
+      ) {
+        setShowGlobalSearchResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showGlobalSearchResults]);
+
   // Global Search Function
   const performGlobalSearch = (query: string) => {
     if (!query.trim()) return { products: [], customers: [], sales: [], expenses: [] };
