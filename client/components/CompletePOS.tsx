@@ -1272,8 +1272,13 @@ const CompletePOS: React.FC = () => {
                             <td colSpan={6} className="border border-gray-200 py-4 text-center text-gray-500">Tidak ada data penjualan.</td>
                           </tr>
                         ) : (
-                          getFilteredSales().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((sale) => (
-                            <tr key={sale.id} className="even:bg-gray-50">
+                          getFilteredSales()
+                            .filter((sale, index, self) =>
+                              self.findIndex(s => s.id === sale.id) === index
+                            )
+                            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                            .map((sale, index) => (
+                            <tr key={`${sale.id}-${index}`} className="even:bg-gray-50">
                               <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">{sale.id}</td>
                               <td className="border border-gray-200 px-3 py-2 text-sm text-gray-500">{new Date(sale.date).toLocaleString('id-ID')}</td>
                               <td className="border border-gray-200 px-3 py-2 text-sm font-medium text-gray-900">{formatCurrency(sale.totalAmount)}</td>
