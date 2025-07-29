@@ -557,7 +557,7 @@ const EnhancedPOS: React.FC = () => {
       saleId += dateStr;
     }
 
-    // Add counter
+    // Add counter with timestamp to ensure uniqueness
     const counterLength = settings.saleIdCounterLength || 4;
     const counterStr = saleCounter.toString().padStart(counterLength, '0');
 
