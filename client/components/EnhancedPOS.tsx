@@ -3308,6 +3308,29 @@ const EnhancedPOS: React.FC = () => {
     }
   }, [activeModule, settings]);
 
+  // Sync settings to settingsForm for editing
+  useEffect(() => {
+    setSettingsForm({
+      storeName: settings.storeName,
+      taxRate: settings.taxRate,
+      currencySymbol: settings.currencySymbol,
+      logo: settings.logo || "",
+      // Financial settings
+      taxType: settings.taxType || "exclusive",
+      maxDiscountPercent: settings.maxDiscountPercent || 50,
+      quickDiscountAmount: settings.quickDiscountAmount || 5000,
+      quickDiscountPresets: settings.quickDiscountPresets || [5, 10, 15, 20],
+      serviceChargePercent: settings.serviceChargePercent || 0,
+      enableServiceCharge: settings.enableServiceCharge || false,
+      // Sale ID format settings
+      saleIdPrefix: settings.saleIdPrefix || "TRX",
+      saleIdSuffix: settings.saleIdSuffix || "",
+      saleIdCounterLength: settings.saleIdCounterLength || 4,
+      saleIdUseDate: settings.saleIdUseDate !== undefined ? settings.saleIdUseDate : true,
+      saleIdDateFormat: settings.saleIdDateFormat || "YYYYMMDD",
+    });
+  }, [settings]);
+
   // Shift management
   const startShift = async () => {
     if (!currentUser) {
