@@ -7594,6 +7594,31 @@ const EnhancedPOS: React.FC = () => {
                           Loyalty Program
                         </span>
                       </button>
+                      <button
+                        onClick={() => setActiveSettingsTab("saleid")}
+                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                          activeSettingsTab === "saleid"
+                            ? "border-indigo-500 text-indigo-600"
+                            : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                        }`}
+                      >
+                        <span className="flex items-center">
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
+                            />
+                          </svg>
+                          ID Penjualan
+                        </span>
+                      </button>
                     </nav>
                   </div>
                 </div>
