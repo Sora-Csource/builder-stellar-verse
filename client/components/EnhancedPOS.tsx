@@ -5804,7 +5804,7 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("sales", "csv")}
                                 className="w-full bg-purple-600 text-white px-3 py-2 rounded text-sm hover:bg-purple-700 transition duration-200"
                               >
-                                📊 Export CSV
+                                �� Export CSV
                               </button>
                               <button
                                 onClick={() => exportData("sales", "json")}
@@ -10976,10 +10976,14 @@ const EnhancedPOS: React.FC = () => {
       {showCustomerModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
-            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-xl">
+            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 sm:p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">��</div>
-                <h3 className="text-xl font-bold">
+                <div className="flex-shrink-0">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold truncate">
                   {editingCustomer ? "Edit Pelanggan" : "Tambah Pelanggan Baru"}
                 </h3>
               </div>
