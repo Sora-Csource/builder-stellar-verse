@@ -2222,10 +2222,9 @@ const EnhancedPOS: React.FC = () => {
       return;
     }
 
-    const confirmed = await showConfirm(
-      "Konfirmasi Pembayaran",
-      `Total Pembayaran: ${formatCurrency(finalTotal)}. Lanjutkan pembayaran?`,
-      "info",
+    // Temporary fix: use native confirm for debugging
+    const confirmed = window.confirm(
+      `Konfirmasi Pembayaran\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nLanjutkan pembayaran?`
     );
     if (confirmed) {
       setIsProcessingPayment(true);
