@@ -770,6 +770,23 @@ export const useModals = () => {
     message: ''
   });
 
+  const [paymentConfirm, setPaymentConfirm] = useState<{
+    isOpen: boolean;
+    title: string;
+    cartItems: Array<{name: string; quantity: number; price: number}>;
+    totalAmount: number;
+    paymentMethod: string;
+    cashGiven: number;
+    resolve?: (value: boolean) => void;
+  }>({
+    isOpen: false,
+    title: '',
+    cartItems: [],
+    totalAmount: 0,
+    paymentMethod: '',
+    cashGiven: 0
+  });
+
   const showAlert = (title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
     setAlert({ isOpen: true, title, message, type });
   };
