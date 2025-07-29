@@ -176,8 +176,12 @@ const Dashboard: React.FC<DashboardProps> = ({
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Penjualan Terbaru</h3>
           {recentSales.length > 0 ? (
             <div className="space-y-3">
-              {recentSales.map((sale) => (
-                <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              {recentSales
+                .filter((sale, index, self) =>
+                  self.findIndex(s => s.id === sale.id) === index
+                )
+                .map((sale, index) => (
+                <div key={`dashboard-sale-${sale.id}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-900">#{sale.id.slice(-8)}</p>
                     <p className="text-sm text-gray-500">
