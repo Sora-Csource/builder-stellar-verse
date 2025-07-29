@@ -2283,7 +2283,6 @@ const EnhancedPOS: React.FC = () => {
 
         // Create sale record with custom ID format
         const saleId = generateSaleId();
-        console.log("Generated sale ID:", saleId);
 
         const newSale: Sale = {
           id: saleId,
