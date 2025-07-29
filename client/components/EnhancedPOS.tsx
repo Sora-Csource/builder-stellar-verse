@@ -993,48 +993,60 @@ const EnhancedPOS: React.FC = () => {
         {
           id: "prod-002",
           name: "Cappuccino",
+          category: "Minuman",
           price: 30000,
           stock: 30,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop",
         },
         {
           id: "prod-003",
           name: "Latte",
+          category: "Minuman",
           price: 32000,
           stock: 25,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
         },
         {
           id: "prod-004",
           name: "Croissant",
+          category: "Makanan",
           price: 15000,
           stock: 20,
+          unit: "pcs",
           imageUrl:
             "https://images.unsplash.com/photo-1555507036-ab794f575e8c?w=300&h=300&fit=crop",
         },
         {
           id: "prod-005",
           name: "Sandwich",
+          category: "Makanan",
           price: 45000,
           stock: 15,
+          unit: "pcs",
           imageUrl:
             "https://images.unsplash.com/photo-1553909489-cd47e0ef937f?w=300&h=300&fit=crop",
         },
         {
           id: "prod-006",
           name: "Matcha Latte",
+          category: "Minuman",
           price: 35000,
           stock: 3, // Low stock for testing alert
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=300&h=300&fit=crop",
         },
         {
           id: "prod-007",
           name: "Espresso",
+          category: "Minuman",
           price: 20000,
           stock: 2, // Low stock for testing alert
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=300&h=300&fit=crop",
         },
