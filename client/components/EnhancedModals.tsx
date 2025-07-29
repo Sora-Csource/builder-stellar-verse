@@ -921,6 +921,7 @@ export const useModals = () => {
     showSuccess,
     showLoading,
     hideLoading,
+    showPaymentConfirm,
     Modals
   };
 };
