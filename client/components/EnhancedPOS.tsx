@@ -1853,6 +1853,12 @@ const EnhancedPOS: React.FC = () => {
           },
         ];
         setUsers(defaultUsers);
+
+        // Auto-login for development/demo purposes
+        const adminUser = defaultUsers[0];
+        setCurrentUser(adminUser);
+        setIsLoginVisible(false);
+        setActiveModule("order-entry");
       }
     } catch (error) {
       console.error("Error loading data:", error);
@@ -1866,8 +1872,12 @@ const EnhancedPOS: React.FC = () => {
         },
       ];
       setUsers(defaultUsers);
-      setCurrentUser(null);
-      setIsLoginVisible(true);
+
+      // Auto-login for development/demo purposes
+      const adminUser = defaultUsers[0];
+      setCurrentUser(adminUser);
+      setIsLoginVisible(false);
+      setActiveModule("order-entry");
     }
   };
 
