@@ -680,6 +680,36 @@ const EnhancedPOS: React.FC = () => {
     };
   }, [showNotifications]);
 
+  // Global Search Function
+  const performGlobalSearch = (query: string) => {
+    if (!query.trim()) return { products: [], customers: [], sales: [], expenses: [] };
+
+    const searchTerm = query.toLowerCase();
+
+    return {
+      products: products.filter(p =>
+        p.name.toLowerCase().includes(searchTerm) ||
+        p.category.toLowerCase().includes(searchTerm) ||
+        p.id.toLowerCase().includes(searchTerm)
+      ),
+      customers: customers.filter(c =>
+        c.name.toLowerCase().includes(searchTerm) ||
+        c.phone.includes(searchTerm) ||
+        c.email.toLowerCase().includes(searchTerm) ||
+        c.id.toLowerCase().includes(searchTerm)
+      ),
+      sales: sales.filter(s =>
+        s.id.toLowerCase().includes(searchTerm) ||
+        s.items.some(item => item.name.toLowerCase().includes(searchTerm))
+      ),
+      expenses: expenses.filter(e =>
+        e.description.toLowerCase().includes(searchTerm) ||
+        e.category.toLowerCase().includes(searchTerm) ||
+        (e.supplier && e.supplier.toLowerCase().includes(searchTerm))
+      )
+    };
+  };
+
   // Data Import/Export Functions
   const handleImportProducts = async (file: File | undefined) => {
     if (!file) return;
