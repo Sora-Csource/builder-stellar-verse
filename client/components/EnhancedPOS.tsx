@@ -3954,7 +3954,7 @@ const EnhancedPOS: React.FC = () => {
               </div>
 
               {/* Global Search */}
-              <div className="relative">
+              <div className="relative global-search-container">
                 <div className="flex items-center space-x-2">
                   <div className="relative">
                     <input
