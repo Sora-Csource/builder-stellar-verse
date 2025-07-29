@@ -2780,7 +2780,7 @@ const EnhancedPOS: React.FC = () => {
       saleIdDateFormat: settingsForm.saleIdDateFormat,
     });
 
-    showAlert("Berhasil", "Pengaturan umum berhasil disimpan.", "success");
+    showAlert("Berhasil", `Pengaturan ${activeSettingsTab === "saleid" ? "ID Penjualan" : "umum"} berhasil disimpan.`, "success");
   };
 
   // Handle logo upload
