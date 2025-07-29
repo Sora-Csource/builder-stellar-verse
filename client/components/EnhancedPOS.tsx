@@ -1900,6 +1900,28 @@ const EnhancedPOS: React.FC = () => {
       setCurrentUser(adminUser);
       setIsLoginVisible(false);
       setActiveModule("order-entry");
+
+      // Auto-start shift for immediate use
+      setTimeout(() => {
+        const shiftId = generateShiftId();
+        const newShift: Shift = {
+          id: shiftId,
+          userId: adminUser.id,
+          startTime: new Date().toISOString(),
+          endTime: null,
+          startCash: 100000, // Start with 100k cash
+          endCash: null,
+          status: "open",
+          salesIds: [],
+        };
+        setShifts([newShift]);
+        setCurrentShift(newShift);
+
+        // Update user with shift ID
+        const updatedUser = { ...adminUser, currentShiftId: shiftId };
+        setCurrentUser(updatedUser);
+        setUsers([updatedUser]);
+      }, 100);
     }
   };
 
