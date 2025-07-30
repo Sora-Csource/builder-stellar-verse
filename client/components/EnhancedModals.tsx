@@ -141,8 +141,8 @@ export const AlertModal: React.FC<AlertModalProps> = ({
       aria-labelledby="alert-title"
       aria-describedby="alert-message"
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
-        <div className={`p-6 rounded-t-xl border-l-4 ${getColors()}`}>
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn mobile-modal portrait-modal landscape-modal small-portrait-modal">
+        <div className={`p-4 sm:p-6 rounded-t-xl border-l-4 ${getColors()} landscape-compact portrait-compact`}>
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">{getIcon()}</div>
             <div className="flex-1 min-w-0">
@@ -316,8 +316,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       aria-labelledby="confirm-title"
       aria-describedby="confirm-message"
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
-        <div className="p-6">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn mobile-modal portrait-modal landscape-modal small-portrait-modal">
+        <div className="p-4 sm:p-6 landscape-compact portrait-compact">
           <div className="flex items-center space-x-3 mb-4">
             <div className="flex-shrink-0">{getIcon()}</div>
             <div className="flex-1 min-w-0">
@@ -430,9 +430,9 @@ export const PromptModal: React.FC<PromptModalProps> = ({
       aria-labelledby="prompt-title"
       aria-describedby="prompt-message"
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn mobile-modal portrait-modal landscape-modal small-portrait-modal">
         <form onSubmit={handleSubmit}>
-          <div className="p-6">
+          <div className="p-4 sm:p-6 landscape-compact portrait-compact">
             <div className="flex items-center space-x-3 mb-4">
               <div className="flex-shrink-0">
                 <svg
@@ -559,8 +559,8 @@ export const SuccessModal: React.FC<SuccessModalProps> = ({
       aria-labelledby="success-title"
       aria-describedby="success-message"
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn">
-        <div className="p-6 text-center">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn mobile-modal portrait-modal landscape-modal small-portrait-modal">
+        <div className="p-4 sm:p-6 text-center landscape-compact portrait-compact">
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
             <svg
               className="w-8 h-8 text-green-600"
