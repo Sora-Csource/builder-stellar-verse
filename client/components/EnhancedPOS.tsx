@@ -3955,7 +3955,7 @@ const EnhancedPOS: React.FC = () => {
       {!isLoginVisible && currentUser && (
         <div className="flex flex-col min-h-screen">
           {/* Top Navigation */}
-          <nav className="bg-gray-800 text-gray-300 px-6 py-3 shadow-lg rounded-b-lg">
+          <nav className="bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 px-6 py-3 shadow-lg">
             <div className="flex justify-between items-center">
               {/* Left: Main Navigation */}
               <div className="flex items-center flex-wrap gap-4">
@@ -10679,7 +10679,7 @@ const EnhancedPOS: React.FC = () => {
                   type="submit"
                   className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200 shadow-md"
                 >
-                  ���� Simpan Pelanggan
+                  👤 Simpan Pelanggan
                 </button>
               </div>
             </form>
