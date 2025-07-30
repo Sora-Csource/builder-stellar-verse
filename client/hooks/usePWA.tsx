@@ -164,6 +164,34 @@ export const usePWA = (): PWAState => {
   };
 };
 
+// Helper function to initialize IndexedDB
+const initializeIndexedDB = (): Promise<IDBDatabase> => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('pos-offline-db', 1);
+
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+
+      // Create object stores if they don't exist
+      if (!db.objectStoreNames.contains('offline-data')) {
+        db.createObjectStore('offline-data', { keyPath: 'key' });
+      }
+      if (!db.objectStoreNames.contains('pending')) {
+        db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      resolve(db);
+    };
+
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+};
+
 // Utility function to save data offline
 export const saveOfflineData = async (key: string, data: any): Promise<void> => {
   try {
