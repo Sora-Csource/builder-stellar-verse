@@ -10,7 +10,7 @@ export const PWAInstallPrompt: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-50 animate-slideUp">
+    <div className="fixed bottom-2 sm:bottom-4 left-2 sm:left-4 right-2 sm:right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg p-3 sm:p-4 z-50 animate-slideUp mobile-modal portrait-modal landscape-modal safe-area-bottom">
       <div className="flex items-start space-x-3">
         <div className="flex-shrink-0">
           <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
