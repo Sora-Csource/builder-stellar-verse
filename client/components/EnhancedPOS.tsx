@@ -1045,7 +1045,7 @@ const EnhancedPOS: React.FC = () => {
           name: "Espresso",
           category: "Minuman",
           price: 20000,
-          stock: 2, // Low stock for testing alert
+          stock: 2,
           unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=300&h=300&fit=crop",
