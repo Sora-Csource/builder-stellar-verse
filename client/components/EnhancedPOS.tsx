@@ -1872,24 +1872,28 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Data persistence
-  const saveData = () => {
+  const saveData = async () => {
     try {
-      localStorage.setItem(
-        "posData",
-        JSON.stringify({
-          users,
-          products,
-          customers,
-          sales,
-          shifts,
-          openBills,
-          settings,
-          currentUser: currentUser ? currentUser.id : null,
-        }),
-      );
+      const data = {
+        users,
+        products,
+        customers,
+        sales,
+        shifts,
+        openBills,
+        settings,
+        currentUser: currentUser ? currentUser.id : null,
+      };
+
+      // Save to localStorage for immediate access
+      localStorage.setItem("posData", JSON.stringify(data));
+
+      // Save to IndexedDB for offline PWA functionality
+      await saveOfflineData("posData", data);
+
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Gagal menyimpan data.");
+      showAlert("Error", "Gagal menyimpan data.", "error");
     }
   };
 
