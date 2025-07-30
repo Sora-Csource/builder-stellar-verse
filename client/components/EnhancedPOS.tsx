@@ -7667,927 +7667,319 @@ const EnhancedPOS: React.FC = () => {
 
                   {/* Analytics Dashboard Tab */}
                   {activeReportsTab === "analytics" && (
-                    <div className="mt-6 space-y-6">
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                          <svg
-                            className="w-6 h-6 mr-2 text-blue-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                            />
-                          </svg>
-                          Analytics Dashboard
-                        </h3>
+                    <div className="space-y-6">
+                      {/* Quick Stats Overview */}
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {(() => {
+                          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+                          const recentSales = sales.filter(sale =>
+                            new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+                          );
+                          const totalRevenue = recentSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
+                          const avgTransaction = recentSales.length > 0 ? totalRevenue / recentSales.length : 0;
+                          const activeProducts = products.filter(p => (p.stock || 0) > 0).length;
 
-                        {/* Key Performance Indicators */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-blue-100 text-sm">
-                                  Total Sales (30d)
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {formatCurrency(
-                                    sales
-                                      .filter((sale) => {
-                                        try {
-                                          return (
-                                            new Date(sale.date) >=
-                                              new Date(
-                                                Date.now() -
-                                                  30 * 24 * 60 * 60 * 1000,
-                                              ) && sale.status === "completed"
-                                          );
-                                        } catch (e) {
-                                          return false;
-                                        }
-                                      })
-                                      .reduce(
-                                        (sum, sale) =>
-                                          sum + (sale.totalAmount || 0),
-                                        0,
-                                      ),
-                                  )}
-                                </p>
+                          return [
+                            {
+                              label: "Revenue (30d)",
+                              value: formatCurrency(totalRevenue),
+                              icon: "💰",
+                              color: "from-emerald-500 to-emerald-600",
+                              change: "+12%"
+                            },
+                            {
+                              label: "Transactions",
+                              value: recentSales.length.toString(),
+                              icon: "📊",
+                              color: "from-blue-500 to-blue-600",
+                              change: "+8%"
+                            },
+                            {
+                              label: "Avg. Sale",
+                              value: formatCurrency(avgTransaction),
+                              icon: "📈",
+                              color: "from-purple-500 to-purple-600",
+                              change: "+15%"
+                            },
+                            {
+                              label: "Products",
+                              value: `${activeProducts}/${products.length}`,
+                              icon: "📦",
+                              color: "from-orange-500 to-orange-600",
+                              change: "Active"
+                            }
+                          ].map((stat, index) => (
+                            <div key={index} className={`bg-gradient-to-br ${stat.color} p-4 rounded-xl text-white`}>
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <p className="text-white/80 text-sm font-medium">{stat.label}</p>
+                                  <p className="text-2xl font-bold mt-1">{stat.value}</p>
+                                  <p className="text-white/70 text-xs mt-1">{stat.change}</p>
+                                </div>
+                                <span className="text-2xl">{stat.icon}</span>
                               </div>
-                              <svg
-                                className="w-8 h-8 text-blue-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                                />
-                              </svg>
                             </div>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-green-100 text-sm">
-                                  Transactions (30d)
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {
-                                    sales.filter((sale) => {
-                                      try {
-                                        return (
-                                          new Date(sale.date) >=
-                                            new Date(
-                                              Date.now() -
-                                                30 * 24 * 60 * 60 * 1000,
-                                            ) && sale.status === "completed"
-                                        );
-                                      } catch (e) {
-                                        return false;
-                                      }
-                                    }).length
-                                  }
-                                </p>
-                              </div>
-                              <svg
-                                className="w-8 h-8 text-green-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-purple-100 text-sm">
-                                  Avg Transaction
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {(() => {
-                                    try {
-                                      const recentSales = sales.filter(
-                                        (sale) =>
-                                          new Date(sale.date) >=
-                                            new Date(
-                                              Date.now() -
-                                                30 * 24 * 60 * 60 * 1000,
-                                            ) && sale.status === "completed",
-                                      );
-                                      const avgAmount =
-                                        recentSales.length > 0
-                                          ? recentSales.reduce(
-                                              (sum, sale) =>
-                                                sum + (sale.totalAmount || 0),
-                                              0,
-                                            ) / recentSales.length
-                                          : 0;
-                                      return formatCurrency(avgAmount);
-                                    } catch (e) {
-                                      return formatCurrency(0);
-                                    }
-                                  })()}
-                                </p>
-                              </div>
-                              <svg
-                                className="w-8 h-8 text-purple-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-orange-100 text-sm">
-                                  Active Products
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {
-                                    products.filter((p) => (p.stock || 0) > 0)
-                                      .length
-                                  }
-                                </p>
-                                <p className="text-orange-100 text-xs">
-                                  of {products.length} total
-                                </p>
-                              </div>
-                              <svg
-                                className="w-8 h-8 text-orange-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* No Data Message */}
-                        {products.length === 0 && sales.length === 0 && (
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                            <div className="text-yellow-600 mb-2">
-                              <svg
-                                className="w-12 h-12 mx-auto mb-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            </div>
-                            <h4 className="text-lg font-medium text-yellow-800 mb-2">
-                              Belum Ada Data
-                            </h4>
-                            <p className="text-yellow-700">
-                              Mulai dengan menambahkan produk dan melakukan
-                              transaksi untuk melihat analytics yang lebih
-                              detail.
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Enhanced Analytics Charts */}
-                        {sales.length > 0 && (
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                            {/* Sales Trend */}
-                            <div className="bg-white p-6 rounded-lg shadow">
-                              <h4 className="text-lg font-semibold text-gray-800 mb-4">
-                                📈 Tren Penjualan (7 Hari Terakhir)
-                              </h4>
-                              {(() => {
-                                try {
-                                  const last7Days = Array.from(
-                                    { length: 7 },
-                                    (_, i) => {
-                                      const date = new Date();
-                                      date.setDate(date.getDate() - i);
-                                      return date.toISOString().split("T")[0];
-                                    },
-                                  ).reverse();
-
-                                  const dailySales = last7Days.map((date) => {
-                                    const dayStart = new Date(
-                                      date + "T00:00:00",
-                                    );
-                                    const dayEnd = new Date(date + "T23:59:59");
-                                    const daySales = sales.filter((sale) => {
-                                      const saleDate = new Date(sale.date);
-                                      return (
-                                        saleDate >= dayStart &&
-                                        saleDate <= dayEnd &&
-                                        sale.status === "completed"
-                                      );
-                                    });
-                                    const total = daySales.reduce(
-                                      (sum, sale) =>
-                                        sum + (sale.totalAmount || 0),
-                                      0,
-                                    );
-                                    return {
-                                      date: new Date(date).toLocaleDateString(
-                                        "id-ID",
-                                        { weekday: "short", day: "numeric" },
-                                      ),
-                                      total,
-                                      count: daySales.length,
-                                    };
-                                  });
-
-                                  const maxTotal = Math.max(
-                                    ...dailySales.map((d) => d.total),
-                                  );
-
-                                  return (
-                                    <div className="space-y-3">
-                                      {dailySales.map((day, index) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-center space-x-3"
-                                        >
-                                          <div className="w-12 text-xs text-gray-600">
-                                            {day.date}
-                                          </div>
-                                          <div className="flex-1 bg-gray-200 rounded-full h-6 relative">
-                                            <div
-                                              className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                                              style={{
-                                                width:
-                                                  maxTotal > 0
-                                                    ? `${(day.total / maxTotal) * 100}%`
-                                                    : "0%",
-                                              }}
-                                            >
-                                              {day.total > 0 && (
-                                                <span className="text-xs text-white font-medium">
-                                                  {formatCurrency(day.total)}
-                                                </span>
-                                              )}
-                                            </div>
-                                          </div>
-                                          <div className="w-8 text-xs text-gray-600">
-                                            {day.count}
-                                          </div>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  );
-                                } catch (error) {
-                                  return (
-                                    <div className="text-center text-gray-500 py-8">
-                                      <p>Error memuat data tren penjualan</p>
-                                    </div>
-                                  );
-                                }
-                              })()}
-                            </div>
-
-                            {/* Top Products */}
-                            <div className="bg-white p-6 rounded-lg shadow">
-                              <h4 className="text-lg font-semibold text-gray-800 mb-4">
-                                🏆 Produk Terlaris (30 Hari)
-                              </h4>
-                              {(() => {
-                                try {
-                                  const thirtyDaysAgo = new Date(
-                                    Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                  );
-                                  const recentSales = sales.filter(
-                                    (sale) =>
-                                      new Date(sale.date) >= thirtyDaysAgo &&
-                                      sale.status === "completed",
-                                  );
-
-                                  const productSales: {
-                                    [key: string]: {
-                                      name: string;
-                                      quantity: number;
-                                      revenue: number;
-                                    };
-                                  } = {};
-
-                                  recentSales.forEach((sale) => {
-                                    sale.items.forEach((item) => {
-                                      if (!productSales[item.productId]) {
-                                        productSales[item.productId] = {
-                                          name: item.name,
-                                          quantity: 0,
-                                          revenue: 0,
-                                        };
-                                      }
-                                      productSales[item.productId].quantity +=
-                                        item.quantity;
-                                      productSales[item.productId].revenue +=
-                                        item.price * item.quantity;
-                                    });
-                                  });
-
-                                  const topProducts = Object.values(
-                                    productSales,
-                                  )
-                                    .sort((a, b) => b.quantity - a.quantity)
-                                    .slice(0, 5);
-
-                                  const maxQuantity = Math.max(
-                                    ...topProducts.map((p) => p.quantity),
-                                  );
-
-                                  return topProducts.length > 0 ? (
-                                    <div className="space-y-3">
-                                      {topProducts.map((product, index) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-center space-x-3"
-                                        >
-                                          <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                            {index + 1}
-                                          </div>
-                                          <div className="flex-1">
-                                            <div className="font-medium text-gray-800 text-sm">
-                                              {product.name}
-                                            </div>
-                                            <div className="bg-gray-200 rounded-full h-3 mt-1">
-                                              <div
-                                                className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full"
-                                                style={{
-                                                  width: `${(product.quantity / maxQuantity) * 100}%`,
-                                                }}
-                                              />
-                                            </div>
-                                          </div>
-                                          <div className="text-right">
-                                            <div className="text-sm font-bold text-gray-800">
-                                              {product.quantity}
-                                            </div>
-                                            <div className="text-xs text-gray-500">
-                                              {formatCurrency(product.revenue)}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <div className="text-center text-gray-500 py-8">
-                                      <p>Belum ada data penjualan produk</p>
-                                    </div>
-                                  );
-                                } catch (error) {
-                                  return (
-                                    <div className="text-center text-gray-500 py-8">
-                                      <p>Error memuat data produk terlaris</p>
-                                    </div>
-                                  );
-                                }
-                              })()}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Data Notice */}
-                        {(products.length > 0 || sales.length > 0) && (
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-                            <div className="flex items-center">
-                              <svg
-                                className="w-5 h-5 text-blue-500 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                              <p className="text-blue-700 text-sm">
-                                Dashboard menampilkan data dari{" "}
-                                {products.length} produk dan {sales.length}{" "}
-                                transaksi.
-                                {sales.length < 5 &&
-                                  " Lakukan lebih banyak transaksi untuk analytics yang lebih akurat."}
-                              </p>
-                            </div>
-                          </div>
-                        )}
+                          ));
+                        })()}
                       </div>
 
-                      {/* Key Performance Indicators */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-blue-100 text-sm">
-                                Total Sales (30d)
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {formatCurrency(
-                                  sales
-                                    .filter(
-                                      (sale) =>
-                                        new Date(sale.date) >=
-                                          new Date(
-                                            Date.now() -
-                                              30 * 24 * 60 * 60 * 1000,
-                                          ) && sale.status === "completed",
-                                    )
-                                    .reduce(
-                                      (sum, sale) => sum + sale.totalAmount,
-                                      0,
-                                    ),
-                                )}
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-blue-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-green-100 text-sm">
-                                Transactions (30d)
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {
-                                  sales.filter(
-                                    (sale) =>
-                                      new Date(sale.date) >=
-                                        new Date(
-                                          Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                        ) && sale.status === "completed",
-                                  ).length
-                                }
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-green-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-purple-100 text-sm">
-                                Avg Transaction
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {(() => {
-                                  const recentSales = sales.filter(
-                                    (sale) =>
-                                      new Date(sale.date) >=
-                                        new Date(
-                                          Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                        ) && sale.status === "completed",
-                                  );
-                                  const avgAmount =
-                                    recentSales.length > 0
-                                      ? recentSales.reduce(
-                                          (sum, sale) => sum + sale.totalAmount,
-                                          0,
-                                        ) / recentSales.length
-                                      : 0;
-                                  return formatCurrency(avgAmount);
-                                })()}
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-purple-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-orange-100 text-sm">
-                                Active Products
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {products.filter((p) => p.stock > 0).length}
-                              </p>
-                              <p className="text-orange-100 text-xs">
-                                of {products.length} total
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-orange-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Sales Trend Chart (Text-based) */}
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h4 className="text-lg font-semibold mb-4 flex items-center">
-                          <svg
-                            className="w-5 h-5 mr-2 text-blue-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                            />
-                          </svg>
-                          Sales Trend (Last 7 Days)
-                        </h4>
-                        <div className="space-y-3">
-                          {(() => {
-                            const last7Days = Array.from(
-                              { length: 7 },
-                              (_, i) => {
+                      {/* Charts Row */}
+                      <div className="grid lg:grid-cols-2 gap-6">
+                        {/* Sales Trend */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">📈</span>
+                            Sales Trend (7 Days)
+                          </h3>
+                          <div className="space-y-3">
+                            {(() => {
+                              const last7Days = Array.from({ length: 7 }, (_, i) => {
                                 const date = new Date();
                                 date.setDate(date.getDate() - (6 - i));
                                 return date;
-                              },
-                            );
-
-                            const dailySales = last7Days.map((date) => {
-                              const dayStart = new Date(date);
-                              dayStart.setHours(0, 0, 0, 0);
-                              const dayEnd = new Date(date);
-                              dayEnd.setHours(23, 59, 59, 999);
-
-                              const daySales = sales.filter((sale) => {
-                                const saleDate = new Date(sale.date);
-                                return (
-                                  saleDate >= dayStart &&
-                                  saleDate <= dayEnd &&
-                                  sale.status === "completed"
-                                );
                               });
 
-                              return {
-                                date: date.toLocaleDateString("id-ID", {
-                                  weekday: "short",
-                                  day: "numeric",
-                                  month: "short",
-                                }),
-                                sales: daySales.length,
-                                amount: daySales.reduce(
-                                  (sum, sale) => sum + sale.totalAmount,
-                                  0,
-                                ),
-                              };
-                            });
+                              const dailyData = last7Days.map(date => {
+                                const dayStart = new Date(date);
+                                dayStart.setHours(0, 0, 0, 0);
+                                const dayEnd = new Date(date);
+                                dayEnd.setHours(23, 59, 59, 999);
 
-                            const maxAmount = Math.max(
-                              ...dailySales.map((d) => d.amount),
-                            );
+                                const daySales = sales.filter(sale => {
+                                  const saleDate = new Date(sale.date);
+                                  return saleDate >= dayStart && saleDate <= dayEnd && sale.status === "completed";
+                                });
 
-                            return dailySales.map((day, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center space-x-4"
-                              >
-                                <div className="w-16 text-sm text-gray-600">
-                                  {day.date}
-                                </div>
-                                <div className="flex-1 bg-gray-100 rounded-full h-6 relative">
-                                  <div
-                                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                                    style={{
-                                      width:
-                                        maxAmount > 0
-                                          ? `${(day.amount / maxAmount) * 100}%`
-                                          : "2%",
-                                    }}
-                                  >
-                                    <span className="text-white text-xs font-medium">
-                                      {day.sales > 0 ? `${day.sales}tx` : ""}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="w-24 text-sm text-gray-700 text-right">
-                                  {formatCurrency(day.amount)}
-                                </div>
-                              </div>
-                            ));
-                          })()}
-                        </div>
-                      </div>
+                                return {
+                                  day: date.toLocaleDateString("id-ID", { weekday: "short" }),
+                                  amount: daySales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0),
+                                  count: daySales.length
+                                };
+                              });
 
-                      {/* Top Products & Payment Methods */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Top Products */}
-                        <div className="bg-white p-6 rounded-lg shadow">
-                          <h4 className="text-lg font-semibold mb-4 flex items-center">
-                            <svg
-                              className="w-5 h-5 mr-2 text-green-500"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                              />
-                            </svg>
-                            Top Selling Products (30d)
-                          </h4>
-                          <div className="space-y-3">
-                            {Object.values(getInventoryAnalytics())
-                              .sort((a, b) => b.totalSold - a.totalSold)
-                              .slice(0, 5)
-                              .map((product, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
-                                >
-                                  <div>
-                                    <p className="font-medium text-gray-800">
-                                      {index + 1}. {product.name}
-                                    </p>
-                                    <p className="text-sm text-gray-600">
-                                      {product.totalSold} sold •{" "}
-                                      {product.dailyAverage.toFixed(1)}/day avg
-                                    </p>
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="text-lg font-bold text-green-600">
-                                      {formatCurrency(
-                                        product.totalSold *
-                                          (products.find(
-                                            (p) => p.name === product.name,
-                                          )?.price || 0),
+                              const maxAmount = Math.max(...dailyData.map(d => d.amount), 1);
+
+                              return dailyData.map((day, index) => (
+                                <div key={index} className="flex items-center space-x-3">
+                                  <div className="w-10 text-sm font-medium text-gray-600">{day.day}</div>
+                                  <div className="flex-1 bg-gray-100 rounded-full h-6 relative overflow-hidden">
+                                    <div
+                                      className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full rounded-full flex items-center justify-end pr-2 transition-all duration-500"
+                                      style={{ width: `${Math.max((day.amount / maxAmount) * 100, 2)}%` }}
+                                    >
+                                      {day.amount > 0 && (
+                                        <span className="text-xs text-white font-medium">
+                                          {day.count}
+                                        </span>
                                       )}
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                      revenue
-                                    </p>
+                                    </div>
+                                  </div>
+                                  <div className="w-20 text-sm font-semibold text-gray-900 text-right">
+                                    {formatCurrency(day.amount)}
                                   </div>
                                 </div>
-                              ))}
+                              ));
+                            })()}
                           </div>
                         </div>
 
-                        {/* Payment Methods Analysis */}
-                        <div className="bg-white p-6 rounded-lg shadow">
-                          <h4 className="text-lg font-semibold mb-4 flex items-center">
-                            <svg
-                              className="w-5 h-5 mr-2 text-purple-500"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                              />
-                            </svg>
-                            Payment Methods (30d)
-                          </h4>
+                        {/* Top Products */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">🏆</span>
+                            Top Products
+                          </h3>
                           <div className="space-y-3">
                             {(() => {
-                              const recentSales = sales.filter(
-                                (sale) =>
-                                  new Date(sale.date) >=
-                                    new Date(
-                                      Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                    ) && sale.status === "completed",
+                              const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+                              const recentSales = sales.filter(sale =>
+                                new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
                               );
 
-                              const paymentStats = recentSales.reduce(
-                                (acc, sale) => {
-                                  acc[sale.paymentMethod] =
-                                    (acc[sale.paymentMethod] || 0) +
-                                    sale.totalAmount;
-                                  return acc;
-                                },
-                                {} as Record<string, number>,
-                              );
+                              const productStats: Record<string, { name: string; quantity: number; revenue: number }> = {};
 
-                              const total = Object.values(paymentStats).reduce(
-                                (sum, amount) => sum + amount,
-                                0,
-                              );
+                              recentSales.forEach(sale => {
+                                sale.items.forEach(item => {
+                                  if (!productStats[item.productId]) {
+                                    productStats[item.productId] = {
+                                      name: item.name,
+                                      quantity: 0,
+                                      revenue: 0
+                                    };
+                                  }
+                                  productStats[item.productId].quantity += item.quantity;
+                                  productStats[item.productId].revenue += item.price * item.quantity;
+                                });
+                              });
 
-                              const paymentMethods = [
-                                {
-                                  key: "cash",
-                                  name: "Tunai",
-                                  color: "bg-green-500",
-                                },
-                                {
-                                  key: "card",
-                                  name: "Kartu",
-                                  color: "bg-blue-500",
-                                },
-                                {
-                                  key: "ewallet",
-                                  name: "E-Wallet",
-                                  color: "bg-purple-500",
-                                },
-                              ];
+                              const topProducts = Object.values(productStats)
+                                .sort((a, b) => b.quantity - a.quantity)
+                                .slice(0, 5);
 
-                              return paymentMethods.map((method) => {
-                                const amount = paymentStats[method.key] || 0;
-                                const percentage =
-                                  total > 0 ? (amount / total) * 100 : 0;
+                              const maxQuantity = Math.max(...topProducts.map(p => p.quantity), 1);
 
-                                return (
-                                  <div key={method.key}>
-                                    <div className="flex justify-between items-center mb-1">
-                                      <span className="text-sm font-medium text-gray-700">
-                                        {method.name}
-                                      </span>
-                                      <span className="text-sm text-gray-600">
-                                        {percentage.toFixed(1)}%
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                      <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div
-                                          className={`${method.color} h-2 rounded-full`}
-                                          style={{ width: `${percentage}%` }}
-                                        ></div>
-                                      </div>
-                                      <span className="text-sm font-medium text-gray-800 min-w-20">
-                                        {formatCurrency(amount)}
-                                      </span>
+                              return topProducts.length > 0 ? topProducts.map((product, index) => (
+                                <div key={index} className="flex items-center space-x-3">
+                                  <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                                    {index + 1}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-medium text-gray-900 text-sm truncate">{product.name}</div>
+                                    <div className="bg-gray-200 rounded-full h-2 mt-1 overflow-hidden">
+                                      <div
+                                        className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-full transition-all duration-500"
+                                        style={{ width: `${(product.quantity / maxQuantity) * 100}%` }}
+                                      />
                                     </div>
                                   </div>
-                                );
-                              });
+                                  <div className="text-right">
+                                    <div className="text-sm font-bold text-gray-900">{product.quantity}</div>
+                                    <div className="text-xs text-gray-500">{formatCurrency(product.revenue)}</div>
+                                  </div>
+                                </div>
+                              )) : (
+                                <div className="text-center py-8 text-gray-500">
+                                  <span className="text-4xl block mb-2">📊</span>
+                                  <p>No sales data yet</p>
+                                </div>
+                              );
                             })()}
                           </div>
                         </div>
                       </div>
 
-                      {/* Inventory Status Overview */}
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h4 className="text-lg font-semibold mb-4 flex items-center">
-                          <svg
-                            className="w-5 h-5 mr-2 text-yellow-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                            />
-                          </svg>
-                          Inventory Health Status
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          {(() => {
-                            const analytics = getInventoryAnalytics();
-                            const statusCounts = {
-                              healthy: Object.values(analytics).filter(
-                                (p) => p.status === "healthy",
-                              ).length,
-                              low: Object.values(analytics).filter(
-                                (p) => p.status === "low",
-                              ).length,
-                              critical: Object.values(analytics).filter(
-                                (p) => p.status === "critical",
-                              ).length,
-                              stockout: Object.values(analytics).filter(
-                                (p) => p.status === "stockout",
-                              ).length,
-                            };
+                      {/* Payment Methods & Inventory Status */}
+                      <div className="grid lg:grid-cols-2 gap-6">
+                        {/* Payment Methods */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">💳</span>
+                            Payment Methods
+                          </h3>
+                          <div className="space-y-4">
+                            {(() => {
+                              const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+                              const recentSales = sales.filter(sale =>
+                                new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+                              );
 
-                            const statuses = [
-                              {
-                                key: "healthy",
-                                name: "Healthy",
-                                color: "bg-green-500",
-                                icon: "✅",
-                              },
-                              {
-                                key: "low",
-                                name: "Low Stock",
-                                color: "bg-yellow-500",
-                                icon: "⚠️",
-                              },
-                              {
-                                key: "critical",
-                                name: "Critical",
-                                color: "bg-orange-500",
-                                icon: "🔥",
-                              },
-                              {
-                                key: "stockout",
-                                name: "Out of Stock",
-                                color: "bg-red-500",
-                                icon: "❌",
-                              },
-                            ];
+                              const paymentStats = recentSales.reduce((acc, sale) => {
+                                acc[sale.paymentMethod] = (acc[sale.paymentMethod] || 0) + (sale.totalAmount || 0);
+                                return acc;
+                              }, {} as Record<string, number>);
 
-                            return statuses.map((status) => (
-                              <div
-                                key={status.key}
-                                className="text-center p-4 bg-gray-50 rounded-lg"
-                              >
-                                <div className="text-2xl mb-2">
-                                  {status.icon}
+                              const total = Object.values(paymentStats).reduce((sum, amount) => sum + amount, 0);
+
+                              const methods = [
+                                { key: "cash", name: "Cash", icon: "💵", color: "bg-emerald-500" },
+                                { key: "card", name: "Card", icon: "💳", color: "bg-blue-500" },
+                                { key: "ewallet", name: "E-Wallet", icon: "📱", color: "bg-purple-500" }
+                              ];
+
+                              return total > 0 ? methods.map(method => {
+                                const amount = paymentStats[method.key] || 0;
+                                const percentage = (amount / total) * 100;
+
+                                return (
+                                  <div key={method.key} className="flex items-center space-x-3">
+                                    <span className="text-2xl">{method.icon}</span>
+                                    <div className="flex-1">
+                                      <div className="flex justify-between items-center mb-1">
+                                        <span className="font-medium text-gray-900">{method.name}</span>
+                                        <span className="text-sm text-gray-600">{percentage.toFixed(1)}%</span>
+                                      </div>
+                                      <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                                        <div
+                                          className={`${method.color} h-full rounded-full transition-all duration-500`}
+                                          style={{ width: `${percentage}%` }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="font-semibold text-gray-900">{formatCurrency(amount)}</div>
+                                    </div>
+                                  </div>
+                                );
+                              }) : (
+                                <div className="text-center py-8 text-gray-500">
+                                  <span className="text-4xl block mb-2">💳</span>
+                                  <p>No payment data yet</p>
                                 </div>
-                                <div className="text-2xl font-bold text-gray-800">
-                                  {
-                                    statusCounts[
-                                      status.key as keyof typeof statusCounts
-                                    ]
-                                  }
+                              );
+                            })()}
+                          </div>
+                        </div>
+
+                        {/* Inventory Status */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">📦</span>
+                            Inventory Status
+                          </h3>
+                          <div className="grid grid-cols-2 gap-4">
+                            {(() => {
+                              const statusCounts = {
+                                healthy: products.filter(p => (p.stock || 0) > 10).length,
+                                low: products.filter(p => (p.stock || 0) > 0 && (p.stock || 0) <= 10).length,
+                                out: products.filter(p => (p.stock || 0) === 0).length
+                              };
+
+                              const statuses = [
+                                { key: "healthy", name: "Healthy", icon: "✅", color: "bg-emerald-100 text-emerald-800", count: statusCounts.healthy },
+                                { key: "low", name: "Low Stock", icon: "⚠️", color: "bg-yellow-100 text-yellow-800", count: statusCounts.low },
+                                { key: "out", name: "Out of Stock", icon: "❌", color: "bg-red-100 text-red-800", count: statusCounts.out }
+                              ];
+
+                              return statuses.map(status => (
+                                <div key={status.key} className={`${status.color} rounded-lg p-4 text-center`}>
+                                  <div className="text-2xl mb-2">{status.icon}</div>
+                                  <div className="text-2xl font-bold">{status.count}</div>
+                                  <div className="text-sm font-medium">{status.name}</div>
                                 </div>
-                                <div className="text-sm text-gray-600">
-                                  {status.name}
-                                </div>
-                              </div>
-                            ));
-                          })()}
+                              ));
+                            })()}
+                          </div>
                         </div>
                       </div>
+
+                      {/* Summary Notice */}
+                      {(products.length > 0 || sales.length > 0) && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                          <div className="flex items-center space-x-3">
+                            <span className="text-2xl">ℹ️</span>
+                            <div>
+                              <p className="text-blue-900 font-medium">Analytics Summary</p>
+                              <p className="text-blue-700 text-sm">
+                                Showing data from {products.length} products and {sales.length} transactions.
+                                {sales.length < 5 && " Add more sales for better insights."}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* No Data State */}
+                      {products.length === 0 && sales.length === 0 && (
+                        <div className="bg-gray-50 rounded-xl p-12 text-center">
+                          <div className="text-6xl mb-4">📊</div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Data Available</h3>
+                          <p className="text-gray-600 mb-6">Start by adding products and making sales to see analytics.</p>
+                          <div className="flex justify-center space-x-4">
+                            <button
+                              onClick={() => setActiveModule("stock-management")}
+                              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                            >
+                              Add Products
+                            </button>
+                            <button
+                              onClick={() => setActiveModule("order-entry")}
+                              className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+                            >
+                              Make Sale
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
