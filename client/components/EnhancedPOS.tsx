@@ -4426,7 +4426,7 @@ const EnhancedPOS: React.FC = () => {
                   <h2 className="text-2xl font-semibold mb-4 text-gray-800">
                     Entri Pesanan
                   </h2>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-6 portrait-grid landscape-grid tablet-portrait-grid tablet-landscape-grid">
                     {/* Product Selection */}
                     <div>
                       <div className="mb-4">
@@ -5160,7 +5160,7 @@ const EnhancedPOS: React.FC = () => {
                                   </p>
                                   <p className="text-xs text-gray-600">
                                     {product.daysUntilStockout === Infinity
-                                      ? "∞"
+                                      ? "��"
                                       : product.daysUntilStockout}{" "}
                                     hari lagi
                                   </p>
