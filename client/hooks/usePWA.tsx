@@ -82,6 +82,11 @@ export const usePWA = (): PWAState => {
 
   const registerServiceWorker = async () => {
     try {
+      if (!('serviceWorker' in navigator)) {
+        console.log('Service Worker not supported');
+        return;
+      }
+
       const registration = await navigator.serviceWorker.register('/sw.js');
       console.log('Service Worker registered:', registration);
 
