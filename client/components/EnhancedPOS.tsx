@@ -4150,15 +4150,26 @@ const EnhancedPOS: React.FC = () => {
 
           {/* Main Content */}
           <main className="flex-1 p-6 bg-white m-4 rounded-lg shadow-md">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {settings.storeName}
-                </h1>
-                <span className="ml-4 text-sm text-gray-500">
-                  User: {currentUser.username} ({currentUser.role})
-                  {currentShift && ` | Shift: ${currentShift.id}`}
-                </span>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center space-x-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    {settings.storeName}
+                  </h1>
+                  <div className="flex items-center space-x-2 mt-1">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {currentUser.username}
+                    </span>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      {currentUser.role}
+                    </span>
+                    {currentShift && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                        Shift: {currentShift.id}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Global Search */}
