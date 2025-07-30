@@ -2033,7 +2033,7 @@ const EnhancedPOS: React.FC = () => {
 
   // Effects
   useEffect(() => {
-    loadData();
+    loadData().catch(console.error);
   }, []);
 
   useEffect(() => {
