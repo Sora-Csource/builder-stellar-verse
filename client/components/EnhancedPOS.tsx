@@ -3945,13 +3945,7 @@ const EnhancedPOS: React.FC = () => {
               {/* Content */}
               <div className="relative z-10 text-white">
                 <div className="mb-8">
-                  <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/10 overflow-hidden">
-                    <img
-                      src="https://cdn.builder.io/api/v1/image/assets%2F52b271e2145f4d519a786820152f2754%2Fa9b983d89dd247e793d2a42492a34895?format=webp&width=800"
-                      alt="Crema POS Logo"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
+
                   <h1 className="text-5xl xl:text-6xl font-bold mb-4 leading-tight">
                     Point of Sale
                     <span className="block text-3xl xl:text-4xl font-normal text-blue-200 mt-2">
@@ -7887,7 +7881,7 @@ const EnhancedPOS: React.FC = () => {
                             {
                               label: "Avg. Sale",
                               value: formatCurrency(avgTransaction),
-                              icon: "📈",
+                              icon: "����",
                               color: "from-purple-500 to-purple-600",
                               change: "+15%"
                             },
