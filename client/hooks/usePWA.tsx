@@ -195,36 +195,20 @@ const initializeIndexedDB = (): Promise<IDBDatabase> => {
 // Utility function to save data offline
 export const saveOfflineData = async (key: string, data: any): Promise<void> => {
   try {
-    // Save to localStorage as fallback
+    // Always save to localStorage as primary storage and fallback
     localStorage.setItem(`offline_${key}`, JSON.stringify({
       data,
       timestamp: Date.now()
     }));
 
-    // Save to IndexedDB for larger storage
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open('pos-offline-db', 1);
+    // Try to save to IndexedDB for larger storage (optional enhancement)
+    try {
+      if ('indexedDB' in window) {
+        const db = await initializeIndexedDB();
+        const transaction = db.transaction(['offline-data'], 'readwrite');
+        const store = transaction.objectStore('offline-data');
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-
-        // Create object stores if they don't exist
-        if (!db.objectStoreNames.contains('offline-data')) {
-          db.createObjectStore('offline-data', { keyPath: 'key' });
-        }
-        if (!db.objectStoreNames.contains('pending')) {
-          db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
-        }
-      };
-
-      request.onsuccess = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-
-        // Check if object store exists before creating transaction
-        if (db.objectStoreNames.contains('offline-data')) {
-          const transaction = db.transaction(['offline-data'], 'readwrite');
-          const store = transaction.objectStore('offline-data');
-
+        await new Promise<void>((resolve, reject) => {
           const putRequest = store.put({
             key,
             data,
@@ -240,18 +224,15 @@ export const saveOfflineData = async (key: string, data: any): Promise<void> => 
             db.close();
             reject(putRequest.error);
           };
-        } else {
-          db.close();
-          resolve(); // Fallback to localStorage only
-        }
-      };
-
-      request.onerror = () => {
-        reject(request.error);
-      };
-    });
+        });
+      }
+    } catch (indexedDBError) {
+      // IndexedDB failed, but localStorage succeeded, so continue
+      console.warn('IndexedDB save failed, using localStorage only:', indexedDBError);
+    }
   } catch (error) {
     console.error('Error saving offline data:', error);
+    throw error;
   }
 };
 
