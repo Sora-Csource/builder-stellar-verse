@@ -976,7 +976,7 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
-  // Sample data initialization
+  // Initial data setup
   const initializeSampleData = () => {
     if (products.length === 0) {
       const sampleProducts: Product[] = [
