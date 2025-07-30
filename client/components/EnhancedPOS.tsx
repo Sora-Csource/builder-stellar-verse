@@ -5,6 +5,8 @@ import {
   KeyboardShortcutsHelp,
 } from "../hooks/useKeyboardShortcuts.tsx";
 import { useOffline } from "../hooks/useOffline";
+import { PWAInstallPrompt, OfflineIndicator, PWAStatusBar, PWAPanel } from "./PWAComponents";
+import { usePWA, saveOfflineData, loadOfflineData } from "../hooks/usePWA";
 
 // Define all interfaces
 interface User {
