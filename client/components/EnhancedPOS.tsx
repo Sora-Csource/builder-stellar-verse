@@ -11878,6 +11878,11 @@ const EnhancedPOS: React.FC = () => {
 
       {/* Custom Modals */}
       <Modals />
+
+      {/* PWA Components */}
+      <PWAInstallPrompt />
+      <OfflineIndicator />
+      <PWAPanel isOpen={showPWAPanel} onClose={() => setShowPWAPanel(false)} />
     </div>
   );
 };
