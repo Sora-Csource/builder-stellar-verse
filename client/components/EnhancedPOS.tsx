@@ -368,6 +368,10 @@ const EnhancedPOS: React.FC = () => {
   // Reports tab state
   const [activeReportsTab, setActiveReportsTab] = useState("sales");
 
+  // PWA state
+  const [showPWAPanel, setShowPWAPanel] = useState(false);
+  const { isOffline } = usePWA();
+
   // Data management tab state
   const [activeDataTab, setActiveDataTab] = useState("import");
 
