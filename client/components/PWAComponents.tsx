@@ -126,8 +126,8 @@ export const PWAPanel: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4 safe-area-top safe-area-bottom">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto mobile-modal portrait-modal landscape-modal small-portrait-modal tablet-portrait-modal tablet-landscape-modal ios-modal">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-900">App Features</h2>
