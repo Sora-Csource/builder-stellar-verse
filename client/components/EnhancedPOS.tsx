@@ -4142,7 +4142,7 @@ const EnhancedPOS: React.FC = () => {
           </nav>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 bg-white m-4 rounded-lg shadow-md">
+          <main className="flex-1 p-3 sm:p-6 bg-white m-2 sm:m-4 rounded-lg shadow-md">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center space-x-4">
                 <div>
