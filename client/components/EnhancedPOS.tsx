@@ -3924,35 +3924,35 @@ const EnhancedPOS: React.FC = () => {
                 className="h-16 w-auto"
               />
             </div>
-            <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 text-center landscape-text portrait-text">
               <p>Login</p>
             </h2>
-            <form onSubmit={handleLogin}>
-              <div className="mb-4">
+            <form onSubmit={handleLogin} className="portrait-form landscape-form">
+              <div className="mb-3 sm:mb-4 mobile-form-spacing">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Username:
                 </label>
                 <input
                   type="text"
                   name="username"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-3 sm:py-2 px-4 sm:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mobile-input landscape-input portrait-input"
                   required
                 />
               </div>
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6 mobile-form-spacing">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Password:
                 </label>
                 <input
                   type="password"
                   name="password"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-3 sm:py-2 px-4 sm:px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline mobile-input landscape-input portrait-input"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
+                className="w-full bg-indigo-600 text-white py-3 sm:py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition duration-200 mobile-button landscape-button portrait-button touch-target"
               >
                 Masuk
               </button>
@@ -10820,7 +10820,7 @@ const EnhancedPOS: React.FC = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
             <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">���</div>
+                <div className="text-2xl">💰</div>
                 <h3 className="text-xl font-bold">
                   {editingExpense
                     ? "Edit Pengeluaran"
