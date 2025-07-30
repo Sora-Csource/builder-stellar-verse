@@ -3917,7 +3917,7 @@ const EnhancedPOS: React.FC = () => {
       {isLoginVisible && (
         <div className="fixed inset-0 z-50">
           {/* Background with gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-slate-900">
             {/* Animated background pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,white_0%,transparent_50%)]"></div>
@@ -3929,7 +3929,7 @@ const EnhancedPOS: React.FC = () => {
           {/* Main login container */}
           <div className="relative z-10 min-h-screen flex">
             {/* Left side - Branding/Info (Desktop only) */}
-            <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-blue-800 to-indigo-900 p-12 flex-col justify-center relative overflow-hidden">
+            <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-gray-700 to-gray-800 p-12 flex-col justify-center relative overflow-hidden">
               {/* Decorative elements */}
               <div className="absolute top-0 left-0 w-full h-full opacity-5">
                 <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -3945,14 +3945,20 @@ const EnhancedPOS: React.FC = () => {
               {/* Content */}
               <div className="relative z-10 text-white">
                 <div className="mb-8">
-
+                  <div className="w-24 h-24 bg-white/10 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/10 overflow-hidden">
+                    <img
+                      src="https://cdn.builder.io/api/v1/image/assets%2F52b271e2145f4d519a786820152f2754%2F65f9c035401d4da1a8330f886ff5b185?format=webp&width=800"
+                      alt="Crema POS Logo"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
                   <h1 className="text-5xl xl:text-6xl font-bold mb-4 leading-tight">
                     Point of Sale
-                    <span className="block text-3xl xl:text-4xl font-normal text-blue-200 mt-2">
+                    <span className="block text-3xl xl:text-4xl font-normal text-gray-300 mt-2">
                       Management System
                     </span>
                   </h1>
-                  <p className="text-xl text-blue-100 leading-relaxed max-w-lg">
+                  <p className="text-xl text-gray-200 leading-relaxed max-w-lg">
                     Complete business solution for retail and restaurant management with real-time analytics, inventory tracking, and seamless customer experience.
                   </p>
                 </div>
@@ -3965,7 +3971,7 @@ const EnhancedPOS: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-blue-100">Real-time Sales Tracking</span>
+                    <span className="text-gray-200">Real-time Sales Tracking</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
@@ -3973,7 +3979,7 @@ const EnhancedPOS: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-blue-100">Inventory Management</span>
+                    <span className="text-gray-200">Inventory Management</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
@@ -3981,7 +3987,7 @@ const EnhancedPOS: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-blue-100">Analytics & Reports</span>
+                    <span className="text-gray-200">Analytics & Reports</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
@@ -3989,7 +3995,7 @@ const EnhancedPOS: React.FC = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <span className="text-blue-100">Multi-user Support</span>
+                    <span className="text-gray-200">Multi-user Support</span>
                   </div>
                 </div>
               </div>
@@ -4004,7 +4010,7 @@ const EnhancedPOS: React.FC = () => {
                     <span className="text-2xl font-bold text-white">P</span>
                   </div>
                   <h1 className="text-3xl font-bold text-white mb-2">POS System</h1>
-                  <p className="text-blue-200">Point of Sale Management</p>
+                  <p className="text-gray-300">Point of Sale Management</p>
                 </div>
 
                 {/* Login form card */}
@@ -4094,16 +4100,7 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Quick demo info (optional) */}
-                <div className="mt-6 text-center">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <p className="text-sm font-medium text-white mb-2">Demo Access</p>
-                    <div className="space-y-1 text-xs text-blue-200">
-                      <p>Username: <span className="font-mono bg-black/20 px-2 py-1 rounded">admin</span></p>
-                      <p>Password: <span className="font-mono bg-black/20 px-2 py-1 rounded">admin</span></p>
-                    </div>
-                  </div>
-                </div>
+
               </div>
             </div>
           </div>
