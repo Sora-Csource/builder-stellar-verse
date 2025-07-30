@@ -61,7 +61,7 @@ export const OfflineIndicator: React.FC = () => {
   }
 
   return (
-    <div className="fixed top-16 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-orange-100 border border-orange-200 rounded-lg p-3 z-40 animate-slideDown">
+    <div className="fixed top-14 sm:top-16 left-2 sm:left-4 right-2 sm:right-4 sm:left-auto sm:right-4 sm:max-w-sm bg-orange-100 border border-orange-200 rounded-lg p-2 sm:p-3 z-40 animate-slideDown mobile-modal portrait-modal landscape-modal safe-area-top">
       <div className="flex items-center space-x-2">
         <div className="flex-shrink-0">
           <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
