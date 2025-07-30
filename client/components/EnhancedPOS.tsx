@@ -4242,6 +4242,17 @@ const EnhancedPOS: React.FC = () => {
                       </svg>
                     </button>
                   )}
+
+                  {/* PWA Panel Button */}
+                  <button
+                    onClick={() => setShowPWAPanel(true)}
+                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                    title="App Features"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  </button>
                 </div>
 
                 {/* Global Search Results */}
