@@ -5,6 +5,13 @@ import {
   KeyboardShortcutsHelp,
 } from "../hooks/useKeyboardShortcuts.tsx";
 import { useOffline } from "../hooks/useOffline";
+import {
+  PWAInstallPrompt,
+  OfflineIndicator,
+  PWAStatusBar,
+  PWAPanel,
+} from "./PWAComponents";
+import { usePWA, saveOfflineData, loadOfflineData } from "../hooks/usePWA";
 
 // Define all interfaces
 interface User {
@@ -18,8 +25,10 @@ interface User {
 interface Product {
   id: string;
   name: string;
+  category?: string;
   price: number;
   stock: number;
+  unit?: string;
   imageUrl?: string;
 }
 
@@ -177,6 +186,7 @@ const EnhancedPOS: React.FC = () => {
     showSuccess,
     showLoading,
     hideLoading,
+    showPaymentConfirm,
     Modals,
   } = useModals();
 
@@ -276,8 +286,10 @@ const EnhancedPOS: React.FC = () => {
   // Product form state
   const [productForm, setProductForm] = useState({
     name: "",
+    category: "Umum",
     price: 0,
     stock: 0,
+    unit: "pcs",
     imageUrl: "",
   });
 
@@ -360,6 +372,10 @@ const EnhancedPOS: React.FC = () => {
 
   // Reports tab state
   const [activeReportsTab, setActiveReportsTab] = useState("sales");
+
+  // PWA state
+  const [showPWAPanel, setShowPWAPanel] = useState(false);
+  const { isOffline } = usePWA();
 
   // Data management tab state
   const [activeDataTab, setActiveDataTab] = useState("import");
@@ -971,71 +987,87 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
-  // Sample data initialization
+  // Initial data setup
   const initializeSampleData = () => {
     if (products.length === 0) {
       const sampleProducts: Product[] = [
         {
           id: "prod-001",
           name: "Kopi Americano",
+          category: "Minuman",
           price: 25000,
           stock: 50,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&h=300&fit=crop",
         },
         {
           id: "prod-002",
           name: "Cappuccino",
+          category: "Minuman",
           price: 30000,
           stock: 30,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=300&fit=crop",
         },
         {
           id: "prod-003",
           name: "Latte",
+          category: "Minuman",
           price: 32000,
           stock: 25,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1561047029-3000c68339ca?w=300&h=300&fit=crop",
         },
         {
           id: "prod-004",
           name: "Croissant",
+          category: "Makanan",
           price: 15000,
           stock: 20,
+          unit: "pcs",
           imageUrl:
             "https://images.unsplash.com/photo-1555507036-ab794f575e8c?w=300&h=300&fit=crop",
         },
         {
           id: "prod-005",
           name: "Sandwich",
+          category: "Makanan",
           price: 45000,
           stock: 15,
+          unit: "pcs",
           imageUrl:
             "https://images.unsplash.com/photo-1553909489-cd47e0ef937f?w=300&h=300&fit=crop",
         },
         {
           id: "prod-006",
           name: "Matcha Latte",
+          category: "Minuman",
           price: 35000,
-          stock: 3, // Low stock for testing alert
+          stock: 3,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=300&h=300&fit=crop",
         },
         {
           id: "prod-007",
           name: "Espresso",
+          category: "Minuman",
           price: 20000,
-          stock: 2, // Low stock for testing alert
+          stock: 2,
+          unit: "porsi",
           imageUrl:
             "https://images.unsplash.com/photo-1610889556528-9a770e32642f?w=300&h=300&fit=crop",
         },
         {
           id: "prod-008",
           name: "Cake Slice",
+          category: "Dessert",
           price: 35000,
           stock: 0, // Out of stock
+          unit: "pcs",
           imageUrl:
             "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&h=300&fit=crop",
         },
@@ -1050,30 +1082,60 @@ const EnhancedPOS: React.FC = () => {
           name: "Ahmad Rizki",
           email: "ahmad.rizki@email.com",
           phone: "081234567890",
+          loyaltyPoints: 150,
+          totalSpent: 425000,
+          joinDate: new Date("2024-01-15").toISOString(),
+          tier: "Silver",
+          isActive: true,
+          lastVisit: new Date("2024-12-01").toISOString(),
         },
         {
           id: "cust-002",
           name: "Sari Dewi",
           email: "sari.dewi@email.com",
           phone: "081234567891",
+          loyaltyPoints: 320,
+          totalSpent: 850000,
+          joinDate: new Date("2024-02-20").toISOString(),
+          tier: "Gold",
+          isActive: true,
+          lastVisit: new Date("2024-11-28").toISOString(),
         },
         {
           id: "cust-003",
           name: "Budi Santoso",
           email: "budi.santoso@email.com",
           phone: "081234567892",
+          loyaltyPoints: 85,
+          totalSpent: 275000,
+          joinDate: new Date("2024-03-10").toISOString(),
+          tier: "Bronze",
+          isActive: true,
+          lastVisit: new Date("2024-11-30").toISOString(),
         },
         {
           id: "cust-004",
           name: "Maya Sari",
           email: "maya.sari@email.com",
           phone: "081234567893",
+          loyaltyPoints: 620,
+          totalSpent: 1750000,
+          joinDate: new Date("2024-01-05").toISOString(),
+          tier: "Platinum",
+          isActive: true,
+          lastVisit: new Date("2024-12-02").toISOString(),
         },
         {
           id: "cust-005",
           name: "Andi Pratama",
           email: "andi.pratama@email.com",
           phone: "081234567894",
+          loyaltyPoints: 45,
+          totalSpent: 125000,
+          joinDate: new Date("2024-04-12").toISOString(),
+          tier: "Bronze",
+          isActive: true,
+          lastVisit: new Date("2024-11-25").toISOString(),
         },
       ];
       setCustomers(sampleCustomers);
@@ -1815,32 +1877,44 @@ const EnhancedPOS: React.FC = () => {
   };
 
   // Data persistence
-  const saveData = () => {
+  const saveData = async () => {
     try {
-      localStorage.setItem(
-        "posData",
-        JSON.stringify({
-          users,
-          products,
-          customers,
-          sales,
-          shifts,
-          openBills,
-          settings,
-          currentUser: currentUser ? currentUser.id : null,
-        }),
-      );
+      const data = {
+        users,
+        products,
+        customers,
+        sales,
+        shifts,
+        openBills,
+        settings,
+        currentUser: currentUser ? currentUser.id : null,
+      };
+
+      // Save to localStorage for immediate access
+      localStorage.setItem("posData", JSON.stringify(data));
+
+      // Save to IndexedDB for offline PWA functionality
+      await saveOfflineData("posData", data);
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Gagal menyimpan data.");
+      showAlert("Error", "Gagal menyimpan data.", "error");
     }
   };
 
-  const loadData = () => {
+  const loadData = async () => {
     try {
-      const storedData = localStorage.getItem("posData");
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
+      // Try loading from IndexedDB first (PWA offline storage)
+      let parsedData = await loadOfflineData("posData");
+
+      // Fallback to localStorage if IndexedDB fails
+      if (!parsedData) {
+        const storedData = localStorage.getItem("posData");
+        if (storedData) {
+          parsedData = JSON.parse(storedData);
+        }
+      }
+
+      if (parsedData) {
         setUsers(parsedData.users || []);
         setProducts(parsedData.products || []);
         setCustomers(parsedData.customers || []);
@@ -1890,7 +1964,7 @@ const EnhancedPOS: React.FC = () => {
         ];
         setUsers(defaultUsers);
 
-        // Auto-login for development/demo purposes
+        // Auto-login for admin access
         const adminUser = defaultUsers[0];
         setCurrentUser(adminUser);
         setIsLoginVisible(false);
@@ -1931,7 +2005,7 @@ const EnhancedPOS: React.FC = () => {
       ];
       setUsers(defaultUsers);
 
-      // Auto-login for development/demo purposes
+      // Auto-login for admin access
       const adminUser = defaultUsers[0];
       setCurrentUser(adminUser);
       setIsLoginVisible(false);
@@ -1963,7 +2037,7 @@ const EnhancedPOS: React.FC = () => {
 
   // Effects
   useEffect(() => {
-    loadData();
+    loadData().catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -2258,14 +2332,17 @@ const EnhancedPOS: React.FC = () => {
       return;
     }
 
-    // Temporary fix: use native confirm for debugging
-    const confirmed = window.confirm(
-      `Konfirmasi Pembayaran\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nLanjutkan pembayaran?`,
+    // Enhanced payment confirmation dialog with detailed breakdown
+    const confirmed = await showPaymentConfirm(
+      "Konfirmasi Pembayaran",
+      cart,
+      finalTotal,
+      paymentMethod,
+      cashGiven,
     );
     if (confirmed) {
       try {
         setIsProcessingPayment(true);
-        console.log("Starting payment processing...");
 
         // Update stock
         const updatedProducts = products.map((product) => {
@@ -2276,11 +2353,9 @@ const EnhancedPOS: React.FC = () => {
           return product;
         });
         setProducts(updatedProducts);
-        console.log("Stock updated");
 
         // Create sale record with custom ID format
         const saleId = generateSaleId();
-        console.log("Generated sale ID:", saleId);
 
         const newSale: Sale = {
           id: saleId,
@@ -2296,7 +2371,6 @@ const EnhancedPOS: React.FC = () => {
         };
         setSales([...sales, newSale]);
         setLastCompletedSaleId(saleId);
-        console.log("Sale record created");
 
         // Process loyalty points if customer is selected
         if (selectedCustomer && settings.loyaltyProgramEnabled) {
@@ -2335,24 +2409,20 @@ const EnhancedPOS: React.FC = () => {
             shifts.map((s) => (s.id === currentShift.id ? updatedShift : s)),
           );
         }
-        console.log("Shift updated");
 
         // Clear cart and discount
         setCart([]);
         setCashGiven(0);
         setDiscountAmount(0);
         setSelectedCustomer(null);
-        console.log("Cart cleared");
 
-        // Show success modal with print option
-        console.log("About to show success");
-        alert(
-          `Pembayaran Berhasil!\nTransaksi ${saleId} berhasil. Total: ${formatCurrency(finalTotal)}`,
+        // Show enhanced success modal with print option
+        showSuccess(
+          "Pembayaran Berhasil! 🎉",
+          `Transaksi ${saleId} telah berhasil diproses.\n\nTotal Pembayaran: ${formatCurrency(finalTotal)}\nMetode: ${paymentMethod === "cash" ? "Tunai" : paymentMethod === "card" ? "Kartu" : "E-Wallet"}${paymentMethod === "cash" ? `\nKembalian: ${formatCurrency(cashGiven - finalTotal)}` : ""}\n\nStruk akan langsung dicetak.`,
+          true,
+          () => printReceipt(newSale),
         );
-
-        // Print receipt directly
-        printReceipt(newSale);
-        console.log("Success modal shown");
 
         setIsProcessingPayment(false);
       } catch (error) {
@@ -2493,8 +2563,10 @@ const EnhancedPOS: React.FC = () => {
     setEditingProduct(product);
     setProductForm({
       name: product.name,
+      category: product.category || "Umum",
       price: product.price,
       stock: product.stock,
+      unit: product.unit || "pcs",
       imageUrl: product.imageUrl || "",
     });
     setShowProductModal(true);
@@ -2956,24 +3028,22 @@ const EnhancedPOS: React.FC = () => {
 
   // Handle test print
   const handleTestPrint = async () => {
-    // Create a sample sale for testing
+    // Create a sample sale for print preview
     const testSale: Sale = {
       id: "TEST-" + Date.now(),
       date: new Date().toISOString(),
       items: [
         {
-          id: "test-item-1",
+          productId: "test-item-1",
           name: "Contoh Produk 1",
           price: 15000,
           quantity: 2,
-          subtotal: 30000,
         },
         {
-          id: "test-item-2",
+          productId: "test-item-2",
           name: "Contoh Produk 2",
           price: 25000,
           quantity: 1,
-          subtotal: 25000,
         },
       ],
       totalAmount: 59125, // Including tax
@@ -3226,7 +3296,7 @@ const EnhancedPOS: React.FC = () => {
           };
         }
         productPerformance[item.id].quantity += item.quantity;
-        productPerformance[item.id].revenue += item.subtotal;
+        productPerformance[item.id].revenue += item.quantity * item.price;
       });
     });
 
@@ -3535,14 +3605,17 @@ const EnhancedPOS: React.FC = () => {
       return;
     }
 
-    const salesTotal = currentShift.salesIds.reduce((total, saleId) => {
+    const cashSalesTotal = currentShift.salesIds.reduce((total, saleId) => {
       const sale = sales.find(
-        (s) => s.id === saleId && s.status === "completed",
+        (s) =>
+          s.id === saleId &&
+          s.status === "completed" &&
+          s.paymentMethod === "cash",
       );
       return total + (sale ? sale.totalAmount : 0);
     }, 0);
 
-    const expectedCash = currentShift.startCash + salesTotal;
+    const expectedCash = currentShift.startCash + cashSalesTotal;
     const finalCashStr = await showPrompt(
       "Akhiri Shift",
       "Masukkan Kas Akhir Shift:",
@@ -3841,62 +3914,310 @@ const EnhancedPOS: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-gray-100"
+      className="min-h-screen bg-gray-100 safe-area-top safe-area-bottom safe-area-left safe-area-right ios-safe-area"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
-      {/* Login Screen */}
+      {/* Desktop/Web Login Screen */}
       {isLoginVisible && (
-        <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-50">
-          <div className="bg-white p-12 rounded-lg shadow-xl w-full max-w-md">
-            <div className="flex justify-center mb-6">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=800"
-                alt="Crema POS Logo"
-                className="h-16 w-auto"
-              />
+        <div className="fixed inset-0 z-50">
+          {/* Background with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-slate-900">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,white_0%,transparent_50%)]"></div>
+              <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,white_0%,transparent_50%)]"></div>
+              <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_40%_40%,white_0%,transparent_50%)]"></div>
             </div>
-            <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
-              <p>Login</p>
-            </h2>
-            <form onSubmit={handleLogin}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Username:
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
+          </div>
+
+          {/* Main login container */}
+          <div className="relative z-10 min-h-screen flex">
+            {/* Left side - Branding/Info (Desktop only) */}
+            <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-gray-700 to-gray-800 p-12 flex-col justify-center relative overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-0 w-full h-full opacity-5">
+                <svg
+                  className="w-full h-full"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <pattern
+                      id="grid"
+                      width="10"
+                      height="10"
+                      patternUnits="userSpaceOnUse"
+                    >
+                      <path
+                        d="M 10 0 L 0 0 0 10"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect width="100" height="100" fill="url(#grid)" />
+                </svg>
               </div>
-              <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Password:
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
+
+              {/* Content */}
+              <div className="relative z-10 text-white">
+                <div className="mb-8">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F52b271e2145f4d519a786820152f2754%2F65f9c035401d4da1a8330f886ff5b185?format=webp&width=800"
+                    alt="Crema POS Logo"
+                    className="h-16 xl:h-20 object-contain mb-6"
+                    style={{ width: "175%" }}
+                  />
+                  <h1 className="text-5xl xl:text-6xl font-bold mb-4 leading-tight">
+                    Point of Sale
+                    <span className="block text-3xl xl:text-4xl font-normal text-gray-300 mt-2">
+                      Management System
+                    </span>
+                  </h1>
+                  <p className="text-xl text-gray-200 leading-relaxed max-w-lg">
+                    Complete business solution for retail and restaurant
+                    management with real-time analytics, inventory tracking, and
+                    seamless customer experience.
+                  </p>
+                </div>
+
+                {/* Features */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-gray-200">
+                      Real-time Sales Tracking
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-gray-200">Inventory Management</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-gray-200">Analytics & Reports</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-gray-200">Multi-user Support</span>
+                  </div>
+                </div>
               </div>
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
-              >
-                Masuk
-              </button>
-              <div className="mt-4 text-sm text-gray-600 text-center">
-                <p>Default Login:</p>
-                <p>
-                  Username: <strong>admin</strong>
-                </p>
-                <p>
-                  Password: <strong>admin</strong>
-                </p>
+            </div>
+
+            {/* Right side - Login form */}
+            <div className="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center p-4 sm:p-8 lg:p-12">
+              <div className="w-full max-w-md">
+                {/* Mobile header (only shown on mobile) */}
+                <div className="lg:hidden text-center mb-8">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                    <span className="text-2xl font-bold text-white">P</span>
+                  </div>
+                  <h1 className="text-3xl font-bold text-white mb-2">
+                    POS System
+                  </h1>
+                  <p className="text-gray-300">Point of Sale Management</p>
+                </div>
+
+                {/* Login form card */}
+                <div className="bg-white/95 backdrop-blur-xl p-8 lg:p-10 rounded-2xl shadow-2xl border border-white/20">
+                  {/* Header */}
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                      Welcome Back
+                    </h2>
+                    <p className="text-gray-600">
+                      Please sign in to your account
+                    </p>
+                  </div>
+
+                  {/* Login form */}
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Username
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg
+                            className="h-5 w-5 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                          </svg>
+                        </div>
+                        <input
+                          type="text"
+                          name="username"
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                          placeholder="Enter your username"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Password
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg
+                            className="h-5 w-5 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            />
+                          </svg>
+                        </div>
+                        <input
+                          type="password"
+                          name="password"
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                          placeholder="Enter your password"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 transform hover:scale-[1.02]"
+                    >
+                      <span className="flex items-center space-x-2">
+                        <span>Sign In</span>
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </form>
+
+                  {/* Footer */}
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-500">
+                        Secure login protected by enterprise-grade encryption
+                      </p>
+                      <div className="flex items-center justify-center space-x-4 mt-3">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            />
+                          </svg>
+                          Secured
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Verified
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
@@ -3905,23 +4226,33 @@ const EnhancedPOS: React.FC = () => {
       {!isLoginVisible && currentUser && (
         <div className="flex flex-col min-h-screen">
           {/* Top Navigation */}
-          <nav className="bg-gray-800 text-gray-300 px-6 py-3 shadow-lg rounded-b-lg">
-            <div className="flex justify-between items-center">
+          <nav className="bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 px-2 sm:px-6 py-2 sm:py-3 shadow-lg sticky top-0 z-50 safe-area-top ios-safe-area">
+            <div className="flex justify-between items-center landscape-nav portrait-nav">
               {/* Left: Main Navigation */}
-              <div className="flex items-center flex-wrap gap-4">
+              <div className="flex items-center gap-1 sm:gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 pb-1 mobile-nav-compact landscape-horizontal portrait-nav small-portrait-nav large-portrait-nav">
                 {allModules.map(
                   (module) =>
                     hasModuleAccess(module.id) && (
                       <button
                         key={module.id}
                         onClick={() => setActiveModule(module.id)}
-                        className={`flex flex-col items-center px-4 py-2 rounded-md text-sm transition-colors ${
+                        className={`flex flex-col sm:flex-row items-center space-y-0.5 sm:space-y-0 sm:space-x-2 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap touch-target portrait-button landscape-button small-portrait-button ${
                           activeModule === module.id
-                            ? "bg-gray-700 text-white"
-                            : "hover:bg-gray-700 hover:text-white"
+                            ? "bg-indigo-600 text-white shadow-md"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white"
                         }`}
                       >
-                        <span className="text-xs">{module.name}</span>
+                        <span className="text-sm sm:text-lg landscape-text portrait-text">
+                          {module.icon}
+                        </span>
+                        <span className="text-xs sm:text-xs lg:text-sm truncate landscape-text portrait-text small-portrait-text">
+                          <span className="sm:hidden lg:inline">
+                            {module.name.split(" ")[0]}
+                          </span>
+                          <span className="hidden sm:inline lg:hidden">
+                            {module.name}
+                          </span>
+                        </span>
                       </button>
                     ),
                 )}
@@ -3933,7 +4264,7 @@ const EnhancedPOS: React.FC = () => {
                 <div className="relative p-1">
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
-                    className="notification-button relative p-2 rounded-full hover:bg-gray-700 transition-colors group"
+                    className="notification-button relative p-2 rounded-lg hover:bg-gray-700 transition-colors group"
                   >
                     <svg
                       className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors"
@@ -4098,16 +4429,26 @@ const EnhancedPOS: React.FC = () => {
           </nav>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 bg-white m-4 rounded-lg shadow-md">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <h1 className="text-3xl font-bold text-gray-900">
+          <main className="flex-1 p-2 sm:p-6 bg-white m-1 sm:m-4 rounded-lg shadow-md safe-area-bottom landscape-content portrait-compact landscape-compact">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-8 gap-2 sm:gap-4 landscape-header portrait-compact">
+              <div className="flex flex-col space-y-1 sm:space-y-2">
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 landscape-text portrait-text">
                   {settings.storeName}
                 </h1>
-                <span className="ml-4 text-sm text-gray-500">
-                  User: {currentUser.username} ({currentUser.role})
-                  {currentShift && ` | Shift: ${currentShift.id}`}
-                </span>
+                <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    {currentUser.username}
+                  </span>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    {currentUser.role}
+                  </span>
+                  {currentShift && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                      Shift: {currentShift.id}
+                    </span>
+                  )}
+                  <PWAStatusBar />
+                </div>
               </div>
 
               {/* Global Search */}
@@ -4128,7 +4469,7 @@ const EnhancedPOS: React.FC = () => {
                           globalSearch.trim().length > 0,
                         )
                       }
-                      className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                      className="w-48 sm:w-64 px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent mobile-input landscape-input portrait-input"
                       placeholder="Cari produk, pelanggan, transaksi..."
                     />
                     <svg
@@ -4169,6 +4510,27 @@ const EnhancedPOS: React.FC = () => {
                       </svg>
                     </button>
                   )}
+
+                  {/* PWA Panel Button */}
+                  <button
+                    onClick={() => setShowPWAPanel(true)}
+                    className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                    title="App Features"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </button>
                 </div>
 
                 {/* Global Search Results */}
@@ -4340,7 +4702,7 @@ const EnhancedPOS: React.FC = () => {
                   <h2 className="text-2xl font-semibold mb-4 text-gray-800">
                     Entri Pesanan
                   </h2>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-6 portrait-grid landscape-grid tablet-portrait-grid tablet-landscape-grid">
                     {/* Product Selection */}
                     <div>
                       <div className="mb-4">
@@ -5780,13 +6142,39 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("customers", "csv")}
                                 className="w-full bg-green-600 text-white px-3 py-2 rounded text-sm hover:bg-green-700 transition duration-200"
                               >
-                                📊 Export CSV
+                                <svg
+                                  className="w-4 h-4 inline mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
+                                </svg>
+                                Export CSV
                               </button>
                               <button
                                 onClick={() => exportData("customers", "json")}
                                 className="w-full bg-green-500 text-white px-3 py-2 rounded text-sm hover:bg-green-600 transition duration-200"
                               >
-                                📋 Export JSON
+                                <svg
+                                  className="w-4 h-4 inline mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
+                                </svg>
+                                Export JSON
                               </button>
                             </div>
                           </div>
@@ -5804,7 +6192,20 @@ const EnhancedPOS: React.FC = () => {
                                 onClick={() => exportData("sales", "csv")}
                                 className="w-full bg-purple-600 text-white px-3 py-2 rounded text-sm hover:bg-purple-700 transition duration-200"
                               >
-                                📊 Export CSV
+                                <svg
+                                  className="w-4 h-4 inline mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                  />
+                                </svg>
+                                Export CSV
                               </button>
                               <button
                                 onClick={() => exportData("sales", "json")}
@@ -5916,7 +6317,20 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        ���� Laporan Penjualan
+                        <svg
+                          className="w-4 h-4 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                        Laporan Penjualan
                       </button>
                       <button
                         onClick={() => setActiveReportsTab("shifts")}
@@ -5926,7 +6340,20 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        �� Laporan Shift
+                        <svg
+                          className="w-4 h-4 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Laporan Shift
                       </button>
                       <button
                         onClick={() => setActiveReportsTab("stock")}
@@ -5946,7 +6373,20 @@ const EnhancedPOS: React.FC = () => {
                             : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                         }`}
                       >
-                        📈 Analytics Dashboard
+                        <svg
+                          className="w-4 h-4 inline mr-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                        Analytics Dashboard
                       </button>
                     </nav>
                   </div>
@@ -6143,7 +6583,20 @@ const EnhancedPOS: React.FC = () => {
                           }}
                           className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
                         >
-                          ���� Ekspor Produk
+                          <svg
+                            className="w-4 h-4 inline mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                          Ekspor Produk
                         </button>
                       </div>
                     </div>
@@ -7526,779 +7979,286 @@ const EnhancedPOS: React.FC = () => {
 
                   {/* Analytics Dashboard Tab */}
                   {activeReportsTab === "analytics" && (
-                    <div className="mt-6 space-y-6">
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h3 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
-                          <svg
-                            className="w-6 h-6 mr-2 text-blue-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                            />
-                          </svg>
-                          Analytics Dashboard
-                        </h3>
+                    <div className="space-y-6">
+                      {/* Quick Stats Overview */}
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {(() => {
+                          const thirtyDaysAgo = new Date(
+                            Date.now() - 30 * 24 * 60 * 60 * 1000,
+                          );
+                          const recentSales = sales.filter(
+                            (sale) =>
+                              new Date(sale.date) >= thirtyDaysAgo &&
+                              sale.status === "completed",
+                          );
+                          const totalRevenue = recentSales.reduce(
+                            (sum, sale) => sum + (sale.totalAmount || 0),
+                            0,
+                          );
+                          const avgTransaction =
+                            recentSales.length > 0
+                              ? totalRevenue / recentSales.length
+                              : 0;
+                          const activeProducts = products.filter(
+                            (p) => (p.stock || 0) > 0,
+                          ).length;
 
-                        {/* Key Performance Indicators */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-blue-100 text-sm">
-                                  Total Sales (30d)
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {formatCurrency(
-                                    sales
-                                      .filter((sale) => {
-                                        try {
-                                          return (
-                                            new Date(sale.date) >=
-                                              new Date(
-                                                Date.now() -
-                                                  30 * 24 * 60 * 60 * 1000,
-                                              ) && sale.status === "completed"
-                                          );
-                                        } catch (e) {
-                                          return false;
-                                        }
-                                      })
-                                      .reduce(
-                                        (sum, sale) =>
-                                          sum + (sale.totalAmount || 0),
-                                        0,
-                                      ),
-                                  )}
-                                </p>
+                          return [
+                            {
+                              label: "Revenue (30d)",
+                              value: formatCurrency(totalRevenue),
+                              icon: "💰",
+                              color: "from-emerald-500 to-emerald-600",
+                              change: "+12%",
+                            },
+                            {
+                              label: "Transactions",
+                              value: recentSales.length.toString(),
+                              icon: "📊",
+                              color: "from-blue-500 to-blue-600",
+                              change: "+8%",
+                            },
+                            {
+                              label: "Avg. Sale",
+                              value: formatCurrency(avgTransaction),
+                              icon: "����",
+                              color: "from-purple-500 to-purple-600",
+                              change: "+15%",
+                            },
+                            {
+                              label: "Products",
+                              value: `${activeProducts}/${products.length}`,
+                              icon: "📦",
+                              color: "from-orange-500 to-orange-600",
+                              change: "Active",
+                            },
+                          ].map((stat, index) => (
+                            <div
+                              key={index}
+                              className={`bg-gradient-to-br ${stat.color} p-4 rounded-xl text-white`}
+                            >
+                              <div className="flex items-start justify-between">
+                                <div>
+                                  <p className="text-white/80 text-sm font-medium">
+                                    {stat.label}
+                                  </p>
+                                  <p className="text-2xl font-bold mt-1">
+                                    {stat.value}
+                                  </p>
+                                  <p className="text-white/70 text-xs mt-1">
+                                    {stat.change}
+                                  </p>
+                                </div>
+                                <span className="text-2xl">{stat.icon}</span>
                               </div>
-                              <svg
-                                className="w-8 h-8 text-blue-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                                />
-                              </svg>
                             </div>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-green-100 text-sm">
-                                  Transactions (30d)
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {
-                                    sales.filter((sale) => {
-                                      try {
-                                        return (
-                                          new Date(sale.date) >=
-                                            new Date(
-                                              Date.now() -
-                                                30 * 24 * 60 * 60 * 1000,
-                                            ) && sale.status === "completed"
-                                        );
-                                      } catch (e) {
-                                        return false;
-                                      }
-                                    }).length
-                                  }
-                                </p>
-                              </div>
-                              <svg
-                                className="w-8 h-8 text-green-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-purple-100 text-sm">
-                                  Avg Transaction
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {(() => {
-                                    try {
-                                      const recentSales = sales.filter(
-                                        (sale) =>
-                                          new Date(sale.date) >=
-                                            new Date(
-                                              Date.now() -
-                                                30 * 24 * 60 * 60 * 1000,
-                                            ) && sale.status === "completed",
-                                      );
-                                      const avgAmount =
-                                        recentSales.length > 0
-                                          ? recentSales.reduce(
-                                              (sum, sale) =>
-                                                sum + (sale.totalAmount || 0),
-                                              0,
-                                            ) / recentSales.length
-                                          : 0;
-                                      return formatCurrency(avgAmount);
-                                    } catch (e) {
-                                      return formatCurrency(0);
-                                    }
-                                  })()}
-                                </p>
-                              </div>
-                              <svg
-                                className="w-8 h-8 text-purple-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-
-                          <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-orange-100 text-sm">
-                                  Active Products
-                                </p>
-                                <p className="text-2xl font-bold">
-                                  {
-                                    products.filter((p) => (p.stock || 0) > 0)
-                                      .length
-                                  }
-                                </p>
-                                <p className="text-orange-100 text-xs">
-                                  of {products.length} total
-                                </p>
-                              </div>
-                              <svg
-                                className="w-8 h-8 text-orange-200"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* No Data Message */}
-                        {products.length === 0 && sales.length === 0 && (
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                            <div className="text-yellow-600 mb-2">
-                              <svg
-                                className="w-12 h-12 mx-auto mb-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                            </div>
-                            <h4 className="text-lg font-medium text-yellow-800 mb-2">
-                              Belum Ada Data
-                            </h4>
-                            <p className="text-yellow-700">
-                              Mulai dengan menambahkan produk dan melakukan
-                              transaksi untuk melihat analytics yang lebih
-                              detail.
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Enhanced Analytics Charts */}
-                        {sales.length > 0 && (
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-                            {/* Sales Trend */}
-                            <div className="bg-white p-6 rounded-lg shadow">
-                              <h4 className="text-lg font-semibold text-gray-800 mb-4">
-                                📈 Tren Penjualan (7 Hari Terakhir)
-                              </h4>
-                              {(() => {
-                                try {
-                                  const last7Days = Array.from(
-                                    { length: 7 },
-                                    (_, i) => {
-                                      const date = new Date();
-                                      date.setDate(date.getDate() - i);
-                                      return date.toISOString().split("T")[0];
-                                    },
-                                  ).reverse();
-
-                                  const dailySales = last7Days.map((date) => {
-                                    const dayStart = new Date(
-                                      date + "T00:00:00",
-                                    );
-                                    const dayEnd = new Date(date + "T23:59:59");
-                                    const daySales = sales.filter((sale) => {
-                                      const saleDate = new Date(sale.date);
-                                      return (
-                                        saleDate >= dayStart &&
-                                        saleDate <= dayEnd &&
-                                        sale.status === "completed"
-                                      );
-                                    });
-                                    const total = daySales.reduce(
-                                      (sum, sale) =>
-                                        sum + (sale.totalAmount || 0),
-                                      0,
-                                    );
-                                    return {
-                                      date: new Date(date).toLocaleDateString(
-                                        "id-ID",
-                                        { weekday: "short", day: "numeric" },
-                                      ),
-                                      total,
-                                      count: daySales.length,
-                                    };
-                                  });
-
-                                  const maxTotal = Math.max(
-                                    ...dailySales.map((d) => d.total),
-                                  );
-
-                                  return (
-                                    <div className="space-y-3">
-                                      {dailySales.map((day, index) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-center space-x-3"
-                                        >
-                                          <div className="w-12 text-xs text-gray-600">
-                                            {day.date}
-                                          </div>
-                                          <div className="flex-1 bg-gray-200 rounded-full h-6 relative">
-                                            <div
-                                              className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                                              style={{
-                                                width:
-                                                  maxTotal > 0
-                                                    ? `${(day.total / maxTotal) * 100}%`
-                                                    : "0%",
-                                              }}
-                                            >
-                                              {day.total > 0 && (
-                                                <span className="text-xs text-white font-medium">
-                                                  {formatCurrency(day.total)}
-                                                </span>
-                                              )}
-                                            </div>
-                                          </div>
-                                          <div className="w-8 text-xs text-gray-600">
-                                            {day.count}
-                                          </div>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  );
-                                } catch (error) {
-                                  return (
-                                    <div className="text-center text-gray-500 py-8">
-                                      <p>Error memuat data tren penjualan</p>
-                                    </div>
-                                  );
-                                }
-                              })()}
-                            </div>
-
-                            {/* Top Products */}
-                            <div className="bg-white p-6 rounded-lg shadow">
-                              <h4 className="text-lg font-semibold text-gray-800 mb-4">
-                                🏆 Produk Terlaris (30 Hari)
-                              </h4>
-                              {(() => {
-                                try {
-                                  const thirtyDaysAgo = new Date(
-                                    Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                  );
-                                  const recentSales = sales.filter(
-                                    (sale) =>
-                                      new Date(sale.date) >= thirtyDaysAgo &&
-                                      sale.status === "completed",
-                                  );
-
-                                  const productSales: {
-                                    [key: string]: {
-                                      name: string;
-                                      quantity: number;
-                                      revenue: number;
-                                    };
-                                  } = {};
-
-                                  recentSales.forEach((sale) => {
-                                    sale.items.forEach((item) => {
-                                      if (!productSales[item.productId]) {
-                                        productSales[item.productId] = {
-                                          name: item.name,
-                                          quantity: 0,
-                                          revenue: 0,
-                                        };
-                                      }
-                                      productSales[item.productId].quantity +=
-                                        item.quantity;
-                                      productSales[item.productId].revenue +=
-                                        item.price * item.quantity;
-                                    });
-                                  });
-
-                                  const topProducts = Object.values(
-                                    productSales,
-                                  )
-                                    .sort((a, b) => b.quantity - a.quantity)
-                                    .slice(0, 5);
-
-                                  const maxQuantity = Math.max(
-                                    ...topProducts.map((p) => p.quantity),
-                                  );
-
-                                  return topProducts.length > 0 ? (
-                                    <div className="space-y-3">
-                                      {topProducts.map((product, index) => (
-                                        <div
-                                          key={index}
-                                          className="flex items-center space-x-3"
-                                        >
-                                          <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                            {index + 1}
-                                          </div>
-                                          <div className="flex-1">
-                                            <div className="font-medium text-gray-800 text-sm">
-                                              {product.name}
-                                            </div>
-                                            <div className="bg-gray-200 rounded-full h-3 mt-1">
-                                              <div
-                                                className="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full"
-                                                style={{
-                                                  width: `${(product.quantity / maxQuantity) * 100}%`,
-                                                }}
-                                              />
-                                            </div>
-                                          </div>
-                                          <div className="text-right">
-                                            <div className="text-sm font-bold text-gray-800">
-                                              {product.quantity}
-                                            </div>
-                                            <div className="text-xs text-gray-500">
-                                              {formatCurrency(product.revenue)}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    <div className="text-center text-gray-500 py-8">
-                                      <p>Belum ada data penjualan produk</p>
-                                    </div>
-                                  );
-                                } catch (error) {
-                                  return (
-                                    <div className="text-center text-gray-500 py-8">
-                                      <p>Error memuat data produk terlaris</p>
-                                    </div>
-                                  );
-                                }
-                              })()}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Data Notice */}
-                        {(products.length > 0 || sales.length > 0) && (
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-                            <div className="flex items-center">
-                              <svg
-                                className="w-5 h-5 text-blue-500 mr-2"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                              </svg>
-                              <p className="text-blue-700 text-sm">
-                                Dashboard menampilkan data dari{" "}
-                                {products.length} produk dan {sales.length}{" "}
-                                transaksi.
-                                {sales.length < 5 &&
-                                  " Lakukan lebih banyak transaksi untuk analytics yang lebih akurat."}
-                              </p>
-                            </div>
-                          </div>
-                        )}
+                          ));
+                        })()}
                       </div>
 
-                      {/* Key Performance Indicators */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-blue-100 text-sm">
-                                Total Sales (30d)
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {formatCurrency(
-                                  sales
-                                    .filter(
-                                      (sale) =>
-                                        new Date(sale.date) >=
-                                          new Date(
-                                            Date.now() -
-                                              30 * 24 * 60 * 60 * 1000,
-                                          ) && sale.status === "completed",
-                                    )
-                                    .reduce(
-                                      (sum, sale) => sum + sale.totalAmount,
-                                      0,
-                                    ),
-                                )}
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-blue-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-green-100 text-sm">
-                                Transactions (30d)
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {
-                                  sales.filter(
-                                    (sale) =>
-                                      new Date(sale.date) >=
-                                        new Date(
-                                          Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                        ) && sale.status === "completed",
-                                  ).length
-                                }
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-green-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-purple-100 text-sm">
-                                Avg Transaction
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {(() => {
-                                  const recentSales = sales.filter(
-                                    (sale) =>
-                                      new Date(sale.date) >=
-                                        new Date(
-                                          Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                        ) && sale.status === "completed",
-                                  );
-                                  const avgAmount =
-                                    recentSales.length > 0
-                                      ? recentSales.reduce(
-                                          (sum, sale) => sum + sale.totalAmount,
-                                          0,
-                                        ) / recentSales.length
-                                      : 0;
-                                  return formatCurrency(avgAmount);
-                                })()}
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-purple-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-lg text-white">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-orange-100 text-sm">
-                                Active Products
-                              </p>
-                              <p className="text-2xl font-bold">
-                                {products.filter((p) => p.stock > 0).length}
-                              </p>
-                              <p className="text-orange-100 text-xs">
-                                of {products.length} total
-                              </p>
-                            </div>
-                            <svg
-                              className="w-8 h-8 text-orange-200"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Sales Trend Chart (Text-based) */}
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h4 className="text-lg font-semibold mb-4 flex items-center">
-                          <svg
-                            className="w-5 h-5 mr-2 text-blue-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                            />
-                          </svg>
-                          Sales Trend (Last 7 Days)
-                        </h4>
-                        <div className="space-y-3">
-                          {(() => {
-                            const last7Days = Array.from(
-                              { length: 7 },
-                              (_, i) => {
-                                const date = new Date();
-                                date.setDate(date.getDate() - (6 - i));
-                                return date;
-                              },
-                            );
-
-                            const dailySales = last7Days.map((date) => {
-                              const dayStart = new Date(date);
-                              dayStart.setHours(0, 0, 0, 0);
-                              const dayEnd = new Date(date);
-                              dayEnd.setHours(23, 59, 59, 999);
-
-                              const daySales = sales.filter((sale) => {
-                                const saleDate = new Date(sale.date);
-                                return (
-                                  saleDate >= dayStart &&
-                                  saleDate <= dayEnd &&
-                                  sale.status === "completed"
-                                );
-                              });
-
-                              return {
-                                date: date.toLocaleDateString("id-ID", {
-                                  weekday: "short",
-                                  day: "numeric",
-                                  month: "short",
-                                }),
-                                sales: daySales.length,
-                                amount: daySales.reduce(
-                                  (sum, sale) => sum + sale.totalAmount,
-                                  0,
-                                ),
-                              };
-                            });
-
-                            const maxAmount = Math.max(
-                              ...dailySales.map((d) => d.amount),
-                            );
-
-                            return dailySales.map((day, index) => (
-                              <div
-                                key={index}
-                                className="flex items-center space-x-4"
-                              >
-                                <div className="w-16 text-sm text-gray-600">
-                                  {day.date}
-                                </div>
-                                <div className="flex-1 bg-gray-100 rounded-full h-6 relative">
-                                  <div
-                                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
-                                    style={{
-                                      width:
-                                        maxAmount > 0
-                                          ? `${(day.amount / maxAmount) * 100}%`
-                                          : "2%",
-                                    }}
-                                  >
-                                    <span className="text-white text-xs font-medium">
-                                      {day.sales > 0 ? `${day.sales}tx` : ""}
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="w-24 text-sm text-gray-700 text-right">
-                                  {formatCurrency(day.amount)}
-                                </div>
-                              </div>
-                            ));
-                          })()}
-                        </div>
-                      </div>
-
-                      {/* Top Products & Payment Methods */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Top Products */}
-                        <div className="bg-white p-6 rounded-lg shadow">
-                          <h4 className="text-lg font-semibold mb-4 flex items-center">
-                            <svg
-                              className="w-5 h-5 mr-2 text-green-500"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                              />
-                            </svg>
-                            Top Selling Products (30d)
-                          </h4>
-                          <div className="space-y-3">
-                            {Object.values(getInventoryAnalytics())
-                              .sort((a, b) => b.totalSold - a.totalSold)
-                              .slice(0, 5)
-                              .map((product, index) => (
-                                <div
-                                  key={index}
-                                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
-                                >
-                                  <div>
-                                    <p className="font-medium text-gray-800">
-                                      {index + 1}. {product.name}
-                                    </p>
-                                    <p className="text-sm text-gray-600">
-                                      {product.totalSold} sold •{" "}
-                                      {product.dailyAverage.toFixed(1)}/day avg
-                                    </p>
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="text-lg font-bold text-green-600">
-                                      {formatCurrency(
-                                        product.totalSold *
-                                          (products.find(
-                                            (p) => p.name === product.name,
-                                          )?.price || 0),
-                                      )}
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                      revenue
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-
-                        {/* Payment Methods Analysis */}
-                        <div className="bg-white p-6 rounded-lg shadow">
-                          <h4 className="text-lg font-semibold mb-4 flex items-center">
-                            <svg
-                              className="w-5 h-5 mr-2 text-purple-500"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                              />
-                            </svg>
-                            Payment Methods (30d)
-                          </h4>
+                      {/* Charts Row */}
+                      <div className="grid lg:grid-cols-2 gap-6">
+                        {/* Sales Trend */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">📈</span>
+                            Sales Trend (7 Days)
+                          </h3>
                           <div className="space-y-3">
                             {(() => {
+                              const last7Days = Array.from(
+                                { length: 7 },
+                                (_, i) => {
+                                  const date = new Date();
+                                  date.setDate(date.getDate() - (6 - i));
+                                  return date;
+                                },
+                              );
+
+                              const dailyData = last7Days.map((date) => {
+                                const dayStart = new Date(date);
+                                dayStart.setHours(0, 0, 0, 0);
+                                const dayEnd = new Date(date);
+                                dayEnd.setHours(23, 59, 59, 999);
+
+                                const daySales = sales.filter((sale) => {
+                                  const saleDate = new Date(sale.date);
+                                  return (
+                                    saleDate >= dayStart &&
+                                    saleDate <= dayEnd &&
+                                    sale.status === "completed"
+                                  );
+                                });
+
+                                return {
+                                  day: date.toLocaleDateString("id-ID", {
+                                    weekday: "short",
+                                  }),
+                                  amount: daySales.reduce(
+                                    (sum, sale) =>
+                                      sum + (sale.totalAmount || 0),
+                                    0,
+                                  ),
+                                  count: daySales.length,
+                                };
+                              });
+
+                              const maxAmount = Math.max(
+                                ...dailyData.map((d) => d.amount),
+                                1,
+                              );
+
+                              return dailyData.map((day, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center space-x-3"
+                                >
+                                  <div className="w-10 text-sm font-medium text-gray-600">
+                                    {day.day}
+                                  </div>
+                                  <div className="flex-1 bg-gray-100 rounded-full h-6 relative overflow-hidden">
+                                    <div
+                                      className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full rounded-full flex items-center justify-end pr-2 transition-all duration-500"
+                                      style={{
+                                        width: `${Math.max((day.amount / maxAmount) * 100, 2)}%`,
+                                      }}
+                                    >
+                                      {day.amount > 0 && (
+                                        <span className="text-xs text-white font-medium">
+                                          {day.count}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="w-20 text-sm font-semibold text-gray-900 text-right">
+                                    {formatCurrency(day.amount)}
+                                  </div>
+                                </div>
+                              ));
+                            })()}
+                          </div>
+                        </div>
+
+                        {/* Top Products */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">🏆</span>
+                            Top Products
+                          </h3>
+                          <div className="space-y-3">
+                            {(() => {
+                              const thirtyDaysAgo = new Date(
+                                Date.now() - 30 * 24 * 60 * 60 * 1000,
+                              );
                               const recentSales = sales.filter(
                                 (sale) =>
-                                  new Date(sale.date) >=
-                                    new Date(
-                                      Date.now() - 30 * 24 * 60 * 60 * 1000,
-                                    ) && sale.status === "completed",
+                                  new Date(sale.date) >= thirtyDaysAgo &&
+                                  sale.status === "completed",
+                              );
+
+                              const productStats: Record<
+                                string,
+                                {
+                                  name: string;
+                                  quantity: number;
+                                  revenue: number;
+                                }
+                              > = {};
+
+                              recentSales.forEach((sale) => {
+                                sale.items.forEach((item) => {
+                                  if (!productStats[item.productId]) {
+                                    productStats[item.productId] = {
+                                      name: item.name,
+                                      quantity: 0,
+                                      revenue: 0,
+                                    };
+                                  }
+                                  productStats[item.productId].quantity +=
+                                    item.quantity;
+                                  productStats[item.productId].revenue +=
+                                    item.price * item.quantity;
+                                });
+                              });
+
+                              const topProducts = Object.values(productStats)
+                                .sort((a, b) => b.quantity - a.quantity)
+                                .slice(0, 5);
+
+                              const maxQuantity = Math.max(
+                                ...topProducts.map((p) => p.quantity),
+                                1,
+                              );
+
+                              return topProducts.length > 0 ? (
+                                topProducts.map((product, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-center space-x-3"
+                                  >
+                                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                                      {index + 1}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-medium text-gray-900 text-sm truncate">
+                                        {product.name}
+                                      </div>
+                                      <div className="bg-gray-200 rounded-full h-2 mt-1 overflow-hidden">
+                                        <div
+                                          className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-full transition-all duration-500"
+                                          style={{
+                                            width: `${(product.quantity / maxQuantity) * 100}%`,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="text-sm font-bold text-gray-900">
+                                        {product.quantity}
+                                      </div>
+                                      <div className="text-xs text-gray-500">
+                                        {formatCurrency(product.revenue)}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="text-center py-8 text-gray-500">
+                                  <span className="text-4xl block mb-2">
+                                    📊
+                                  </span>
+                                  <p>No sales data yet</p>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Payment Methods & Inventory Status */}
+                      <div className="grid lg:grid-cols-2 gap-6">
+                        {/* Payment Methods */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">💳</span>
+                            Payment Methods
+                          </h3>
+                          <div className="space-y-4">
+                            {(() => {
+                              const thirtyDaysAgo = new Date(
+                                Date.now() - 30 * 24 * 60 * 60 * 1000,
+                              );
+                              const recentSales = sales.filter(
+                                (sale) =>
+                                  new Date(sale.date) >= thirtyDaysAgo &&
+                                  sale.status === "completed",
                               );
 
                               const paymentStats = recentSales.reduce(
                                 (acc, sale) => {
                                   acc[sale.paymentMethod] =
                                     (acc[sale.paymentMethod] || 0) +
-                                    sale.totalAmount;
+                                    (sale.totalAmount || 0);
                                   return acc;
                                 },
                                 {} as Record<string, number>,
@@ -8309,144 +8269,191 @@ const EnhancedPOS: React.FC = () => {
                                 0,
                               );
 
-                              const paymentMethods = [
+                              const methods = [
                                 {
                                   key: "cash",
-                                  name: "Tunai",
-                                  color: "bg-green-500",
+                                  name: "Cash",
+                                  icon: "💵",
+                                  color: "bg-emerald-500",
                                 },
                                 {
                                   key: "card",
-                                  name: "Kartu",
+                                  name: "Card",
+                                  icon: "💳",
                                   color: "bg-blue-500",
                                 },
                                 {
                                   key: "ewallet",
                                   name: "E-Wallet",
+                                  icon: "📱",
                                   color: "bg-purple-500",
                                 },
                               ];
 
-                              return paymentMethods.map((method) => {
-                                const amount = paymentStats[method.key] || 0;
-                                const percentage =
-                                  total > 0 ? (amount / total) * 100 : 0;
+                              return total > 0 ? (
+                                methods.map((method) => {
+                                  const amount = paymentStats[method.key] || 0;
+                                  const percentage = (amount / total) * 100;
 
-                                return (
-                                  <div key={method.key}>
-                                    <div className="flex justify-between items-center mb-1">
-                                      <span className="text-sm font-medium text-gray-700">
-                                        {method.name}
+                                  return (
+                                    <div
+                                      key={method.key}
+                                      className="flex items-center space-x-3"
+                                    >
+                                      <span className="text-2xl">
+                                        {method.icon}
                                       </span>
-                                      <span className="text-sm text-gray-600">
-                                        {percentage.toFixed(1)}%
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center space-x-3">
-                                      <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                        <div
-                                          className={`${method.color} h-2 rounded-full`}
-                                          style={{ width: `${percentage}%` }}
-                                        ></div>
+                                      <div className="flex-1">
+                                        <div className="flex justify-between items-center mb-1">
+                                          <span className="font-medium text-gray-900">
+                                            {method.name}
+                                          </span>
+                                          <span className="text-sm text-gray-600">
+                                            {percentage.toFixed(1)}%
+                                          </span>
+                                        </div>
+                                        <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                                          <div
+                                            className={`${method.color} h-full rounded-full transition-all duration-500`}
+                                            style={{ width: `${percentage}%` }}
+                                          />
+                                        </div>
                                       </div>
-                                      <span className="text-sm font-medium text-gray-800 min-w-20">
-                                        {formatCurrency(amount)}
-                                      </span>
+                                      <div className="text-right">
+                                        <div className="font-semibold text-gray-900">
+                                          {formatCurrency(amount)}
+                                        </div>
+                                      </div>
                                     </div>
+                                  );
+                                })
+                              ) : (
+                                <div className="text-center py-8 text-gray-500">
+                                  <span className="text-4xl block mb-2">
+                                    💳
+                                  </span>
+                                  <p>No payment data yet</p>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                        </div>
+
+                        {/* Inventory Status */}
+                        <div className="bg-white rounded-xl shadow-sm border p-6">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <span className="text-xl mr-2">📦</span>
+                            Inventory Status
+                          </h3>
+                          <div className="grid grid-cols-2 gap-4">
+                            {(() => {
+                              const statusCounts = {
+                                healthy: products.filter(
+                                  (p) => (p.stock || 0) > 10,
+                                ).length,
+                                low: products.filter(
+                                  (p) =>
+                                    (p.stock || 0) > 0 && (p.stock || 0) <= 10,
+                                ).length,
+                                out: products.filter(
+                                  (p) => (p.stock || 0) === 0,
+                                ).length,
+                              };
+
+                              const statuses = [
+                                {
+                                  key: "healthy",
+                                  name: "Healthy",
+                                  icon: "✅",
+                                  color: "bg-emerald-100 text-emerald-800",
+                                  count: statusCounts.healthy,
+                                },
+                                {
+                                  key: "low",
+                                  name: "Low Stock",
+                                  icon: "⚠️",
+                                  color: "bg-yellow-100 text-yellow-800",
+                                  count: statusCounts.low,
+                                },
+                                {
+                                  key: "out",
+                                  name: "Out of Stock",
+                                  icon: "❌",
+                                  color: "bg-red-100 text-red-800",
+                                  count: statusCounts.out,
+                                },
+                              ];
+
+                              return statuses.map((status) => (
+                                <div
+                                  key={status.key}
+                                  className={`${status.color} rounded-lg p-4 text-center`}
+                                >
+                                  <div className="text-2xl mb-2">
+                                    {status.icon}
                                   </div>
-                                );
-                              });
+                                  <div className="text-2xl font-bold">
+                                    {status.count}
+                                  </div>
+                                  <div className="text-sm font-medium">
+                                    {status.name}
+                                  </div>
+                                </div>
+                              ));
                             })()}
                           </div>
                         </div>
                       </div>
 
-                      {/* Inventory Status Overview */}
-                      <div className="bg-white p-6 rounded-lg shadow">
-                        <h4 className="text-lg font-semibold mb-4 flex items-center">
-                          <svg
-                            className="w-5 h-5 mr-2 text-yellow-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                            />
-                          </svg>
-                          Inventory Health Status
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          {(() => {
-                            const analytics = getInventoryAnalytics();
-                            const statusCounts = {
-                              healthy: Object.values(analytics).filter(
-                                (p) => p.status === "healthy",
-                              ).length,
-                              low: Object.values(analytics).filter(
-                                (p) => p.status === "low",
-                              ).length,
-                              critical: Object.values(analytics).filter(
-                                (p) => p.status === "critical",
-                              ).length,
-                              stockout: Object.values(analytics).filter(
-                                (p) => p.status === "stockout",
-                              ).length,
-                            };
-
-                            const statuses = [
-                              {
-                                key: "healthy",
-                                name: "Healthy",
-                                color: "bg-green-500",
-                                icon: "✅",
-                              },
-                              {
-                                key: "low",
-                                name: "Low Stock",
-                                color: "bg-yellow-500",
-                                icon: "⚠️",
-                              },
-                              {
-                                key: "critical",
-                                name: "Critical",
-                                color: "bg-orange-500",
-                                icon: "🔥",
-                              },
-                              {
-                                key: "stockout",
-                                name: "Out of Stock",
-                                color: "bg-red-500",
-                                icon: "❌",
-                              },
-                            ];
-
-                            return statuses.map((status) => (
-                              <div
-                                key={status.key}
-                                className="text-center p-4 bg-gray-50 rounded-lg"
-                              >
-                                <div className="text-2xl mb-2">
-                                  {status.icon}
-                                </div>
-                                <div className="text-2xl font-bold text-gray-800">
-                                  {
-                                    statusCounts[
-                                      status.key as keyof typeof statusCounts
-                                    ]
-                                  }
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                  {status.name}
-                                </div>
-                              </div>
-                            ));
-                          })()}
+                      {/* Summary Notice */}
+                      {(products.length > 0 || sales.length > 0) && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                          <div className="flex items-center space-x-3">
+                            <span className="text-2xl">ℹ️</span>
+                            <div>
+                              <p className="text-blue-900 font-medium">
+                                Analytics Summary
+                              </p>
+                              <p className="text-blue-700 text-sm">
+                                Showing data from {products.length} products and{" "}
+                                {sales.length} transactions.
+                                {sales.length < 5 &&
+                                  " Add more sales for better insights."}
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      )}
+
+                      {/* No Data State */}
+                      {products.length === 0 && sales.length === 0 && (
+                        <div className="bg-gray-50 rounded-xl p-12 text-center">
+                          <div className="text-6xl mb-4">📊</div>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            No Data Available
+                          </h3>
+                          <p className="text-gray-600 mb-6">
+                            Start by adding products and making sales to see
+                            analytics.
+                          </p>
+                          <div className="flex justify-center space-x-4">
+                            <button
+                              onClick={() =>
+                                setActiveModule("stock-management")
+                              }
+                              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                            >
+                              Add Products
+                            </button>
+                            <button
+                              onClick={() => setActiveModule("order-entry")}
+                              className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+                            >
+                              Make Sale
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -9811,7 +9818,7 @@ const EnhancedPOS: React.FC = () => {
                                   </h5>
                                   <ul className="text-sm text-gray-600 space-y-1">
                                     <li>
-                                      ��� Pastikan printer Bluetooth sudah dalam
+                                      ⚙️ Pastikan printer Bluetooth sudah dalam
                                       mode pairing
                                     </li>
                                     <li>
@@ -9902,7 +9909,7 @@ const EnhancedPOS: React.FC = () => {
                             berfungsi
                           </li>
                           <li>
-                            • Printer thermal mendukung kertas 58mm dan 80mm
+                            �� Printer thermal mendukung kertas 58mm dan 80mm
                           </li>
                         </ul>
                       </div>
@@ -10689,30 +10696,83 @@ const EnhancedPOS: React.FC = () => {
 
       {/* Product Modal */}
       {showProductModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
-            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-6 rounded-t-xl">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[9998] p-4 animate-fadeIn"
+          onClick={(e) =>
+            e.target === e.currentTarget &&
+            (setShowProductModal(false), setEditingProduct(null))
+          }
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="product-modal-title"
+        >
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100 animate-scaleIn">
+            <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-4 sm:p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">���</div>
-                <h3 className="text-xl font-bold">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                </div>
+                <h3
+                  id="product-modal-title"
+                  className="text-lg sm:text-xl font-bold truncate"
+                >
                   {editingProduct ? "Edit Produk" : "Tambah Produk Baru"}
                 </h3>
               </div>
             </div>
-            <form onSubmit={handleProductSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Nama Produk:
-                </label>
-                <input
-                  type="text"
-                  value={productForm.name}
-                  onChange={(e) =>
-                    setProductForm({ ...productForm, name: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  required
-                />
+            <form
+              onSubmit={handleProductSubmit}
+              className="p-4 sm:p-6 space-y-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Nama Produk:
+                  </label>
+                  <input
+                    type="text"
+                    value={productForm.name}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, name: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Kategori:
+                  </label>
+                  <select
+                    value={productForm.category}
+                    onChange={(e) =>
+                      setProductForm({
+                        ...productForm,
+                        category: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
+                    <option value="Snack">Snack</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Umum">Umum</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                </div>
               </div>
 
               <div>
@@ -10893,42 +10953,66 @@ const EnhancedPOS: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Harga:
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={productForm.price}
-                  onChange={(e) =>
-                    setProductForm({
-                      ...productForm,
-                      price: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-bold mb-2">
-                  Stok:
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={productForm.stock}
-                  onChange={(e) =>
-                    setProductForm({
-                      ...productForm,
-                      stock: parseInt(e.target.value) || 0,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Harga (Rp):
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={productForm.price}
+                    onChange={(e) =>
+                      setProductForm({
+                        ...productForm,
+                        price: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Stok:
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={productForm.stock}
+                    onChange={(e) =>
+                      setProductForm({
+                        ...productForm,
+                        stock: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2">
+                    Satuan:
+                  </label>
+                  <select
+                    value={productForm.unit}
+                    onChange={(e) =>
+                      setProductForm({ ...productForm, unit: e.target.value })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                  >
+                    <option value="pcs">Pcs</option>
+                    <option value="kg">Kg</option>
+                    <option value="gram">Gram</option>
+                    <option value="liter">Liter</option>
+                    <option value="ml">ML</option>
+                    <option value="box">Box</option>
+                    <option value="pack">Pack</option>
+                    <option value="botol">Botol</option>
+                    <option value="porsi">Porsi</option>
+                  </select>
+                </div>
               </div>
               <div className="flex space-x-4 pt-4 border-t border-gray-200">
                 <button
@@ -10938,8 +11022,10 @@ const EnhancedPOS: React.FC = () => {
                     setEditingProduct(null);
                     setProductForm({
                       name: "",
+                      category: "Umum",
                       price: 0,
                       stock: 0,
+                      unit: "pcs",
                       imageUrl: "",
                     });
                   }}
@@ -10951,7 +11037,20 @@ const EnhancedPOS: React.FC = () => {
                   type="submit"
                   className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 shadow-md"
                 >
-                  �� Simpan Produk
+                  <svg
+                    className="w-5 h-5 inline mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                  Simpan Produk
                 </button>
               </div>
             </form>
@@ -10963,10 +11062,24 @@ const EnhancedPOS: React.FC = () => {
       {showCustomerModal && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
-            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-xl">
+            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 sm:p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">��</div>
-                <h3 className="text-xl font-bold">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold truncate">
                   {editingCustomer ? "Edit Pelanggan" : "Tambah Pelanggan Baru"}
                 </h3>
               </div>
@@ -11042,7 +11155,21 @@ const EnhancedPOS: React.FC = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
             <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">����‍💼</div>
+                <div className="flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                    />
+                  </svg>
+                </div>
                 <h3 className="text-xl font-bold">
                   {editingUser ? "Edit Pengguna" : "Tambah Pengguna Baru"}
                 </h3>
@@ -12124,18 +12251,16 @@ const EnhancedPOS: React.FC = () => {
                         date: new Date().toISOString(),
                         items: [
                           {
-                            id: "preview-item-1",
+                            productId: "preview-item-1",
                             name: "Contoh Produk 1",
                             price: 15000,
                             quantity: 2,
-                            subtotal: 30000,
                           },
                           {
-                            id: "preview-item-2",
+                            productId: "preview-item-2",
                             name: "Contoh Produk 2",
                             price: 25000,
                             quantity: 1,
-                            subtotal: 25000,
                           },
                         ],
                         totalAmount: 59125,
@@ -12193,6 +12318,11 @@ const EnhancedPOS: React.FC = () => {
 
       {/* Custom Modals */}
       <Modals />
+
+      {/* PWA Components */}
+      <PWAInstallPrompt />
+      <OfflineIndicator />
+      <PWAPanel isOpen={showPWAPanel} onClose={() => setShowPWAPanel(false)} />
     </div>
   );
 };

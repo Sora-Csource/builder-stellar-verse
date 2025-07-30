@@ -1,38 +1,54 @@
 {
-  "name": "Crema POS - Sistem Point of Sale",
-  "short_name": "Crema POS",
-  "description": "Aplikasi Point of Sale modern dengan fitur lengkap untuk bisnis retail",
+  "name": "POS - Point of Sale System",
+  "short_name": "POS System",
+  "description": "Complete Point of Sale system for retail and restaurant management",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait-primary",
-  "theme_color": "#4F46E5",
-  "background_color": "#FFFFFF",
+  "background_color": "#ffffff",
+  "theme_color": "#1f2937",
+  "orientation": "any",
   "scope": "/",
-  "lang": "id-ID",
+  "categories": ["business", "productivity", "shopping"],
+  "lang": "id",
+  "dir": "ltr",
   "icons": [
     {
-      "src": "https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=192",
-      "sizes": "192x192",
-      "type": "image/webp",
-      "purpose": "any maskable"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=512",
-      "sizes": "512x512",
-      "type": "image/webp",
-      "purpose": "any maskable"
+      "src": "/icon.svg",
+      "sizes": "72x72 96x96 128x128 144x144 152x152 192x192 384x384 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["business", "finance", "productivity"],
   "screenshots": [
     {
-      "src": "https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=800",
-      "sizes": "800x600",
-      "type": "image/webp",
-      "form_factor": "wide"
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "POS System Desktop View"
+    },
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "640x1136",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "POS System Mobile View"
     }
   ],
-  "features": ["offline-support", "background-sync", "push-notifications"],
-  "permissions": ["storage", "notifications"],
-  "prefer_related_applications": false
+  "features": [
+    "offline-support",
+    "local-storage",
+    "responsive-design",
+    "touch-friendly"
+  ],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }

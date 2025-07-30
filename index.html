@@ -3,32 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crema POS - Sistem Point of Sale</title>
+    <title>POS System - Point of Sale</title>
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
 
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#4F46E5" />
+    <meta name="theme-color" content="#1f2937" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Crema POS" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="POS System" />
+    <meta name="application-name" content="POS System" />
     <meta
       name="description"
-      content="Aplikasi Point of Sale modern dengan fitur lengkap untuk bisnis retail"
+      content="Complete Point of Sale system for retail and restaurant management with offline support"
     />
 
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      href="https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=32"
-    />
+    <!-- Mobile optimization -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
 
-    <!-- Apple Touch Icons -->
-    <link
-      rel="apple-touch-icon"
-      href="https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=180"
-    />
+    <!-- Icons -->
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="mask-icon" href="/icon.svg" color="#1f2937" />
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/sw.js" as="script" />
   </head>
 
   <body>
