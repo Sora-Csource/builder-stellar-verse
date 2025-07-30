@@ -1941,7 +1941,7 @@ const EnhancedPOS: React.FC = () => {
         ];
         setUsers(defaultUsers);
 
-        // Auto-login for development/demo purposes
+        // Auto-login for admin access
         const adminUser = defaultUsers[0];
         setCurrentUser(adminUser);
         setIsLoginVisible(false);
