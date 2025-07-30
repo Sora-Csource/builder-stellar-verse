@@ -3910,7 +3910,7 @@ const EnhancedPOS: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-gray-100"
+      className="min-h-screen bg-gray-100 safe-area-top safe-area-bottom safe-area-left safe-area-right ios-safe-area"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       {/* Login Screen */}
