@@ -3976,7 +3976,7 @@ const EnhancedPOS: React.FC = () => {
                       <button
                         key={module.id}
                         onClick={() => setActiveModule(module.id)}
-                        className={`flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+                        className={`flex flex-col sm:flex-row items-center space-y-0.5 sm:space-y-0 sm:space-x-2 px-1.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap touch-target portrait-button landscape-button small-portrait-button ${
                           activeModule === module.id
                             ? "bg-indigo-600 text-white shadow-md"
                             : "text-gray-300 hover:bg-gray-700 hover:text-white"
