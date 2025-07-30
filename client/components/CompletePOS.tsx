@@ -943,15 +943,7 @@ const CompletePOS: React.FC = () => {
               >
                 Masuk
               </button>
-              <div className="mt-4 text-sm text-gray-600 text-center">
-                <p>Default Login:</p>
-                <p>
-                  Username: <strong>admin</strong>
-                </p>
-                <p>
-                  Password: <strong>admin</strong>
-                </p>
-              </div>
+
             </form>
           </div>
         </div>
