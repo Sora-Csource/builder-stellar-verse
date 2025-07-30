@@ -3947,10 +3947,10 @@ const EnhancedPOS: React.FC = () => {
       {!isLoginVisible && currentUser && (
         <div className="flex flex-col min-h-screen">
           {/* Top Navigation */}
-          <nav className="bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 px-6 py-3 shadow-lg sticky top-0 z-50">
+          <nav className="bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 px-4 sm:px-6 py-3 shadow-lg sticky top-0 z-50">
             <div className="flex justify-between items-center">
               {/* Left: Main Navigation */}
-              <div className="flex items-center flex-wrap gap-4">
+              <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800 pb-1">
                 {allModules.map(
                   (module) =>
                     hasModuleAccess(module.id) && (
