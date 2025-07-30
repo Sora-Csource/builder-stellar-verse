@@ -3005,7 +3005,7 @@ const EnhancedPOS: React.FC = () => {
 
   // Handle test print
   const handleTestPrint = async () => {
-    // Create a sample sale for testing
+    // Create a sample sale for print preview
     const testSale: Sale = {
       id: "TEST-" + Date.now(),
       date: new Date().toISOString(),
