@@ -127,31 +127,43 @@ async function syncPOSData() {
 async function getPendingData() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('pos-offline-db', 1);
-    
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction(['pending'], 'readonly');
-      const store = transaction.objectStore('pending');
-      const getAllRequest = store.getAll();
-      
-      getAllRequest.onsuccess = () => {
-        resolve(getAllRequest.result);
-      };
-      
-      getAllRequest.onerror = () => {
-        reject(getAllRequest.error);
-      };
-    };
-    
-    request.onerror = () => {
-      reject(request.error);
-    };
-    
+
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains('pending')) {
         db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
       }
+      if (!db.objectStoreNames.contains('offline-data')) {
+        db.createObjectStore('offline-data', { keyPath: 'key' });
+      }
+    };
+
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+
+      // Check if object store exists before creating transaction
+      if (db.objectStoreNames.contains('pending')) {
+        const transaction = db.transaction(['pending'], 'readonly');
+        const store = transaction.objectStore('pending');
+        const getAllRequest = store.getAll();
+
+        getAllRequest.onsuccess = () => {
+          db.close();
+          resolve(getAllRequest.result);
+        };
+
+        getAllRequest.onerror = () => {
+          db.close();
+          reject(getAllRequest.error);
+        };
+      } else {
+        db.close();
+        resolve([]); // Return empty array if store doesn't exist
+      }
+    };
+
+    request.onerror = () => {
+      reject(request.error);
     };
   });
 }
