@@ -3913,51 +3913,201 @@ const EnhancedPOS: React.FC = () => {
       className="min-h-screen bg-gray-100 safe-area-top safe-area-bottom safe-area-left safe-area-right ios-safe-area"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
-      {/* Login Screen */}
+      {/* Desktop/Web Login Screen */}
       {isLoginVisible && (
-        <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-50 p-4 safe-area-top safe-area-bottom">
-          <div className="bg-white p-6 sm:p-12 rounded-lg shadow-xl w-full max-w-md mobile-modal portrait-modal landscape-modal small-portrait-modal">
-            <div className="flex justify-center mb-6">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=800"
-                alt="Crema POS Logo"
-                className="h-16 w-auto"
-              />
+        <div className="fixed inset-0 z-50">
+          {/* Background with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_80%,white_0%,transparent_50%)]"></div>
+              <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_80%_20%,white_0%,transparent_50%)]"></div>
+              <div className="absolute bottom-0 left-0 w-full h-full bg-[radial-gradient(circle_at_40%_40%,white_0%,transparent_50%)]"></div>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800 text-center landscape-text portrait-text">
-              <p>Login</p>
-            </h2>
-            <form onSubmit={handleLogin} className="portrait-form landscape-form">
-              <div className="mb-3 sm:mb-4 mobile-form-spacing">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Username:
-                </label>
-                <input
-                  type="text"
-                  name="username"
-                  className="shadow appearance-none border rounded w-full py-3 sm:py-2 px-4 sm:px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mobile-input landscape-input portrait-input"
-                  required
-                />
-              </div>
-              <div className="mb-4 sm:mb-6 mobile-form-spacing">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Password:
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  className="shadow appearance-none border rounded w-full py-3 sm:py-2 px-4 sm:px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline mobile-input landscape-input portrait-input"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white py-3 sm:py-2 px-4 rounded-md font-semibold hover:bg-indigo-700 transition duration-200 mobile-button landscape-button portrait-button touch-target"
-              >
-                Masuk
-              </button>
+          </div>
 
-            </form>
+          {/* Main login container */}
+          <div className="relative z-10 min-h-screen flex">
+            {/* Left side - Branding/Info (Desktop only) */}
+            <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-blue-800 to-indigo-900 p-12 flex-col justify-center relative overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-0 w-full h-full opacity-5">
+                <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100" height="100" fill="url(#grid)" />
+                </svg>
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 text-white">
+                <div className="mb-8">
+                  <div className="w-24 h-24 bg-white/20 rounded-2xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/10">
+                    <span className="text-4xl font-bold text-white">P</span>
+                  </div>
+                  <h1 className="text-5xl xl:text-6xl font-bold mb-4 leading-tight">
+                    Point of Sale
+                    <span className="block text-3xl xl:text-4xl font-normal text-blue-200 mt-2">
+                      Management System
+                    </span>
+                  </h1>
+                  <p className="text-xl text-blue-100 leading-relaxed max-w-lg">
+                    Complete business solution for retail and restaurant management with real-time analytics, inventory tracking, and seamless customer experience.
+                  </p>
+                </div>
+
+                {/* Features */}
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-blue-100">Real-time Sales Tracking</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-blue-100">Inventory Management</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-blue-100">Analytics & Reports</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span className="text-blue-100">Multi-user Support</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Login form */}
+            <div className="w-full lg:w-1/2 xl:w-2/5 flex items-center justify-center p-4 sm:p-8 lg:p-12">
+              <div className="w-full max-w-md">
+                {/* Mobile header (only shown on mobile) */}
+                <div className="lg:hidden text-center mb-8">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                    <span className="text-2xl font-bold text-white">P</span>
+                  </div>
+                  <h1 className="text-3xl font-bold text-white mb-2">POS System</h1>
+                  <p className="text-blue-200">Point of Sale Management</p>
+                </div>
+
+                {/* Login form card */}
+                <div className="bg-white/95 backdrop-blur-xl p-8 lg:p-10 rounded-2xl shadow-2xl border border-white/20">
+                  {/* Header */}
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                    <p className="text-gray-600">Please sign in to your account</p>
+                  </div>
+
+                  {/* Login form */}
+                  <form onSubmit={handleLogin} className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Username
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </div>
+                        <input
+                          type="text"
+                          name="username"
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                          placeholder="Enter your username"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Password
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                        </div>
+                        <input
+                          type="password"
+                          name="password"
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200"
+                          placeholder="Enter your password"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 transform hover:scale-[1.02]"
+                    >
+                      <span className="flex items-center space-x-2">
+                        <span>Sign In</span>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </span>
+                    </button>
+                  </form>
+
+                  {/* Footer */}
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-500">
+                        Secure login protected by enterprise-grade encryption
+                      </p>
+                      <div className="flex items-center justify-center space-x-4 mt-3">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                          Secured
+                        </span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Verified
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick demo info (optional) */}
+                <div className="mt-6 text-center">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <p className="text-sm font-medium text-white mb-2">Demo Access</p>
+                    <div className="space-y-1 text-xs text-blue-200">
+                      <p>Username: <span className="font-mono bg-black/20 px-2 py-1 rounded">admin</span></p>
+                      <p>Password: <span className="font-mono bg-black/20 px-2 py-1 rounded">admin</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
