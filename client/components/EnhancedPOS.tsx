@@ -4143,25 +4143,23 @@ const EnhancedPOS: React.FC = () => {
 
           {/* Main Content */}
           <main className="flex-1 p-3 sm:p-6 bg-white m-2 sm:m-4 rounded-lg shadow-md">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center space-x-4">
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
-                    {settings.storeName}
-                  </h1>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {currentUser.username}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+              <div className="flex flex-col space-y-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {settings.storeName}
+                </h1>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    {currentUser.username}
+                  </span>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    {currentUser.role}
+                  </span>
+                  {currentShift && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                      Shift: {currentShift.id}
                     </span>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      {currentUser.role}
-                    </span>
-                    {currentShift && (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                        Shift: {currentShift.id}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
 
