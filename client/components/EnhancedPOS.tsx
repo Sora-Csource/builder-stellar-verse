@@ -4179,6 +4179,7 @@ const EnhancedPOS: React.FC = () => {
                       Shift: {currentShift.id}
                     </span>
                   )}
+                  <PWAStatusBar />
                 </div>
               </div>
 
