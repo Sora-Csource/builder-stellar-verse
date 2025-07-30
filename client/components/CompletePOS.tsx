@@ -943,7 +943,6 @@ const CompletePOS: React.FC = () => {
               >
                 Masuk
               </button>
-
             </form>
           </div>
         </div>

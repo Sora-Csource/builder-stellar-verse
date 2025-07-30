@@ -5,7 +5,12 @@ import {
   KeyboardShortcutsHelp,
 } from "../hooks/useKeyboardShortcuts.tsx";
 import { useOffline } from "../hooks/useOffline";
-import { PWAInstallPrompt, OfflineIndicator, PWAStatusBar, PWAPanel } from "./PWAComponents";
+import {
+  PWAInstallPrompt,
+  OfflineIndicator,
+  PWAStatusBar,
+  PWAPanel,
+} from "./PWAComponents";
 import { usePWA, saveOfflineData, loadOfflineData } from "../hooks/usePWA";
 
 // Define all interfaces
@@ -1890,7 +1895,6 @@ const EnhancedPOS: React.FC = () => {
 
       // Save to IndexedDB for offline PWA functionality
       await saveOfflineData("posData", data);
-
     } catch (error) {
       console.error("Error saving data:", error);
       showAlert("Error", "Gagal menyimpan data.", "error");
@@ -3932,10 +3936,24 @@ const EnhancedPOS: React.FC = () => {
             <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-gray-700 to-gray-800 p-12 flex-col justify-center relative overflow-hidden">
               {/* Decorative elements */}
               <div className="absolute top-0 left-0 w-full h-full opacity-5">
-                <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  className="w-full h-full"
+                  viewBox="0 0 100 100"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <defs>
-                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                      <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" strokeWidth="1"/>
+                    <pattern
+                      id="grid"
+                      width="10"
+                      height="10"
+                      patternUnits="userSpaceOnUse"
+                    >
+                      <path
+                        d="M 10 0 L 0 0 0 10"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1"
+                      />
                     </pattern>
                   </defs>
                   <rect width="100" height="100" fill="url(#grid)" />
@@ -3949,7 +3967,7 @@ const EnhancedPOS: React.FC = () => {
                     src="https://cdn.builder.io/api/v1/image/assets%2F52b271e2145f4d519a786820152f2754%2F65f9c035401d4da1a8330f886ff5b185?format=webp&width=800"
                     alt="Crema POS Logo"
                     className="h-16 xl:h-20 object-contain mb-6"
-                    style={{ width: '175%' }}
+                    style={{ width: "175%" }}
                   />
                   <h1 className="text-5xl xl:text-6xl font-bold mb-4 leading-tight">
                     Point of Sale
@@ -3958,7 +3976,9 @@ const EnhancedPOS: React.FC = () => {
                     </span>
                   </h1>
                   <p className="text-xl text-gray-200 leading-relaxed max-w-lg">
-                    Complete business solution for retail and restaurant management with real-time analytics, inventory tracking, and seamless customer experience.
+                    Complete business solution for retail and restaurant
+                    management with real-time analytics, inventory tracking, and
+                    seamless customer experience.
                   </p>
                 </div>
 
@@ -3966,32 +3986,74 @@ const EnhancedPOS: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
-                    <span className="text-gray-200">Real-time Sales Tracking</span>
+                    <span className="text-gray-200">
+                      Real-time Sales Tracking
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
                     <span className="text-gray-200">Inventory Management</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
                     <span className="text-gray-200">Analytics & Reports</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
                     <span className="text-gray-200">Multi-user Support</span>
@@ -4008,7 +4070,9 @@ const EnhancedPOS: React.FC = () => {
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
                     <span className="text-2xl font-bold text-white">P</span>
                   </div>
-                  <h1 className="text-3xl font-bold text-white mb-2">POS System</h1>
+                  <h1 className="text-3xl font-bold text-white mb-2">
+                    POS System
+                  </h1>
                   <p className="text-gray-300">Point of Sale Management</p>
                 </div>
 
@@ -4016,8 +4080,12 @@ const EnhancedPOS: React.FC = () => {
                 <div className="bg-white/95 backdrop-blur-xl p-8 lg:p-10 rounded-2xl shadow-2xl border border-white/20">
                   {/* Header */}
                   <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-                    <p className="text-gray-600">Please sign in to your account</p>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                      Welcome Back
+                    </h2>
+                    <p className="text-gray-600">
+                      Please sign in to your account
+                    </p>
                   </div>
 
                   {/* Login form */}
@@ -4028,8 +4096,18 @@ const EnhancedPOS: React.FC = () => {
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          <svg
+                            className="h-5 w-5 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
                           </svg>
                         </div>
                         <input
@@ -4048,8 +4126,18 @@ const EnhancedPOS: React.FC = () => {
                       </label>
                       <div className="relative">
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                          <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          <svg
+                            className="h-5 w-5 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            />
                           </svg>
                         </div>
                         <input
@@ -4068,8 +4156,18 @@ const EnhancedPOS: React.FC = () => {
                     >
                       <span className="flex items-center space-x-2">
                         <span>Sign In</span>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
                         </svg>
                       </span>
                     </button>
@@ -4083,14 +4181,34 @@ const EnhancedPOS: React.FC = () => {
                       </p>
                       <div className="flex items-center justify-center space-x-4 mt-3">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                            />
                           </svg>
                           Secured
                         </span>
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          <svg
+                            className="w-3 h-3 mr-1"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
                           </svg>
                           Verified
                         </span>
@@ -4098,8 +4216,6 @@ const EnhancedPOS: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
-
               </div>
             </div>
           </div>
@@ -4126,10 +4242,16 @@ const EnhancedPOS: React.FC = () => {
                             : "text-gray-300 hover:bg-gray-700 hover:text-white"
                         }`}
                       >
-                        <span className="text-sm sm:text-lg landscape-text portrait-text">{module.icon}</span>
+                        <span className="text-sm sm:text-lg landscape-text portrait-text">
+                          {module.icon}
+                        </span>
                         <span className="text-xs sm:text-xs lg:text-sm truncate landscape-text portrait-text small-portrait-text">
-                          <span className="sm:hidden lg:inline">{module.name.split(' ')[0]}</span>
-                          <span className="hidden sm:inline lg:hidden">{module.name}</span>
+                          <span className="sm:hidden lg:inline">
+                            {module.name.split(" ")[0]}
+                          </span>
+                          <span className="hidden sm:inline lg:hidden">
+                            {module.name}
+                          </span>
                         </span>
                       </button>
                     ),
@@ -4395,8 +4517,18 @@ const EnhancedPOS: React.FC = () => {
                     className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                     title="App Features"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -7851,13 +7983,25 @@ const EnhancedPOS: React.FC = () => {
                       {/* Quick Stats Overview */}
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         {(() => {
-                          const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                          const recentSales = sales.filter(sale =>
-                            new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+                          const thirtyDaysAgo = new Date(
+                            Date.now() - 30 * 24 * 60 * 60 * 1000,
                           );
-                          const totalRevenue = recentSales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0);
-                          const avgTransaction = recentSales.length > 0 ? totalRevenue / recentSales.length : 0;
-                          const activeProducts = products.filter(p => (p.stock || 0) > 0).length;
+                          const recentSales = sales.filter(
+                            (sale) =>
+                              new Date(sale.date) >= thirtyDaysAgo &&
+                              sale.status === "completed",
+                          );
+                          const totalRevenue = recentSales.reduce(
+                            (sum, sale) => sum + (sale.totalAmount || 0),
+                            0,
+                          );
+                          const avgTransaction =
+                            recentSales.length > 0
+                              ? totalRevenue / recentSales.length
+                              : 0;
+                          const activeProducts = products.filter(
+                            (p) => (p.stock || 0) > 0,
+                          ).length;
 
                           return [
                             {
@@ -7865,36 +8009,45 @@ const EnhancedPOS: React.FC = () => {
                               value: formatCurrency(totalRevenue),
                               icon: "💰",
                               color: "from-emerald-500 to-emerald-600",
-                              change: "+12%"
+                              change: "+12%",
                             },
                             {
                               label: "Transactions",
                               value: recentSales.length.toString(),
                               icon: "📊",
                               color: "from-blue-500 to-blue-600",
-                              change: "+8%"
+                              change: "+8%",
                             },
                             {
                               label: "Avg. Sale",
                               value: formatCurrency(avgTransaction),
                               icon: "����",
                               color: "from-purple-500 to-purple-600",
-                              change: "+15%"
+                              change: "+15%",
                             },
                             {
                               label: "Products",
                               value: `${activeProducts}/${products.length}`,
                               icon: "📦",
                               color: "from-orange-500 to-orange-600",
-                              change: "Active"
-                            }
+                              change: "Active",
+                            },
                           ].map((stat, index) => (
-                            <div key={index} className={`bg-gradient-to-br ${stat.color} p-4 rounded-xl text-white`}>
+                            <div
+                              key={index}
+                              className={`bg-gradient-to-br ${stat.color} p-4 rounded-xl text-white`}
+                            >
                               <div className="flex items-start justify-between">
                                 <div>
-                                  <p className="text-white/80 text-sm font-medium">{stat.label}</p>
-                                  <p className="text-2xl font-bold mt-1">{stat.value}</p>
-                                  <p className="text-white/70 text-xs mt-1">{stat.change}</p>
+                                  <p className="text-white/80 text-sm font-medium">
+                                    {stat.label}
+                                  </p>
+                                  <p className="text-2xl font-bold mt-1">
+                                    {stat.value}
+                                  </p>
+                                  <p className="text-white/70 text-xs mt-1">
+                                    {stat.change}
+                                  </p>
                                 </div>
                                 <span className="text-2xl">{stat.icon}</span>
                               </div>
@@ -7913,39 +8066,62 @@ const EnhancedPOS: React.FC = () => {
                           </h3>
                           <div className="space-y-3">
                             {(() => {
-                              const last7Days = Array.from({ length: 7 }, (_, i) => {
-                                const date = new Date();
-                                date.setDate(date.getDate() - (6 - i));
-                                return date;
-                              });
+                              const last7Days = Array.from(
+                                { length: 7 },
+                                (_, i) => {
+                                  const date = new Date();
+                                  date.setDate(date.getDate() - (6 - i));
+                                  return date;
+                                },
+                              );
 
-                              const dailyData = last7Days.map(date => {
+                              const dailyData = last7Days.map((date) => {
                                 const dayStart = new Date(date);
                                 dayStart.setHours(0, 0, 0, 0);
                                 const dayEnd = new Date(date);
                                 dayEnd.setHours(23, 59, 59, 999);
 
-                                const daySales = sales.filter(sale => {
+                                const daySales = sales.filter((sale) => {
                                   const saleDate = new Date(sale.date);
-                                  return saleDate >= dayStart && saleDate <= dayEnd && sale.status === "completed";
+                                  return (
+                                    saleDate >= dayStart &&
+                                    saleDate <= dayEnd &&
+                                    sale.status === "completed"
+                                  );
                                 });
 
                                 return {
-                                  day: date.toLocaleDateString("id-ID", { weekday: "short" }),
-                                  amount: daySales.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0),
-                                  count: daySales.length
+                                  day: date.toLocaleDateString("id-ID", {
+                                    weekday: "short",
+                                  }),
+                                  amount: daySales.reduce(
+                                    (sum, sale) =>
+                                      sum + (sale.totalAmount || 0),
+                                    0,
+                                  ),
+                                  count: daySales.length,
                                 };
                               });
 
-                              const maxAmount = Math.max(...dailyData.map(d => d.amount), 1);
+                              const maxAmount = Math.max(
+                                ...dailyData.map((d) => d.amount),
+                                1,
+                              );
 
                               return dailyData.map((day, index) => (
-                                <div key={index} className="flex items-center space-x-3">
-                                  <div className="w-10 text-sm font-medium text-gray-600">{day.day}</div>
+                                <div
+                                  key={index}
+                                  className="flex items-center space-x-3"
+                                >
+                                  <div className="w-10 text-sm font-medium text-gray-600">
+                                    {day.day}
+                                  </div>
                                   <div className="flex-1 bg-gray-100 rounded-full h-6 relative overflow-hidden">
                                     <div
                                       className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full rounded-full flex items-center justify-end pr-2 transition-all duration-500"
-                                      style={{ width: `${Math.max((day.amount / maxAmount) * 100, 2)}%` }}
+                                      style={{
+                                        width: `${Math.max((day.amount / maxAmount) * 100, 2)}%`,
+                                      }}
                                     >
                                       {day.amount > 0 && (
                                         <span className="text-xs text-white font-medium">
@@ -7971,24 +8147,37 @@ const EnhancedPOS: React.FC = () => {
                           </h3>
                           <div className="space-y-3">
                             {(() => {
-                              const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                              const recentSales = sales.filter(sale =>
-                                new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+                              const thirtyDaysAgo = new Date(
+                                Date.now() - 30 * 24 * 60 * 60 * 1000,
+                              );
+                              const recentSales = sales.filter(
+                                (sale) =>
+                                  new Date(sale.date) >= thirtyDaysAgo &&
+                                  sale.status === "completed",
                               );
 
-                              const productStats: Record<string, { name: string; quantity: number; revenue: number }> = {};
+                              const productStats: Record<
+                                string,
+                                {
+                                  name: string;
+                                  quantity: number;
+                                  revenue: number;
+                                }
+                              > = {};
 
-                              recentSales.forEach(sale => {
-                                sale.items.forEach(item => {
+                              recentSales.forEach((sale) => {
+                                sale.items.forEach((item) => {
                                   if (!productStats[item.productId]) {
                                     productStats[item.productId] = {
                                       name: item.name,
                                       quantity: 0,
-                                      revenue: 0
+                                      revenue: 0,
                                     };
                                   }
-                                  productStats[item.productId].quantity += item.quantity;
-                                  productStats[item.productId].revenue += item.price * item.quantity;
+                                  productStats[item.productId].quantity +=
+                                    item.quantity;
+                                  productStats[item.productId].revenue +=
+                                    item.price * item.quantity;
                                 });
                               });
 
@@ -7996,30 +8185,48 @@ const EnhancedPOS: React.FC = () => {
                                 .sort((a, b) => b.quantity - a.quantity)
                                 .slice(0, 5);
 
-                              const maxQuantity = Math.max(...topProducts.map(p => p.quantity), 1);
+                              const maxQuantity = Math.max(
+                                ...topProducts.map((p) => p.quantity),
+                                1,
+                              );
 
-                              return topProducts.length > 0 ? topProducts.map((product, index) => (
-                                <div key={index} className="flex items-center space-x-3">
-                                  <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
-                                    {index + 1}
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <div className="font-medium text-gray-900 text-sm truncate">{product.name}</div>
-                                    <div className="bg-gray-200 rounded-full h-2 mt-1 overflow-hidden">
-                                      <div
-                                        className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-full transition-all duration-500"
-                                        style={{ width: `${(product.quantity / maxQuantity) * 100}%` }}
-                                      />
+                              return topProducts.length > 0 ? (
+                                topProducts.map((product, index) => (
+                                  <div
+                                    key={index}
+                                    className="flex items-center space-x-3"
+                                  >
+                                    <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                                      {index + 1}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="font-medium text-gray-900 text-sm truncate">
+                                        {product.name}
+                                      </div>
+                                      <div className="bg-gray-200 rounded-full h-2 mt-1 overflow-hidden">
+                                        <div
+                                          className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-full rounded-full transition-all duration-500"
+                                          style={{
+                                            width: `${(product.quantity / maxQuantity) * 100}%`,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="text-sm font-bold text-gray-900">
+                                        {product.quantity}
+                                      </div>
+                                      <div className="text-xs text-gray-500">
+                                        {formatCurrency(product.revenue)}
+                                      </div>
                                     </div>
                                   </div>
-                                  <div className="text-right">
-                                    <div className="text-sm font-bold text-gray-900">{product.quantity}</div>
-                                    <div className="text-xs text-gray-500">{formatCurrency(product.revenue)}</div>
-                                  </div>
-                                </div>
-                              )) : (
+                                ))
+                              ) : (
                                 <div className="text-center py-8 text-gray-500">
-                                  <span className="text-4xl block mb-2">📊</span>
+                                  <span className="text-4xl block mb-2">
+                                    📊
+                                  </span>
                                   <p>No sales data yet</p>
                                 </div>
                               );
@@ -8038,51 +8245,93 @@ const EnhancedPOS: React.FC = () => {
                           </h3>
                           <div className="space-y-4">
                             {(() => {
-                              const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-                              const recentSales = sales.filter(sale =>
-                                new Date(sale.date) >= thirtyDaysAgo && sale.status === "completed"
+                              const thirtyDaysAgo = new Date(
+                                Date.now() - 30 * 24 * 60 * 60 * 1000,
+                              );
+                              const recentSales = sales.filter(
+                                (sale) =>
+                                  new Date(sale.date) >= thirtyDaysAgo &&
+                                  sale.status === "completed",
                               );
 
-                              const paymentStats = recentSales.reduce((acc, sale) => {
-                                acc[sale.paymentMethod] = (acc[sale.paymentMethod] || 0) + (sale.totalAmount || 0);
-                                return acc;
-                              }, {} as Record<string, number>);
+                              const paymentStats = recentSales.reduce(
+                                (acc, sale) => {
+                                  acc[sale.paymentMethod] =
+                                    (acc[sale.paymentMethod] || 0) +
+                                    (sale.totalAmount || 0);
+                                  return acc;
+                                },
+                                {} as Record<string, number>,
+                              );
 
-                              const total = Object.values(paymentStats).reduce((sum, amount) => sum + amount, 0);
+                              const total = Object.values(paymentStats).reduce(
+                                (sum, amount) => sum + amount,
+                                0,
+                              );
 
                               const methods = [
-                                { key: "cash", name: "Cash", icon: "💵", color: "bg-emerald-500" },
-                                { key: "card", name: "Card", icon: "💳", color: "bg-blue-500" },
-                                { key: "ewallet", name: "E-Wallet", icon: "📱", color: "bg-purple-500" }
+                                {
+                                  key: "cash",
+                                  name: "Cash",
+                                  icon: "💵",
+                                  color: "bg-emerald-500",
+                                },
+                                {
+                                  key: "card",
+                                  name: "Card",
+                                  icon: "💳",
+                                  color: "bg-blue-500",
+                                },
+                                {
+                                  key: "ewallet",
+                                  name: "E-Wallet",
+                                  icon: "📱",
+                                  color: "bg-purple-500",
+                                },
                               ];
 
-                              return total > 0 ? methods.map(method => {
-                                const amount = paymentStats[method.key] || 0;
-                                const percentage = (amount / total) * 100;
+                              return total > 0 ? (
+                                methods.map((method) => {
+                                  const amount = paymentStats[method.key] || 0;
+                                  const percentage = (amount / total) * 100;
 
-                                return (
-                                  <div key={method.key} className="flex items-center space-x-3">
-                                    <span className="text-2xl">{method.icon}</span>
-                                    <div className="flex-1">
-                                      <div className="flex justify-between items-center mb-1">
-                                        <span className="font-medium text-gray-900">{method.name}</span>
-                                        <span className="text-sm text-gray-600">{percentage.toFixed(1)}%</span>
+                                  return (
+                                    <div
+                                      key={method.key}
+                                      className="flex items-center space-x-3"
+                                    >
+                                      <span className="text-2xl">
+                                        {method.icon}
+                                      </span>
+                                      <div className="flex-1">
+                                        <div className="flex justify-between items-center mb-1">
+                                          <span className="font-medium text-gray-900">
+                                            {method.name}
+                                          </span>
+                                          <span className="text-sm text-gray-600">
+                                            {percentage.toFixed(1)}%
+                                          </span>
+                                        </div>
+                                        <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                                          <div
+                                            className={`${method.color} h-full rounded-full transition-all duration-500`}
+                                            style={{ width: `${percentage}%` }}
+                                          />
+                                        </div>
                                       </div>
-                                      <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
-                                        <div
-                                          className={`${method.color} h-full rounded-full transition-all duration-500`}
-                                          style={{ width: `${percentage}%` }}
-                                        />
+                                      <div className="text-right">
+                                        <div className="font-semibold text-gray-900">
+                                          {formatCurrency(amount)}
+                                        </div>
                                       </div>
                                     </div>
-                                    <div className="text-right">
-                                      <div className="font-semibold text-gray-900">{formatCurrency(amount)}</div>
-                                    </div>
-                                  </div>
-                                );
-                              }) : (
+                                  );
+                                })
+                              ) : (
                                 <div className="text-center py-8 text-gray-500">
-                                  <span className="text-4xl block mb-2">💳</span>
+                                  <span className="text-4xl block mb-2">
+                                    💳
+                                  </span>
                                   <p>No payment data yet</p>
                                 </div>
                               );
@@ -8099,22 +8348,56 @@ const EnhancedPOS: React.FC = () => {
                           <div className="grid grid-cols-2 gap-4">
                             {(() => {
                               const statusCounts = {
-                                healthy: products.filter(p => (p.stock || 0) > 10).length,
-                                low: products.filter(p => (p.stock || 0) > 0 && (p.stock || 0) <= 10).length,
-                                out: products.filter(p => (p.stock || 0) === 0).length
+                                healthy: products.filter(
+                                  (p) => (p.stock || 0) > 10,
+                                ).length,
+                                low: products.filter(
+                                  (p) =>
+                                    (p.stock || 0) > 0 && (p.stock || 0) <= 10,
+                                ).length,
+                                out: products.filter(
+                                  (p) => (p.stock || 0) === 0,
+                                ).length,
                               };
 
                               const statuses = [
-                                { key: "healthy", name: "Healthy", icon: "✅", color: "bg-emerald-100 text-emerald-800", count: statusCounts.healthy },
-                                { key: "low", name: "Low Stock", icon: "⚠️", color: "bg-yellow-100 text-yellow-800", count: statusCounts.low },
-                                { key: "out", name: "Out of Stock", icon: "❌", color: "bg-red-100 text-red-800", count: statusCounts.out }
+                                {
+                                  key: "healthy",
+                                  name: "Healthy",
+                                  icon: "✅",
+                                  color: "bg-emerald-100 text-emerald-800",
+                                  count: statusCounts.healthy,
+                                },
+                                {
+                                  key: "low",
+                                  name: "Low Stock",
+                                  icon: "⚠️",
+                                  color: "bg-yellow-100 text-yellow-800",
+                                  count: statusCounts.low,
+                                },
+                                {
+                                  key: "out",
+                                  name: "Out of Stock",
+                                  icon: "❌",
+                                  color: "bg-red-100 text-red-800",
+                                  count: statusCounts.out,
+                                },
                               ];
 
-                              return statuses.map(status => (
-                                <div key={status.key} className={`${status.color} rounded-lg p-4 text-center`}>
-                                  <div className="text-2xl mb-2">{status.icon}</div>
-                                  <div className="text-2xl font-bold">{status.count}</div>
-                                  <div className="text-sm font-medium">{status.name}</div>
+                              return statuses.map((status) => (
+                                <div
+                                  key={status.key}
+                                  className={`${status.color} rounded-lg p-4 text-center`}
+                                >
+                                  <div className="text-2xl mb-2">
+                                    {status.icon}
+                                  </div>
+                                  <div className="text-2xl font-bold">
+                                    {status.count}
+                                  </div>
+                                  <div className="text-sm font-medium">
+                                    {status.name}
+                                  </div>
                                 </div>
                               ));
                             })()}
@@ -8128,10 +8411,14 @@ const EnhancedPOS: React.FC = () => {
                           <div className="flex items-center space-x-3">
                             <span className="text-2xl">ℹ️</span>
                             <div>
-                              <p className="text-blue-900 font-medium">Analytics Summary</p>
+                              <p className="text-blue-900 font-medium">
+                                Analytics Summary
+                              </p>
                               <p className="text-blue-700 text-sm">
-                                Showing data from {products.length} products and {sales.length} transactions.
-                                {sales.length < 5 && " Add more sales for better insights."}
+                                Showing data from {products.length} products and{" "}
+                                {sales.length} transactions.
+                                {sales.length < 5 &&
+                                  " Add more sales for better insights."}
                               </p>
                             </div>
                           </div>
@@ -8142,11 +8429,18 @@ const EnhancedPOS: React.FC = () => {
                       {products.length === 0 && sales.length === 0 && (
                         <div className="bg-gray-50 rounded-xl p-12 text-center">
                           <div className="text-6xl mb-4">📊</div>
-                          <h3 className="text-xl font-semibold text-gray-900 mb-2">No Data Available</h3>
-                          <p className="text-gray-600 mb-6">Start by adding products and making sales to see analytics.</p>
+                          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            No Data Available
+                          </h3>
+                          <p className="text-gray-600 mb-6">
+                            Start by adding products and making sales to see
+                            analytics.
+                          </p>
                           <div className="flex justify-center space-x-4">
                             <button
-                              onClick={() => setActiveModule("stock-management")}
+                              onClick={() =>
+                                setActiveModule("stock-management")
+                              }
                               className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                             >
                               Add Products

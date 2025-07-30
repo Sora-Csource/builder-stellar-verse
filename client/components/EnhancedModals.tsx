@@ -142,7 +142,9 @@ export const AlertModal: React.FC<AlertModalProps> = ({
       aria-describedby="alert-message"
     >
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-md transform transition-all animate-scaleIn mobile-modal portrait-modal landscape-modal small-portrait-modal">
-        <div className={`p-4 sm:p-6 rounded-t-xl border-l-4 ${getColors()} landscape-compact portrait-compact`}>
+        <div
+          className={`p-4 sm:p-6 rounded-t-xl border-l-4 ${getColors()} landscape-compact portrait-compact`}
+        >
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">{getIcon()}</div>
             <div className="flex-1 min-w-0">
