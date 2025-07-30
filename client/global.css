@@ -207,6 +207,78 @@
   }
 }
 
+/* Mobile Optimizations */
+@layer utilities {
+  /* Touch-friendly buttons */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Safe area handling for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Prevent text selection on touch */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  /* Smooth scrolling on mobile */
+  .smooth-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 640px) {
+  /* Reduce spacing on mobile */
+  .mobile-compact {
+    padding: 0.75rem;
+  }
+
+  /* Stack navigation vertically on very small screens */
+  .mobile-nav-stack {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Full width buttons on mobile */
+  .mobile-full-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* PWA display mode styles */
+@media (display-mode: standalone) {
+  /* Hide browser UI elements when installed as PWA */
+  .pwa-only {
+    display: block;
+  }
+
+  /* Add status bar padding for iOS PWA */
+  .pwa-status-bar {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
 /* POS Application Specific Styles */
 @layer components {
   /* Form components */
