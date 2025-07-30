@@ -4164,12 +4164,12 @@ const EnhancedPOS: React.FC = () => {
 
           {/* Main Content */}
           <main className="flex-1 p-2 sm:p-6 bg-white m-1 sm:m-4 rounded-lg shadow-md safe-area-bottom landscape-content portrait-compact landscape-compact">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-              <div className="flex flex-col space-y-2">
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-8 gap-2 sm:gap-4 landscape-header portrait-compact">
+              <div className="flex flex-col space-y-1 sm:space-y-2">
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 landscape-text portrait-text">
                   {settings.storeName}
                 </h1>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1 sm:gap-2">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     {currentUser.username}
                   </span>
