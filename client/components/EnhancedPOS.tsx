@@ -3971,7 +3971,8 @@ const EnhancedPOS: React.FC = () => {
                             : "text-gray-300 hover:bg-gray-700 hover:text-white"
                         }`}
                       >
-                        <span className="text-xs">{module.name}</span>
+                        <span className="text-lg">{module.icon}</span>
+                        <span className="hidden lg:inline">{module.name}</span>
                       </button>
                     ),
                 )}
