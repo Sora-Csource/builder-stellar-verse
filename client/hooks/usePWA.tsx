@@ -239,96 +239,45 @@ export const saveOfflineData = async (key: string, data: any): Promise<void> => 
 // Utility function to load offline data
 export const loadOfflineData = async (key: string): Promise<any> => {
   try {
-    // Try IndexedDB first
-    return new Promise((resolve) => {
-      const request = indexedDB.open('pos-offline-db', 1);
+    // Try IndexedDB first if available
+    if ('indexedDB' in window) {
+      try {
+        const db = await initializeIndexedDB();
+        const transaction = db.transaction(['offline-data'], 'readonly');
+        const store = transaction.objectStore('offline-data');
 
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-
-        // Create object stores if they don't exist
-        if (!db.objectStoreNames.contains('offline-data')) {
-          db.createObjectStore('offline-data', { keyPath: 'key' });
-        }
-        if (!db.objectStoreNames.contains('pending')) {
-          db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
-        }
-      };
-
-      request.onsuccess = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-
-        // Check if object store exists before creating transaction
-        if (db.objectStoreNames.contains('offline-data')) {
-          const transaction = db.transaction(['offline-data'], 'readonly');
-          const store = transaction.objectStore('offline-data');
+        const result = await new Promise<any>((resolve, reject) => {
           const getRequest = store.get(key);
 
           getRequest.onsuccess = () => {
             db.close();
-            if (getRequest.result) {
-              resolve(getRequest.result.data);
-            } else {
-              // Fallback to localStorage
-              const stored = localStorage.getItem(`offline_${key}`);
-              if (stored) {
-                const parsed = JSON.parse(stored);
-                resolve(parsed.data);
-              } else {
-                resolve(null);
-              }
-            }
+            resolve(getRequest.result);
           };
 
           getRequest.onerror = () => {
             db.close();
-            // Fallback to localStorage
-            const stored = localStorage.getItem(`offline_${key}`);
-            if (stored) {
-              const parsed = JSON.parse(stored);
-              resolve(parsed.data);
-            } else {
-              resolve(null);
-            }
+            reject(getRequest.error);
           };
-        } else {
-          db.close();
-          // Fallback to localStorage
-          const stored = localStorage.getItem(`offline_${key}`);
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            resolve(parsed.data);
-          } else {
-            resolve(null);
-          }
-        }
-      };
+        });
 
-      request.onerror = () => {
-        // Fallback to localStorage
-        const stored = localStorage.getItem(`offline_${key}`);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          resolve(parsed.data);
-        } else {
-          resolve(null);
+        if (result) {
+          return result.data;
         }
-      };
-    });
-  } catch (error) {
-    console.error('Error loading offline data:', error);
-
-    // Final fallback to localStorage
-    try {
-      const stored = localStorage.getItem(`offline_${key}`);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return parsed.data;
+      } catch (indexedDBError) {
+        console.warn('IndexedDB load failed, falling back to localStorage:', indexedDBError);
       }
-    } catch (e) {
-      console.error('Error with localStorage fallback:', e);
     }
 
+    // Fallback to localStorage
+    const stored = localStorage.getItem(`offline_${key}`);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed.data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error loading offline data:', error);
     return null;
   }
 };
