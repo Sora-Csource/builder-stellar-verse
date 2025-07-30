@@ -177,22 +177,41 @@ async function sendDataToServer(data) {
 async function clearPendingData() {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('pos-offline-db', 1);
-    
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('pending')) {
+        db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+      }
+      if (!db.objectStoreNames.contains('offline-data')) {
+        db.createObjectStore('offline-data', { keyPath: 'key' });
+      }
+    };
+
     request.onsuccess = (event) => {
       const db = event.target.result;
-      const transaction = db.transaction(['pending'], 'readwrite');
-      const store = transaction.objectStore('pending');
-      const clearRequest = store.clear();
-      
-      clearRequest.onsuccess = () => {
-        resolve();
-      };
-      
-      clearRequest.onerror = () => {
-        reject(clearRequest.error);
-      };
+
+      // Check if object store exists before creating transaction
+      if (db.objectStoreNames.contains('pending')) {
+        const transaction = db.transaction(['pending'], 'readwrite');
+        const store = transaction.objectStore('pending');
+        const clearRequest = store.clear();
+
+        clearRequest.onsuccess = () => {
+          db.close();
+          resolve();
+        };
+
+        clearRequest.onerror = () => {
+          db.close();
+          reject(clearRequest.error);
+        };
+      } else {
+        db.close();
+        resolve(); // Nothing to clear if store doesn't exist
+      }
     };
-    
+
     request.onerror = () => {
       reject(request.error);
     };
