@@ -4190,7 +4190,7 @@ const EnhancedPOS: React.FC = () => {
                           globalSearch.trim().length > 0,
                         )
                       }
-                      className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                      className="w-64 px-3 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Cari produk, pelanggan, transaksi..."
                     />
                     <svg
@@ -10679,7 +10679,7 @@ const EnhancedPOS: React.FC = () => {
                   type="submit"
                   className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-200 shadow-md"
                 >
-                  👤 Simpan Pelanggan
+                  ���� Simpan Pelanggan
                 </button>
               </div>
             </form>
