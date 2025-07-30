@@ -226,19 +226,48 @@ export const saveOfflineData = async (key: string, data: any): Promise<void> => 
 export const loadOfflineData = async (key: string): Promise<any> => {
   try {
     // Try IndexedDB first
-    const request = indexedDB.open('pos-offline-db', 1);
-    
     return new Promise((resolve) => {
+      const request = indexedDB.open('pos-offline-db', 1);
+
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+
+        // Create object stores if they don't exist
+        if (!db.objectStoreNames.contains('offline-data')) {
+          db.createObjectStore('offline-data', { keyPath: 'key' });
+        }
+        if (!db.objectStoreNames.contains('pending')) {
+          db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+        }
+      };
+
       request.onsuccess = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
-        const transaction = db.transaction(['offline-data'], 'readonly');
-        const store = transaction.objectStore('offline-data');
-        const getRequest = store.get(key);
-        
-        getRequest.onsuccess = () => {
-          if (getRequest.result) {
-            resolve(getRequest.result.data);
-          } else {
+
+        // Check if object store exists before creating transaction
+        if (db.objectStoreNames.contains('offline-data')) {
+          const transaction = db.transaction(['offline-data'], 'readonly');
+          const store = transaction.objectStore('offline-data');
+          const getRequest = store.get(key);
+
+          getRequest.onsuccess = () => {
+            db.close();
+            if (getRequest.result) {
+              resolve(getRequest.result.data);
+            } else {
+              // Fallback to localStorage
+              const stored = localStorage.getItem(`offline_${key}`);
+              if (stored) {
+                const parsed = JSON.parse(stored);
+                resolve(parsed.data);
+              } else {
+                resolve(null);
+              }
+            }
+          };
+
+          getRequest.onerror = () => {
+            db.close();
             // Fallback to localStorage
             const stored = localStorage.getItem(`offline_${key}`);
             if (stored) {
@@ -247,10 +276,9 @@ export const loadOfflineData = async (key: string): Promise<any> => {
             } else {
               resolve(null);
             }
-          }
-        };
-        
-        getRequest.onerror = () => {
+          };
+        } else {
+          db.close();
           // Fallback to localStorage
           const stored = localStorage.getItem(`offline_${key}`);
           if (stored) {
@@ -259,9 +287,9 @@ export const loadOfflineData = async (key: string): Promise<any> => {
           } else {
             resolve(null);
           }
-        };
+        }
       };
-      
+
       request.onerror = () => {
         // Fallback to localStorage
         const stored = localStorage.getItem(`offline_${key}`);
@@ -275,6 +303,18 @@ export const loadOfflineData = async (key: string): Promise<any> => {
     });
   } catch (error) {
     console.error('Error loading offline data:', error);
+
+    // Final fallback to localStorage
+    try {
+      const stored = localStorage.getItem(`offline_${key}`);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.data;
+      }
+    } catch (e) {
+      console.error('Error with localStorage fallback:', e);
+    }
+
     return null;
   }
 };
