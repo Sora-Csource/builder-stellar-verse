@@ -644,4 +644,71 @@
       @apply my-2;
     }
   }
+
+  /* Mobile-optimized components */
+  .mobile-input {
+    @apply text-base px-4 py-3; /* Prevent zoom on iOS */
+  }
+
+  .mobile-button {
+    @apply min-h-12 px-4 py-3 text-base touch-target;
+  }
+
+  .mobile-card {
+    @apply p-3 m-2 rounded-lg;
+  }
+
+  /* Landscape specific components */
+  .landscape-form {
+    @apply grid grid-cols-2 gap-2;
+  }
+
+  .landscape-input {
+    @apply px-3 py-2 text-sm;
+  }
+
+  .landscape-button {
+    @apply min-h-10 px-3 py-2 text-sm;
+  }
+
+  /* Portrait specific components */
+  .portrait-form {
+    @apply space-y-4;
+  }
+
+  .portrait-input {
+    @apply px-4 py-3 text-base;
+  }
+
+  .portrait-button {
+    @apply min-h-12 px-4 py-3 text-base w-full;
+  }
+
+  /* Small screen optimizations */
+  .small-screen-compact {
+    @apply p-2 m-1 text-sm;
+  }
+
+  /* Table responsiveness */
+  .mobile-table {
+    @apply text-sm;
+  }
+
+  .mobile-table th,
+  .mobile-table td {
+    @apply px-2 py-1;
+  }
+
+  /* Modal content improvements */
+  .modal-content-mobile {
+    @apply p-4 space-y-3;
+  }
+
+  .modal-header-mobile {
+    @apply pb-3 border-b;
+  }
+
+  .modal-footer-mobile {
+    @apply pt-3 border-t space-y-2;
+  }
 }
