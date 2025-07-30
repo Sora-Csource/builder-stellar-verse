@@ -3915,8 +3915,8 @@ const EnhancedPOS: React.FC = () => {
     >
       {/* Login Screen */}
       {isLoginVisible && (
-        <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-50">
-          <div className="bg-white p-12 rounded-lg shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 bg-gray-100 flex items-center justify-center z-50 p-4 safe-area-top safe-area-bottom">
+          <div className="bg-white p-6 sm:p-12 rounded-lg shadow-xl w-full max-w-md mobile-modal portrait-modal landscape-modal small-portrait-modal">
             <div className="flex justify-center mb-6">
               <img
                 src="https://cdn.builder.io/api/v1/image/assets%2F28cc20f2e9ba46788d87899f4c0eef76%2F09d1bcebdf6041a3a87d7eb144fb87a9?format=webp&width=800"
@@ -10820,7 +10820,7 @@ const EnhancedPOS: React.FC = () => {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all border border-gray-100">
             <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 rounded-t-xl">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">💰</div>
+                <div className="text-2xl">���</div>
                 <h3 className="text-xl font-bold">
                   {editingExpense
                     ? "Edit Pengeluaran"
