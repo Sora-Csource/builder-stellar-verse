@@ -169,29 +169,54 @@ export const saveOfflineData = async (key: string, data: any): Promise<void> => 
     }));
 
     // Save to IndexedDB for larger storage
-    const request = indexedDB.open('pos-offline-db', 1);
-    
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains('offline-data')) {
-        db.createObjectStore('offline-data', { keyPath: 'key' });
-      }
-      if (!db.objectStoreNames.contains('pending')) {
-        db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
-      }
-    };
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('pos-offline-db', 1);
 
-    request.onsuccess = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      const transaction = db.transaction(['offline-data'], 'readwrite');
-      const store = transaction.objectStore('offline-data');
-      
-      store.put({
-        key,
-        data,
-        timestamp: Date.now()
-      });
-    };
+      request.onupgradeneeded = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+
+        // Create object stores if they don't exist
+        if (!db.objectStoreNames.contains('offline-data')) {
+          db.createObjectStore('offline-data', { keyPath: 'key' });
+        }
+        if (!db.objectStoreNames.contains('pending')) {
+          db.createObjectStore('pending', { keyPath: 'id', autoIncrement: true });
+        }
+      };
+
+      request.onsuccess = (event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+
+        // Check if object store exists before creating transaction
+        if (db.objectStoreNames.contains('offline-data')) {
+          const transaction = db.transaction(['offline-data'], 'readwrite');
+          const store = transaction.objectStore('offline-data');
+
+          const putRequest = store.put({
+            key,
+            data,
+            timestamp: Date.now()
+          });
+
+          putRequest.onsuccess = () => {
+            db.close();
+            resolve();
+          };
+
+          putRequest.onerror = () => {
+            db.close();
+            reject(putRequest.error);
+          };
+        } else {
+          db.close();
+          resolve(); // Fallback to localStorage only
+        }
+      };
+
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
   } catch (error) {
     console.error('Error saving offline data:', error);
   }
