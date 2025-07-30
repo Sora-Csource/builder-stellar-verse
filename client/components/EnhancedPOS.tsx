@@ -3984,7 +3984,7 @@ const EnhancedPOS: React.FC = () => {
                 <div className="relative p-1">
                   <button
                     onClick={() => setShowNotifications(!showNotifications)}
-                    className="notification-button relative p-2 rounded-full hover:bg-gray-700 transition-colors group"
+                    className="notification-button relative p-2 rounded-lg hover:bg-gray-700 transition-colors group"
                   >
                     <svg
                       className="w-6 h-6 text-gray-300 group-hover:text-white transition-colors"
