@@ -1897,11 +1897,20 @@ const EnhancedPOS: React.FC = () => {
     }
   };
 
-  const loadData = () => {
+  const loadData = async () => {
     try {
-      const storedData = localStorage.getItem("posData");
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
+      // Try loading from IndexedDB first (PWA offline storage)
+      let parsedData = await loadOfflineData("posData");
+
+      // Fallback to localStorage if IndexedDB fails
+      if (!parsedData) {
+        const storedData = localStorage.getItem("posData");
+        if (storedData) {
+          parsedData = JSON.parse(storedData);
+        }
+      }
+
+      if (parsedData) {
         setUsers(parsedData.users || []);
         setProducts(parsedData.products || []);
         setCustomers(parsedData.customers || []);
@@ -9448,7 +9457,7 @@ const EnhancedPOS: React.FC = () => {
                             berfungsi
                           </li>
                           <li>
-                            • Printer thermal mendukung kertas 58mm dan 80mm
+                            �� Printer thermal mendukung kertas 58mm dan 80mm
                           </li>
                         </ul>
                       </div>
